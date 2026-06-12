@@ -120,6 +120,10 @@ data/processed/
 
 ## Current Repo Status
 
+The pipeline includes unit tests for configuration loading, registry parsing, synthetic
+generation, skip-logic handling and output validation. The generated synthetic outputs are
+still undergoing manual review and should be treated as Beta artefacts.
+
 Completed:
 
 - Poetry project setup.
@@ -134,8 +138,6 @@ Completed:
 - Supported questionnaire `show_if` logic is applied during generation.
 - Tests cover config loading, registry parsing, source-driven generation, skip logic and
   output validation.
-- Local development guidance exists for agent-assisted work, but must not be required by or
-  shipped as part of the end-user workflow.
 
 Current registry build result from the P14/V2 source files:
 
@@ -336,7 +338,7 @@ Beta release cleanup includes:
 - current scope notes and stretch goals are documented.
 - previous starter/baseline generator code removed.
 - previous `synthetic_baseline.csv` configuration path removed.
-- Codex-specific/local agent guidance is ignored by git and not required for end users.
+- Local-only development notes are not part of the end-user workflow.
 
 Current verified output:
 

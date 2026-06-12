@@ -17,9 +17,6 @@ build/
 .env
 **/.DS_Store
 
-# Local agent/development guidance; not required for the end-user workflow.
-AGENTS.md
-
 # Previous local input folder. Use data/raw/ for new work.
 inputs/
 

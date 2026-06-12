@@ -11,5 +11,5 @@ Before publishing or sharing this repository:
 - Run `poetry run ofh-synthetic-data --config configs/default.yaml validate`.
 - Run `poetry run pytest`.
 - Run `poetry run ruff check .`.
-- Confirm processed registries, synthetic outputs and `AGENTS.md` remain ignored by git unless
-  there is a deliberate sharing decision.
+- Confirm processed registries, synthetic outputs and other local-only files remain ignored by
+  git unless there is a deliberate sharing decision.
