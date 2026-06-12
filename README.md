@@ -115,6 +115,8 @@ tests/          focused unit tests
 
 This repository is currently a Beta release candidate.
 
+The pipeline includes unit tests for configuration loading, registry parsing, synthetic generation, skip-logic handling and output validation. The generated synthetic outputs are still undergoing manual review and should be treated as Beta artefacts.
+
 Current functionality:
 
 - builds `participant.csv` and `questionnaire.csv` from processed registries.
