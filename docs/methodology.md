@@ -49,9 +49,10 @@ supported `show_if` logic are also left empty.
 Output columns follow the source data dictionary row order for each entity. Questionnaire
 `show_if` order is used for dependency evaluation, not for rearranging exported columns.
 
-The generated `manifest.json` records the row count, seed, questionnaire version, output
-paths, config snapshot, source file fingerprints from `source_manifest.json`, synthetic marker
-rules, column counts and supported skip-logic summary.
+The generated `manifest.json` records Beta status, manual validation status, row count, seed,
+questionnaire version, output paths, config snapshot, source file fingerprints from
+`source_manifest.json`, synthetic marker rules, column counts and supported skip-logic
+summary.
 
 ## Validation
 

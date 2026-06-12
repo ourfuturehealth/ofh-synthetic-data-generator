@@ -100,6 +100,8 @@ def generate_tables(
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         manifest={
+            "status": "beta",
+            "manual_validation_status": "ongoing",
             "rows": generation_config.rows,
             "seed": generation_config.seed,
             "questionnaire_version": generation_config.questionnaire_version,

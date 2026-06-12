@@ -122,7 +122,7 @@ data/processed/
 
 The pipeline includes unit tests for configuration loading, registry parsing, synthetic
 generation, skip-logic handling and output validation. The generated synthetic outputs are
-still undergoing manual review and should be treated as Beta artefacts.
+still undergoing manual validation and should be treated as Beta artefacts.
 
 Completed:
 

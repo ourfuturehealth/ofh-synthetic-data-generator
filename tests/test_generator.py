@@ -78,6 +78,8 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     assert questionnaires["ACTIVITY_WALK_DAYS_1_1"].isna().all()
     assert questionnaires["ACTIVITY_WALK_DAYS_2_1"].astype(int).between(0, 7).all()
     assert questionnaires["ACTIVITY_TRANSPORT_1_M"].str.match(r"^\[[0-9,]+\]$").all()
+    assert tables.manifest["status"] == "beta"
+    assert tables.manifest["manual_validation_status"] == "ongoing"
     assert tables.manifest["config"]["generation"]["rows"] == 3
     assert tables.manifest["phase"] == "7-beta-release-candidate"
 

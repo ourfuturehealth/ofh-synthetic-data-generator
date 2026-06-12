@@ -13,6 +13,15 @@ branching patterns before working with non-synthetic data in the TRE. The genera
 synthetic, deterministic with a fixed seed and designed for local development, onboarding and
 workflow prototyping rather than statistical analysis.
 
+## Beta Status
+
+This project is in Beta. The pipeline includes unit tests for core behaviour, but generated
+synthetic outputs are still undergoing manual validation.
+
+Outputs are suitable for exploring table structure, codings, joins and workflow prototyping.
+They should not be used for statistical analysis or treated as a validated representation of
+OFH data distributions.
+
 ## Background
 
 Researchers often need to understand data structure before they can write analysis code or
@@ -121,7 +130,9 @@ tests/          focused unit tests
 
 This repository is currently a Beta release candidate.
 
-The pipeline includes unit tests for configuration loading, registry parsing, synthetic generation, skip-logic handling and output validation. The generated synthetic outputs are still undergoing manual review and should be treated as Beta artefacts.
+The pipeline includes unit tests for configuration loading, registry parsing, synthetic
+generation, skip-logic handling and output validation. Generated synthetic outputs are still
+undergoing manual validation and should be treated as Beta artefacts.
 
 Current functionality:
 
