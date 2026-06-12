@@ -31,8 +31,8 @@ source artefacts.
 
 ## What It Builds
 
-The default config generates 200 linked participant/questionnaire rows under
-`data/synthetic/`:
+Generation settings live in `configs/default.yaml`. A run writes linked
+participant/questionnaire outputs to the configured synthetic data directory:
 
 - `participant.csv`: one row per synthetic participant.
 - `questionnaire.csv`: one questionnaire row per synthetic participant.
@@ -79,6 +79,12 @@ Generate synthetic participant and questionnaire tables:
 
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml generate
+```
+
+Override the configured row count for a run:
+
+```bash
+poetry run ofh-synthetic-data --config configs/default.yaml generate --rows 50
 ```
 
 Validate generated outputs:
