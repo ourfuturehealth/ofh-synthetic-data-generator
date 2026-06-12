@@ -141,3 +141,18 @@ Current functionality:
 - applies supported questionnaire `show_if` branching logic.
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
 - keeps generated processed and synthetic artefacts ignored by git by default.
+
+## Next Steps
+
+The next planned stretch goal is an auditable plausibility layer for consistency checks that
+are not fully encoded in the source questionnaire logic.
+
+Initial work will:
+
+- generate a candidate registry for fields that may need sex-specific, age-specific,
+  unit-specific or temporal constraints.
+- review candidates before converting them into generation rules, starting with field
+  families such as `GYN*`, date/year fields and high-quantity smoking or alcohol fields.
+- keep these rules configurable and documented as additional synthetic-generation
+  assumptions, separate from source-derived questionnaire logic.
+- add tests and manifest metadata showing which plausibility rules were applied.
