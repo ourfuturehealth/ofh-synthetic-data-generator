@@ -1,15 +1,28 @@
 # Unit Test Summary
 
-This project currently has 11 unit tests under `tests/`.
+This project currently has 11 unit tests and 1 QA test under `tests/`.
 
-Run the suite with:
+Run all tests with:
 
 ```bash
 poetry run pytest
 ```
 
-The tests use small local fixtures and temporary directories. They are intended to check core
-pipeline behaviour without depending on generated output files being committed to the repo.
+Run only the unit tests with:
+
+```bash
+poetry run pytest tests/test_*.py
+```
+
+Run only the QA tests with:
+
+```bash
+poetry run pytest tests/qa
+```
+
+The unit tests use small local fixtures and temporary directories. They are intended to check
+core pipeline behaviour without depending on generated output files being committed to the
+repo.
 
 ## Current Coverage
 
@@ -19,6 +32,7 @@ pipeline behaviour without depending on generated output files being committed t
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
 | `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and unsupported populated skip-logic fields. |
+| `tests/qa/test_output_schema.py` | 1 | QA check that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types. |
 
 ## What The Tests Check
 
@@ -35,6 +49,21 @@ pipeline behaviour without depending on generated output files being committed t
 - dictionary-derived numeric and date types are enforced during output validation.
 - supported questionnaire branching logic blanks skipped fields.
 - validation reports key structural and data-quality issues.
+
+## QA Checks
+
+The QA test builds registries from the included public source artefacts, generates synthetic
+outputs in a temporary directory and checks the full `participant.csv` and `questionnaire.csv`
+schema.
+
+It checks that:
+
+- output column names exactly match the source-derived field registry.
+- output columns appear in data dictionary order.
+- every generated column uses a supported dictionary type.
+- populated integer, float, date and multi-select values conform to the broad dictionary
+  type expected for that column.
+- string columns contain string values when populated.
 
 ## Current Limits
 
