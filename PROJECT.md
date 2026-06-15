@@ -93,7 +93,10 @@ outputs/reports/  # generated reports and summaries
 - linked NHS records
 - genetic data
 - reconstructing the full raw questionnaire capture flow
-- plausible ranges (other than age, months, days, hours, height and weight all other continious variables (int and float) are given detault values (int:0-10, float:0-100)). The range rules live in [registries.py].
+- field-specific plausible ranges beyond the current Beta heuristics. Current numeric range
+  rules cover fields such as age, month, day-count, hour, height and weight. Other uncoded
+  numeric fields use default ranges: `0-10` for integers and `0-100` for floats. Range
+  inference is implemented in `src/ofh_synthetic_data/ingest/registries.py`.
 
 ## Target Outputs
 
