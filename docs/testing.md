@@ -1,6 +1,6 @@
 # Unit Test Summary
 
-This project currently has 10 unit tests under `tests/`.
+This project currently has 11 unit tests under `tests/`.
 
 Run the suite with:
 
@@ -18,7 +18,7 @@ pipeline behaviour without depending on generated output files being committed t
 | `tests/test_config.py` | 2 | Default configuration values and YAML config overrides. |
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
-| `tests/test_validation.py` | 3 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, broken `PID` links and unsupported populated skip-logic fields. |
+| `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and unsupported populated skip-logic fields. |
 
 ## What The Tests Check
 
@@ -32,6 +32,7 @@ pipeline behaviour without depending on generated output files being committed t
 - output columns follow source dictionary order.
 - blank fields remain blank.
 - coded fields use values from the coding registry.
+- dictionary-derived numeric and date types are enforced during output validation.
 - supported questionnaire branching logic blanks skipped fields.
 - validation reports key structural and data-quality issues.
 

@@ -52,6 +52,34 @@ def test_validate_synthetic_outputs_reports_data_errors(tmp_path: Path) -> None:
     assert "source_logic" in checks
 
 
+def test_validate_synthetic_outputs_reports_type_errors(tmp_path: Path) -> None:
+    config = _write_valid_fixture(tmp_path)
+    synthetic_dir = config.paths.synthetic_data_dir
+
+    participants = pd.read_csv(synthetic_dir / "participant.csv", dtype=object)
+    participants.loc[0, "BIRTH_YEAR"] = "not-a-year"
+    participants.to_csv(synthetic_dir / "participant.csv", index=False)
+
+    questionnaires = pd.read_csv(synthetic_dir / "questionnaire.csv", dtype=object)
+    questionnaires.loc[0, "SUBMISSION_DATE"] = "not-a-date"
+    questionnaires.loc[0, "TRIGGER_1_1"] = "1.5"
+    questionnaires.to_csv(synthetic_dir / "questionnaire.csv", index=False)
+
+    result = validate_synthetic_outputs(config)
+
+    assert not result.passed
+    type_messages = [error.message for error in result.errors if error.check == "types"]
+    assert any("BIRTH_YEAR" in message and "non-numeric" in message for message in type_messages)
+    assert any(
+        "TRIGGER_1_1" in message and "non-integer" in message
+        for message in type_messages
+    )
+    assert any(
+        "SUBMISSION_DATE" in message and "invalid date" in message
+        for message in type_messages
+    )
+
+
 def _write_valid_fixture(tmp_path: Path) -> AppConfig:
     processed_dir = tmp_path / "processed"
     synthetic_dir = tmp_path / "synthetic"
