@@ -25,6 +25,8 @@ Outputs are suitable for exploring table structure, codings, joins and workflow 
 They should not be used for statistical analysis or treated as a validated representation of
 OFH data distributions.
 
+See [docs/testing.md](docs/testing.md) for a summary of the current unit test coverage.
+
 ## Background
 
 Researchers often need to understand data structure before they can write analysis code or
