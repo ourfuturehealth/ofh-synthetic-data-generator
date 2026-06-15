@@ -81,6 +81,7 @@ outputs/reports/  # generated reports and summaries
 - supported questionnaire branching logic
 - assumptions and coverage documentation
 
+
 ## Out Of Scope
 
 - V1 questionnaire data
@@ -92,6 +93,7 @@ outputs/reports/  # generated reports and summaries
 - linked NHS records
 - genetic data
 - reconstructing the full raw questionnaire capture flow
+- plausible ranges (other than age, months, days, hours, height and weight all other continious variables (int and float) are given detault values (int:0-10, float:0-100)). The range rules live in [registries.py].
 
 ## Target Outputs
 
