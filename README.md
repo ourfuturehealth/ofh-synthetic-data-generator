@@ -3,15 +3,18 @@
 This repository contains a Python tool for generating reproducible synthetic Our Future
 Health-style data from source documentation.
 
+The wider OFH P14 data release includes several data areas, including participant,
+questionnaire, geography, genetic, clinic measurement and linked NHSE data. This project is a
+Beta generator for a narrower subset only.
+
 The tool generates two linked tables:
 
 - `participant.csv`
 - `questionnaire.csv`
 
-It is intended to help researchers understand the table structure, identifiers, codings and
-branching patterns before working with non-synthetic data in the TRE. The generated data is
-synthetic, deterministic with a fixed seed and designed for local development, onboarding and
-workflow prototyping rather than statistical analysis.
+The questionnaire output is scoped to the baseline health questionnaire V2. The generated
+data is synthetic, deterministic with a fixed seed and designed for local development,
+onboarding and workflow prototyping rather than statistical analysis.
 
 ## Beta Status
 
@@ -25,9 +28,10 @@ OFH data distributions.
 ## Background
 
 Researchers often need to understand data structure before they can write analysis code or
-prepare workflows. This project provides a local synthetic dataset generator for the core OFH
-participant and questionnaire entities so users can inspect table shape, develop code and test
-joins before accessing non-synthetic data.
+prepare workflows. This project provides a local synthetic dataset generator for the P14
+`participant` table and baseline health questionnaire V2 `questionnaire` table, so users can
+inspect table shape, identifiers, codings, branching patterns and joins before accessing
+non-synthetic data.
 
 The repository is intended to share the generator and its reproducible workflow rather than a
 hand-authored dataset. The generator is source-driven: it reads the public OFH source
@@ -40,8 +44,8 @@ source artefacts.
 
 ## What It Builds
 
-Generation settings live in `configs/default.yaml`. A run writes linked
-participant/questionnaire outputs to the configured synthetic data directory:
+Generation settings live in `configs/default.yaml`. A run writes linked participant and V2
+questionnaire outputs to the configured synthetic data directory:
 
 - `participant.csv`: one row per synthetic participant.
 - `questionnaire.csv`: one questionnaire row per synthetic participant.
@@ -63,6 +67,20 @@ outputs can be regenerated from a fresh checkout. The default configuration expe
 
 See [data/raw/README.md](data/raw/README.md) and [docs/data_sources.md](docs/data_sources.md)
 for source details.
+
+## Scope
+
+In scope:
+
+- P14 `participant` fields included by the configured registry build.
+- P14 baseline health questionnaire V2 `questionnaire` fields.
+- One questionnaire row per synthetic participant for Beta.
+
+Out of scope:
+
+- V1 questionnaire data.
+- Geography, genetic, clinic measurement and linked NHSE data.
+- Statistical fidelity to observed OFH distributions.
 
 ## Quickstart
 
@@ -122,7 +140,7 @@ data/raw/       public source artefacts used for registry builds
 data/interim/   parsed extracts and temporary derived files
 data/processed/ validated registries and generation metadata
 data/synthetic/ final synthetic datasets, ignored by git by default
-docs/           methodology, assumptions and sharing notes
+docs/           methodology, assumptions, project history and sharing notes
 tests/          focused unit tests
 ```
 
