@@ -26,11 +26,10 @@ The outputs should help researchers understand table shape, identifiers, codings
 participant/questionnaire relationships and common branching patterns before working with
 non-synthetic data in the TRE.
 
-## Inputs And Storage Policy
+## Inputs
 
 Public source artefacts are included in `data/raw/` to support reproducible registry builds.
-The source artefacts should be copied exactly as received. If a source file needs parsing,
-normalization or transformation, write the result to `data/interim/` or `data/processed/`.
+Source artefacts should be copied exactly as received. The current pipeline writes generated registries to `data/processed/`. `data/interim/` is reserved for temporary parsed extracts if a future processing step needs them.
 
 Source locations:
 
@@ -52,7 +51,7 @@ outputs/reports/  # generated reports and summaries
 
 ## Requirements
 
-- Target the OFH P14 data dictionary and codings.
+- Use the OFH P14 data dictionary and codings.
 - Produce Beta synthetic `participant.csv` and `questionnaire.csv` tables only.
 - Scope questionnaire generation to baseline health questionnaire V2 only.
 - Include obvious synthetic markers, such as `SYN`-prefixed IDs.
