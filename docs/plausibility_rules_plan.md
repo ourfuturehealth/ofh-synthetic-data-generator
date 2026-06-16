@@ -137,12 +137,17 @@ Candidate examples:
 - smoking quantities.
 - alcohol quantities.
 - activity durations and frequencies.
+- coded numeric fields where negative codes may include meaningful boundary categories,
+  such as `-10 = Less than a year`, as well as true missing or suppressed values.
 
 Expected behaviour:
 
 - replace broad fallback numeric ranges with documented field-family ranges where the current
   defaults are too broad or unclear.
 - keep these ranges labelled as Beta assumptions, not validated distributions.
+- review negative coded values before treating all of them as missing/special values.
+- separate true special values, such as suppressed, do-not-know and prefer-not-to-answer,
+  from meaningful response categories that happen to use negative numeric codes.
 
 ## Phase 4: Implementation Shape
 

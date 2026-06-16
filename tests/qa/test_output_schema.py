@@ -91,6 +91,43 @@ def test_coded_questionnaire_fields_absent_from_logic_are_generated(tmp_path: Pa
     assert medicat["generation_action"] == "generate"
 
 
+def test_numeric_range_with_special_code_fields_generate_allowed_values(
+    tmp_path: Path,
+) -> None:
+    config = _config_for_tmp_path(tmp_path)
+
+    result = build_registries(config)
+    tables = generate_tables_from_processed_registries(config)
+    write_generated_tables(tables, config.paths.synthetic_data_dir, config.generation)
+
+    field_registry = _read_csv(result.field_registry)
+    coding_registry = _read_csv(result.coding_registry)
+    participants = _read_csv(config.paths.synthetic_data_dir / config.generation.participant_file)
+    questionnaires = _read_csv(
+        config.paths.synthetic_data_dir / config.generation.questionnaire_file,
+    )
+
+    fields = field_registry[
+        field_registry["value_strategy"] == "numeric_range_with_special_codes"
+    ]
+    special_codes = _special_codes_by_coding_name(coding_registry)
+    failures = []
+
+    assert not fields.empty
+
+    for field in fields.to_dict("records"):
+        table = participants if field["entity"] == "participant" else questionnaires
+        failures.extend(
+            _numeric_range_with_special_code_failures(
+                field=field,
+                values=table[str(field["name"])],
+                special_codes=special_codes.get(str(field["coding_name"]), set()),
+            ),
+        )
+
+    assert failures == []
+
+
 def _config_for_tmp_path(tmp_path: Path):
     config = load_config("configs/default.yaml")
     return replace(
@@ -186,6 +223,54 @@ def _assert_multi_select_values_are_integer_codes(name: str, values: pd.Series) 
     assert invalid_values == [], f"{name} contains invalid multi-select integer codes"
 
 
+def _numeric_range_with_special_code_failures(
+    field: dict[str, object],
+    values: pd.Series,
+    special_codes: set[str],
+) -> list[dict[str, object]]:
+    name = str(field["name"])
+    minimum = _numeric_value(field["generation_min"])
+    maximum = _numeric_value(field["generation_max"])
+    failures = []
+
+    if minimum is None or maximum is None or not special_codes:
+        return [
+            {
+                "field": name,
+                "problem": "missing range or special-code metadata",
+            },
+        ]
+
+    for value in values:
+        if _is_blank(value):
+            continue
+
+        formatted_value = _format_code(value)
+        numeric_value = _numeric_value(value)
+        in_range = numeric_value is not None and minimum <= numeric_value <= maximum
+        if formatted_value not in special_codes and not in_range:
+            failures.append(
+                {
+                    "field": name,
+                    "value": value,
+                    "range": f"{minimum}-{maximum}",
+                    "special_codes": sorted(special_codes),
+                },
+            )
+
+    return failures
+
+
+def _special_codes_by_coding_name(coding_registry: pd.DataFrame) -> dict[str, set[str]]:
+    special_rows = coding_registry[coding_registry["is_special_code"].map(_as_bool)]
+    lookup: dict[str, set[str]] = {}
+
+    for row in special_rows.to_dict("records"):
+        lookup.setdefault(str(row["coding_name"]), set()).add(_format_code(row["code"]))
+
+    return lookup
+
+
 def _fields_for_entity(field_registry: pd.DataFrame, entity: str) -> pd.DataFrame:
     fields = field_registry[field_registry["entity"] == entity].copy()
     fields["_dictionary_order"] = pd.to_numeric(fields["dictionary_order"], errors="coerce")
@@ -230,10 +315,17 @@ def _coding_key(coding_name: object, code: object) -> tuple[str, str]:
 
 def _format_code(value: object) -> str:
     text = str(value)
-    numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+    numeric = _numeric_value(value)
     if pd.notna(numeric) and float(numeric).is_integer():
         return str(int(numeric))
     return text
+
+
+def _numeric_value(value: object) -> float | None:
+    numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+    if pd.isna(numeric):
+        return None
+    return float(numeric)
 
 
 def _is_blank(value: object) -> bool:
