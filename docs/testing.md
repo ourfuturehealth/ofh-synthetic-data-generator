@@ -1,6 +1,6 @@
 # Unit Test Summary
 
-This project currently has 13 unit tests and 2 QA tests under `tests/`.
+This project currently has 13 unit tests and 3 QA tests under `tests/`.
 
 Run all tests with:
 
@@ -33,7 +33,7 @@ repo.
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
 | `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and unsupported populated skip-logic fields. |
-| `tests/qa/test_output_schema.py` | 2 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, and that literal `None` coding meanings are preserved from the source workbook. |
+| `tests/qa/test_output_schema.py` | 3 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that coded questionnaire fields absent from logic are still generated, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
 
 ## What The Tests Check
 
@@ -67,6 +67,8 @@ It checks that:
   type expected for that column.
 - string columns contain string values when populated.
 - literal `None` coding meanings in the source workbook remain `None` in processed codings.
+- non-superseded coded questionnaire fields absent from the logic workbook are generated
+  rather than blanked.
 
 ## Current Limits
 

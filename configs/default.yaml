@@ -23,4 +23,4 @@ generation:
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv
   manifest_file: manifest.json
-  questionnaire_version: "2"
+  questionnaire_version: "v2"
