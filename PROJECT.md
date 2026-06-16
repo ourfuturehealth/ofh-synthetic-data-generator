@@ -72,6 +72,7 @@ In scope:
 - P14 participant fields included by the configured registry build.
 - source-driven schema and registry generation.
 - V2 questionnaire field scoping.
+- non-superseded coding-backed questionnaire fields from the P14 dictionary.
 - valid OFH coding values.
 - simple synthetic value generation.
 - supported questionnaire branching logic.
@@ -134,8 +135,8 @@ Current registry build result from the P14 source files:
 - 2,482 coding rows.
 - 288 questionnaire logic rows.
 - 2 in-scope entities: `participant` and `questionnaire`.
-- 298 fields marked for generation.
-- 75 fields marked blank.
+- 325 fields marked for generation.
+- 48 fields marked blank.
 - 72 fields with inferred numeric ranges.
 
 Detailed implementation history is in `docs/project_history.md`.
@@ -152,7 +153,7 @@ Beta is complete when:
 - generated coded values come from the OFH codings file.
 - V2 questionnaire scope is applied.
 - supported branching logic is applied.
-- skipped or non-V2 fields are blank.
+- skipped fields, superseded fields and uncoded non-V2 fields are blank.
 - `participant` and `questionnaire` rows link correctly by `PID`.
 - assumptions and current scope notes are documented.
 - unit tests pass.
@@ -199,13 +200,17 @@ Documentation and source-specific notes:
 - `section4` in the logic workbook has a non-standard section header.
 - `section5` has an extra `notes` column.
 - `DEMOG_HEIGHT_1_1` and `DEMOG_WEIGHT_1_1` appear more than once in the logic workbook.
-- The logic field `eb` does not map to the data dictionary.
+- The source logic row labelled `eb` for the medication reasons question is normalised to
+  `MEDICAT_1_M` during registry build.
 - The dictionary `entity` column is the preferred source for entity grouping.
 
 Version and entity structure:
 
 - Generate V2 questionnaire data only.
 - Presence in the V2 logic file is the main signal for questionnaire inclusion.
+- Non-superseded questionnaire fields with OFH codings are also generated when present in the
+  P14 dictionary, even if they are absent from the V2 logic workbook. These fields are marked
+  `dictionary_coded_questionnaire_field` in the processed registry.
 - Field suffixes alone are not enough to determine whether a field is live in V2.
 - `DEMOG_SEX_2_1`, `DEMOG_GENDER_2_1` and `DEMOG_ETHNICITY_1_1` are generated on
   `participant`, not duplicated into `questionnaire`.

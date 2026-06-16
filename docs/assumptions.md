@@ -36,8 +36,13 @@ machine-readable metadata describing the exact config, seed and source files use
 
 - The processed field registry records whether each field should be generated or blanked.
 - Fields superseded by a newer V2 field are marked blank with `superseded_by_v2_field`.
-- Questionnaire fields absent from V2 logic are marked blank with `not_in_v2_logic`, except
-  required metadata fields.
+- Questionnaire fields present in V2 logic are generated unless superseded.
+- Questionnaire fields absent from V2 logic are still generated when they are coding-backed,
+  non-superseded dictionary fields. These are marked
+  `dictionary_coded_questionnaire_field` so they can be audited separately from logic-derived
+  fields.
+- Uncoded questionnaire fields absent from V2 logic are marked blank with `not_in_v2_logic`,
+  except required metadata fields.
 - Numeric ranges are inferred only for uncoded numeric fields, or numeric fields whose coding
   list contains special/missing codes but not ordinary values.
 - Inferred ranges are labelled with a `numeric_range_rule` so assumptions can be audited.
@@ -78,5 +83,6 @@ machine-readable metadata describing the exact config, seed and source files use
 - The questionnaire logic workbook has a non-standard `section` header in `section4`.
 - The questionnaire logic workbook has an extra `notes` column in `section5`.
 - Some fields appear more than once in the logic workbook and need combined logic.
-- The logic field `eb` does not map to the data dictionary.
+- The source logic row labelled `eb` for the medication reasons question is normalised to
+  `MEDICAT_1_M` during registry build.
 - The dictionary `entity` column is the preferred source for entity grouping.

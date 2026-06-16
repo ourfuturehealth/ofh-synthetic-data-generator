@@ -205,6 +205,7 @@ def load_logic_registry(path: Path, field_registry: pd.DataFrame) -> pd.DataFram
             continue
 
         frame = _normalise_logic_columns(frame)
+        frame = _normalise_known_logic_field_names(frame)
         frame["source_sheet"] = sheet_name
         frame = frame[LOGIC_COLUMNS]
         frame = frame[frame["field_name"].astype(str).str.strip() != ""]
@@ -474,6 +475,19 @@ def _normalise_logic_columns(frame: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
+def _normalise_known_logic_field_names(frame: pd.DataFrame) -> pd.DataFrame:
+    registry = frame.copy()
+    field_name = registry["field_name"].astype(str).str.strip()
+    question_text = registry["question_text"].astype(str).str.strip().str.casefold()
+
+    medicat_question = (
+        "do you regularly take medications for any of the following reasons?"
+    )
+    medicat_mask = (field_name == "eb") & (question_text == medicat_question)
+    registry.loc[medicat_mask, "field_name"] = "MEDICAT_1_M"
+    return registry
+
+
 def _find_section_column(columns: Iterable[str]) -> str:
     for column in columns:
         if str(column).lower().startswith("sectio"):
@@ -548,6 +562,8 @@ def _v2_inclusion_status(row: pd.Series) -> str:
         return "participant_context"
     if row["in_questionnaire_logic"]:
         return "v2_questionnaire_field"
+    if row["coding_found"]:
+        return "dictionary_coded_questionnaire_field"
     return "not_in_v2_logic"
 
 

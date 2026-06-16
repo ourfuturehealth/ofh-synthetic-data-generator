@@ -43,8 +43,8 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     source_manifest = json.loads(result.source_manifest.read_text(encoding="utf-8"))
 
     assert result.counts == {
-        "fields": 5,
-        "codings": 4,
+        "fields": 6,
+        "codings": 6,
         "logic_rows": 4,
         "entities": 2,
     }
@@ -56,8 +56,9 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
         "ID",
         "ACTIVITY_WALK_DAYS_1_1",
         "ACTIVITY_WALK_DAYS_2_1",
+        "MEDICAT_1_M",
     ]
-    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4]
+    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4, 5]
 
     sex_field = field_registry[field_registry["name"] == "DEMOG_SEX_2_1"].iloc[0]
     assert bool(sex_field["in_questionnaire_logic"])
@@ -87,8 +88,16 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     assert v2_activity_field["numeric_range_rule"] == "name_contains_days"
     assert v2_activity_field["value_strategy"] == "numeric_range"
 
+    medicat_field = field_registry[field_registry["name"] == "MEDICAT_1_M"].iloc[0]
+    assert bool(medicat_field["in_questionnaire_logic"])
+    assert medicat_field["logic_sections"] == "4. Corrupted header section"
+    assert medicat_field["coding_found"]
+    assert medicat_field["generation_action"] == "generate"
+    assert medicat_field["v2_inclusion_status"] == "v2_questionnaire_field"
+    assert medicat_field["value_strategy"] == "coded_multi_select"
+
     questionnaire_entity = entity_registry[entity_registry["entity"] == "questionnaire"].iloc[0]
-    assert questionnaire_entity["generated_field_count"] == 2
+    assert questionnaire_entity["generated_field_count"] == 3
     assert questionnaire_entity["blank_field_count"] == 1
 
     special_code = coding_registry[coding_registry["code"] == -1].iloc[0]
@@ -96,9 +105,10 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     none_meaning = coding_registry[coding_registry["code"] == 3].iloc[0]
     assert none_meaning["meaning"] == "None"
 
-    unmatched_logic = logic_registry[logic_registry["field_name"] == "eb"].iloc[0]
-    assert not bool(unmatched_logic["dictionary_match"])
-    assert "`eb`" in coverage_summary
+    normalised_logic = logic_registry[logic_registry["field_name"] == "MEDICAT_1_M"].iloc[0]
+    assert bool(normalised_logic["dictionary_match"])
+    assert "eb" not in set(logic_registry["field_name"])
+    assert "`eb`" not in coverage_summary
 
     manifest_files = {entry["role"]: entry for entry in source_manifest["files"]}
     assert set(manifest_files) == {
@@ -193,6 +203,21 @@ def _write_dictionary(path: Path) -> None:
                 "units": "",
                 "description": "V2 walking days field",
             },
+            {
+                "entity": "questionnaire",
+                "name": "MEDICAT_1_M",
+                "type": "integer",
+                "primary_key_type": "",
+                "coding_name": "MEDICAT_1_M",
+                "is_sparse_coding": "",
+                "is_multi_select": True,
+                "referenced_entity_field": "",
+                "relationship": "",
+                "folder_path": "Questionnaire",
+                "title": "Medication reasons",
+                "units": "",
+                "description": "Medication reasons",
+            },
         ],
     )
     clinic = pd.DataFrame(
@@ -244,9 +269,28 @@ def _write_codings(path: Path) -> None:
             },
         ],
     )
+    questionnaire = pd.DataFrame(
+        [
+            {
+                "coding_name": "MEDICAT_1_M",
+                "code": 1,
+                "meaning": "Autoimmune disorder",
+                "display_order": 1,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "MEDICAT_1_M",
+                "code": -7,
+                "meaning": "None of the above",
+                "display_order": 2,
+                "parent_code": "",
+            },
+        ],
+    )
 
     with pd.ExcelWriter(path) as writer:
         participant.to_excel(writer, sheet_name="participant", index=False)
+        questionnaire.to_excel(writer, sheet_name="questionnaire", index=False)
 
 
 def _write_logic(path: Path) -> None:
@@ -275,7 +319,9 @@ def _write_logic(path: Path) -> None:
             {
                 "index": 3,
                 "sectio+B1:H59n": "4. Corrupted header section",
-                "question_text": "Unmatched row",
+                "question_text": (
+                    "Do you regularly take medications for any of the following reasons?"
+                ),
                 "source": "",
                 "template_type": "text",
                 "field_name": "eb",
