@@ -21,17 +21,7 @@ SUPPORTED_DICTIONARY_TYPES = {"date", "float", "integer", "string"}
 
 
 def test_generated_outputs_match_dictionary_schema(tmp_path: Path) -> None:
-    config = load_config("configs/default.yaml")
-    config = replace(
-        config,
-        paths=PathsConfig(
-            raw_data_dir=config.paths.raw_data_dir,
-            interim_data_dir=tmp_path / "interim",
-            processed_data_dir=tmp_path / "processed",
-            synthetic_data_dir=tmp_path / "synthetic",
-            reports_dir=tmp_path / "reports",
-        ),
-    )
+    config = _config_for_tmp_path(tmp_path)
 
     build_registries(config)
     tables = generate_tables_from_processed_registries(config)
@@ -48,6 +38,44 @@ def test_generated_outputs_match_dictionary_schema(tmp_path: Path) -> None:
 
     _assert_table_matches_dictionary_schema(participants, field_registry, "participant")
     _assert_table_matches_dictionary_schema(questionnaires, field_registry, "questionnaire")
+
+
+def test_registry_preserves_literal_none_coding_meanings(tmp_path: Path) -> None:
+    config = _config_for_tmp_path(tmp_path)
+    source_none_keys = _literal_none_coding_keys(
+        config.paths.raw_data_dir / config.source_files.codings,
+    )
+
+    result = build_registries(config)
+    processed_codings = _read_csv(result.coding_registry)
+    processed_lookup = {
+        _coding_key(row["coding_name"], row["code"]): str(row["meaning"])
+        for row in processed_codings.to_dict("records")
+    }
+
+    in_scope_none_keys = source_none_keys & set(processed_lookup)
+    lost_meanings = {
+        key: processed_lookup[key]
+        for key in in_scope_none_keys
+        if processed_lookup[key] != "None"
+    }
+
+    assert in_scope_none_keys
+    assert lost_meanings == {}
+
+
+def _config_for_tmp_path(tmp_path: Path):
+    config = load_config("configs/default.yaml")
+    return replace(
+        config,
+        paths=PathsConfig(
+            raw_data_dir=config.paths.raw_data_dir,
+            interim_data_dir=tmp_path / "interim",
+            processed_data_dir=tmp_path / "processed",
+            synthetic_data_dir=tmp_path / "synthetic",
+            reports_dir=tmp_path / "reports",
+        ),
+    )
 
 
 def _assert_table_matches_dictionary_schema(
@@ -140,7 +168,45 @@ def _fields_for_entity(field_registry: pd.DataFrame, entity: str) -> pd.DataFram
 
 
 def _read_csv(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, dtype=object).where(pd.notna, "")
+    return pd.read_csv(path, dtype=object, keep_default_na=False).where(pd.notna, "")
+
+
+def _literal_none_coding_keys(path: Path) -> set[tuple[str, str]]:
+    keys: set[tuple[str, str]] = set()
+    workbook = pd.ExcelFile(path)
+
+    for sheet_name in workbook.sheet_names:
+        if sheet_name.upper() == "README":
+            continue
+
+        frame = pd.read_excel(
+            path,
+            sheet_name=sheet_name,
+            dtype=object,
+            keep_default_na=False,
+        )
+        if not {"coding_name", "code", "meaning"}.issubset(frame.columns):
+            continue
+
+        literal_none_rows = frame[frame["meaning"].astype(str).eq("None")]
+        keys.update(
+            _coding_key(row["coding_name"], row["code"])
+            for row in literal_none_rows.to_dict("records")
+        )
+
+    return keys
+
+
+def _coding_key(coding_name: object, code: object) -> tuple[str, str]:
+    return str(coding_name), _format_code(code)
+
+
+def _format_code(value: object) -> str:
+    text = str(value)
+    numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+    if pd.notna(numeric) and float(numeric).is_integer():
+        return str(int(numeric))
+    return text
 
 
 def _is_blank(value: object) -> bool:

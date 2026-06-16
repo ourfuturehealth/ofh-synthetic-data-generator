@@ -122,6 +122,12 @@ Validate generated outputs:
 poetry run ofh-synthetic-data --config configs/default.yaml validate
 ```
 
+Create manual QA copies with coded values replaced by meanings where possible:
+
+```bash
+poetry run ofh-synthetic-data --config configs/default.yaml export-qa
+```
+
 Run tests and linting:
 
 ```bash
@@ -157,6 +163,7 @@ undergoing manual validation and should be treated as Beta artefacts.
 Current functionality:
 
 - builds `participant.csv` and `questionnaire.csv` from processed registries.
+- can export manual QA copies with coded values replaced by coding meanings where available.
 - keeps output columns in data dictionary order.
 - applies supported questionnaire `show_if` branching logic.
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
