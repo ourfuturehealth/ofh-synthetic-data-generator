@@ -72,7 +72,7 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     ]
     assert questionnaires["PID"].tolist() == participants["PID"].tolist()
     assert questionnaires["ID"].str.startswith("SYN-ID-").all()
-    assert questionnaires["QUESTIONNAIRE_VERSION"].eq("2").all()
+    assert questionnaires["QUESTIONNAIRE_VERSION"].eq("v2").all()
     assert questionnaires["SUBMISSION_DATE"].str.slice(0, 4).astype(int).ge(3000).all()
     assert participants["DEMOG_SEX_1_1"].isna().all()
     assert questionnaires["ACTIVITY_WALK_DAYS_1_1"].isna().all()

@@ -34,7 +34,7 @@ class GenerationConfig:
     participant_file: str = "participant.csv"
     questionnaire_file: str = "questionnaire.csv"
     manifest_file: str = "manifest.json"
-    questionnaire_version: str = "2"
+    questionnaire_version: str = "v2"
 
 
 @dataclass(frozen=True)

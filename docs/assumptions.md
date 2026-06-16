@@ -42,7 +42,7 @@ machine-readable metadata describing the exact config, seed and source files use
   list contains special/missing codes but not ordinary values.
 - Inferred ranges are labelled with a `numeric_range_rule` so assumptions can be audited.
 - Multi-select values are serialized as bracketed comma lists, for example `[1,6]`.
-- `QUESTIONNAIRE_VERSION` is generated as the configured constant value, currently `"2"`.
+- `QUESTIONNAIRE_VERSION` is generated as the configured constant value, currently `"v2"`.
 
 ## Missingness And Skip Logic
 
