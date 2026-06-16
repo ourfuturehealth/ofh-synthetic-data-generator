@@ -54,6 +54,21 @@ questionnaire version, output paths, config snapshot, source file fingerprints f
 `source_manifest.json`, synthetic marker rules, column counts and supported skip-logic
 summary.
 
+## Manual QA Exports
+
+The `export-qa` command reads the generated synthetic outputs and writes decoded QA copies to
+`outputs/reports/` by default:
+
+- `participant_decoded.csv`
+- `questionnaire_decoded.csv`
+- `decoded_manifest.json`
+
+These files replace coded values with OFH coding meanings where a coding is available.
+Multi-select values are decoded from bracketed code lists into semicolon-separated meanings.
+If a coding row exists but its meaning is blank, the decoded output uses an explicit
+`Code <value> (meaning unavailable)` label. Uncoded values and values without a matching
+coding are preserved. The canonical synthetic outputs in `data/synthetic/` remain coded.
+
 ## Validation
 
 The `validate` command checks generated `participant.csv`, `questionnaire.csv` and

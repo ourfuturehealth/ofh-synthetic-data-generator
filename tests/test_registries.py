@@ -35,16 +35,16 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
 
     result = build_registries(config)
 
-    field_registry = pd.read_csv(result.field_registry)
-    coding_registry = pd.read_csv(result.coding_registry)
-    entity_registry = pd.read_csv(result.entity_registry)
-    logic_registry = pd.read_csv(result.logic_registry)
+    field_registry = pd.read_csv(result.field_registry, keep_default_na=False)
+    coding_registry = pd.read_csv(result.coding_registry, keep_default_na=False)
+    entity_registry = pd.read_csv(result.entity_registry, keep_default_na=False)
+    logic_registry = pd.read_csv(result.logic_registry, keep_default_na=False)
     coverage_summary = result.coverage_summary.read_text(encoding="utf-8")
     source_manifest = json.loads(result.source_manifest.read_text(encoding="utf-8"))
 
     assert result.counts == {
         "fields": 5,
-        "codings": 3,
+        "codings": 4,
         "logic_rows": 4,
         "entities": 2,
     }
@@ -82,8 +82,8 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
         field_registry["name"] == "ACTIVITY_WALK_DAYS_2_1"
     ].iloc[0]
     assert v2_activity_field["generation_action"] == "generate"
-    assert v2_activity_field["generation_min"] == 0
-    assert v2_activity_field["generation_max"] == 7
+    assert str(v2_activity_field["generation_min"]) == "0"
+    assert str(v2_activity_field["generation_max"]) == "7"
     assert v2_activity_field["numeric_range_rule"] == "name_contains_days"
     assert v2_activity_field["value_strategy"] == "numeric_range"
 
@@ -93,6 +93,8 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
 
     special_code = coding_registry[coding_registry["code"] == -1].iloc[0]
     assert bool(special_code["is_special_code"])
+    none_meaning = coding_registry[coding_registry["code"] == 3].iloc[0]
+    assert none_meaning["meaning"] == "None"
 
     unmatched_logic = logic_registry[logic_registry["field_name"] == "eb"].iloc[0]
     assert not bool(unmatched_logic["dictionary_match"])
@@ -231,6 +233,13 @@ def _write_codings(path: Path) -> None:
                 "code": -1,
                 "meaning": "Prefer not to say",
                 "display_order": 3,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "DEMOG_SEX_2_1",
+                "code": 3,
+                "meaning": "None",
+                "display_order": 4,
                 "parent_code": "",
             },
         ],

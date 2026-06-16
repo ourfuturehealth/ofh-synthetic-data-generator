@@ -1,6 +1,6 @@
 # Unit Test Summary
 
-This project currently has 11 unit tests and 1 QA test under `tests/`.
+This project currently has 13 unit tests and 2 QA tests under `tests/`.
 
 Run all tests with:
 
@@ -29,10 +29,11 @@ repo.
 | Test module | Tests | Scope |
 | --- | ---: | --- |
 | `tests/test_config.py` | 2 | Default configuration values and YAML config overrides. |
+| `tests/test_decoded_export.py` | 2 | Decoded manual QA export behaviour, including single coded values, multi-select values, special codes and output file writing. |
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
 | `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and unsupported populated skip-logic fields. |
-| `tests/qa/test_output_schema.py` | 1 | QA check that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types. |
+| `tests/qa/test_output_schema.py` | 2 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, and that literal `None` coding meanings are preserved from the source workbook. |
 
 ## What The Tests Check
 
@@ -46,6 +47,7 @@ repo.
 - output columns follow source dictionary order.
 - blank fields remain blank.
 - coded fields use values from the coding registry.
+- manual QA exports can replace coded values with coding meanings where available.
 - dictionary-derived numeric and date types are enforced during output validation.
 - supported questionnaire branching logic blanks skipped fields.
 - validation reports key structural and data-quality issues.
@@ -64,6 +66,7 @@ It checks that:
 - populated integer, float, date and multi-select values conform to the broad dictionary
   type expected for that column.
 - string columns contain string values when populated.
+- literal `None` coding meanings in the source workbook remain `None` in processed codings.
 
 ## Current Limits
 

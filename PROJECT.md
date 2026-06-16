@@ -165,6 +165,8 @@ The questionnaire logic workbook does not encode every consistency constraint. A
 goal, add an explicit plausibility layer for assumptions that are not present in the source
 logic files.
 
+Detailed planning is in `docs/plausibility_rules_plan.md`.
+
 Proposed first step:
 
 - create `data/processed/plausibility_candidates.csv`.

@@ -551,7 +551,7 @@ def _validate_no_source_text(
 
 
 def _read_csv(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, dtype=object).where(pd.notna, "")
+    return pd.read_csv(path, dtype=object, keep_default_na=False).where(pd.notna, "")
 
 
 def _read_manifest(path: Path, errors: list[ValidationIssue]) -> dict[str, Any]:

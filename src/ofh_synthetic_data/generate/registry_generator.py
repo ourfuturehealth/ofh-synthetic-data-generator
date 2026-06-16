@@ -430,7 +430,7 @@ def _future_date(rng: Random) -> str:
 
 
 def _read_registry(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, dtype=object).where(pd.notna, "")
+    return pd.read_csv(path, dtype=object, keep_default_na=False).where(pd.notna, "")
 
 
 def _read_json(path: Path) -> dict[str, Any]:

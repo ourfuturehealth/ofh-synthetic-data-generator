@@ -7,6 +7,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from ofh_synthetic_data.config import AppConfig, load_config
+from ofh_synthetic_data.export.decoded import write_decoded_outputs
 from ofh_synthetic_data.generate.registry_generator import (
     generate_tables_from_processed_registries,
     write_generated_tables,
@@ -58,6 +59,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory containing generated synthetic tables.",
     )
     validate_parser.set_defaults(handler=validate)
+
+    export_qa_parser = subparsers.add_parser(
+        "export-qa",
+        help="Write manual QA copies of synthetic outputs with coded values decoded.",
+    )
+    export_qa_parser.add_argument(
+        "--input-dir",
+        type=Path,
+        help="Directory containing generated synthetic tables.",
+    )
+    export_qa_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Directory for decoded QA outputs.",
+    )
+    export_qa_parser.set_defaults(handler=export_qa)
 
     return parser
 
@@ -135,6 +152,19 @@ def validate(args: argparse.Namespace, config: AppConfig) -> int:
     for issue in result.errors:
         print(f"- {issue.check}: {issue.message}")
     return 1
+
+
+def export_qa(args: argparse.Namespace, config: AppConfig) -> int:
+    paths = write_decoded_outputs(
+        config=config,
+        input_dir=args.input_dir,
+        output_dir=args.output_dir,
+    )
+
+    print(f"Wrote decoded participant QA output to {paths.participant}")
+    print(f"Wrote decoded questionnaire QA output to {paths.questionnaire}")
+    print(f"Wrote decoded QA manifest to {paths.manifest}")
+    return 0
 
 
 def _legacy_output_dir(output: Path | None) -> Path | None:

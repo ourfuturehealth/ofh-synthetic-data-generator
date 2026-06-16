@@ -451,7 +451,12 @@ def build_coverage_summary(
 
 
 def _read_sheet(path: Path, sheet_name: str) -> pd.DataFrame:
-    frame = pd.read_excel(path, sheet_name=sheet_name, dtype=object)
+    frame = pd.read_excel(
+        path,
+        sheet_name=sheet_name,
+        dtype=object,
+        keep_default_na=False,
+    )
     frame = frame.dropna(how="all")
     frame.columns = [str(column).strip() for column in frame.columns]
     return frame.where(pd.notna(frame), "")

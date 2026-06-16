@@ -19,3 +19,13 @@ source data dictionary order for each entity.
 
 Run `poetry run ofh-synthetic-data --config configs/default.yaml validate` from the repository
 root to validate the current synthetic outputs.
+
+For manual QA, run:
+
+```bash
+poetry run ofh-synthetic-data --config configs/default.yaml export-qa
+```
+
+This writes decoded QA copies to `outputs/reports/` by default. Values with OFH codings are
+replaced with coding meanings where possible. Uncoded values and values without a matching
+coding are preserved.
