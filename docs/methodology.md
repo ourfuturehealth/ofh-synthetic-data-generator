@@ -12,8 +12,8 @@ The intended workflow is:
 5. Generate `participant.csv` and `questionnaire.csv` using explicit distributions and
    deterministic seeds.
 6. Validate the generated records against the schema and questionnaire logic.
-7. Export synthetic datasets to `data/synthetic/` with metadata describing the config, seed and
-   source versions.
+7. Export synthetic datasets to `outputs/synthetic/` with metadata describing the config,
+   seed and source versions.
 
 Current generation is source-driven by the processed registries and applies supported
 questionnaire `show_if` branching logic. Generated outputs can be checked with
@@ -37,9 +37,9 @@ and `configs/default.yaml`.
 
 The `generate` command writes:
 
-- `data/synthetic/participant.csv`
-- `data/synthetic/questionnaire.csv`
-- `data/synthetic/manifest.json`
+- `outputs/synthetic/participant.csv`
+- `outputs/synthetic/questionnaire.csv`
+- `outputs/synthetic/manifest.json`
 
 Generation populates fields using `value_strategy` from `field_registry.csv`, including
 synthetic identifiers, future dates, valid coded values, inferred numeric ranges and bracketed
@@ -57,7 +57,7 @@ summary.
 ## Manual QA Exports
 
 The `export-qa` command reads the generated synthetic outputs and writes decoded QA copies to
-`outputs/reports/` by default:
+`outputs/qa/` by default:
 
 - `participant_decoded.csv`
 - `questionnaire_decoded.csv`
@@ -67,7 +67,7 @@ These files replace coded values with OFH coding meanings where a coding is avai
 Multi-select values are decoded from bracketed code lists into semicolon-separated meanings.
 If a coding row exists but its meaning is blank, the decoded output uses an explicit
 `Code <value> (meaning unavailable)` label. Uncoded values and values without a matching
-coding are preserved. The canonical synthetic outputs in `data/synthetic/` remain coded.
+coding are preserved. The canonical synthetic outputs in `outputs/synthetic/` remain coded.
 
 ## Validation
 

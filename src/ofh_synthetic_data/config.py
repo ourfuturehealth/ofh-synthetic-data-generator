@@ -14,8 +14,8 @@ class PathsConfig:
     raw_data_dir: Path = Path("data/raw")
     interim_data_dir: Path = Path("data/interim")
     processed_data_dir: Path = Path("data/processed")
-    synthetic_data_dir: Path = Path("data/synthetic")
-    reports_dir: Path = Path("outputs/reports")
+    synthetic_data_dir: Path = Path("outputs/synthetic")
+    qa_dir: Path = Path("outputs/qa")
 
 
 @dataclass(frozen=True)
@@ -74,7 +74,11 @@ class AppConfig:
                     "synthetic_data_dir",
                     PathsConfig.synthetic_data_dir,
                 ),
-                reports_dir=_path_value(paths, "reports_dir", PathsConfig.reports_dir),
+                qa_dir=_path_value(
+                    paths,
+                    "qa_dir",
+                    _path_value(paths, "reports_dir", PathsConfig.qa_dir),
+                ),
             ),
             source_files=SourceFilesConfig(**source_files),
             generation=GenerationConfig(**generation),
