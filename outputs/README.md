@@ -6,7 +6,6 @@ Default generated outputs are split into:
 
 - `synthetic/`: canonical generated synthetic datasets and manifest.
 - `qa/`: decoded manual QA copies of synthetic outputs.
-- `reports/`: generated analysis reports and other report-style summaries.
 
 Generated files in these folders are ignored by git by default. Keep only README and
 placeholder files under version control.
@@ -16,7 +15,6 @@ placeholder files under version control.
 - Canonical synthetic datasets live in `outputs/synthetic/` and keep coded values as codes.
 - Decoded review copies live in `outputs/qa/` and replace coded values with OFH coding
   meanings where possible.
-- Report-style analysis artefacts, if generated, live in `outputs/reports/`.
 
 The generated dataset is scoped to baseline health questionnaire V2. Fields that are out of
 V2 scope, superseded by V2 fields or skipped by supported release-schema questionnaire logic

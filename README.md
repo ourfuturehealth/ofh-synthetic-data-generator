@@ -126,7 +126,6 @@ data/interim/           temporary parsed extracts, ignored by git
 data/processed/         generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
 outputs/qa/             decoded manual QA outputs, ignored by git
-outputs/reports/        generated reports, ignored by git
 docs/                   methodology, assumptions, testing and future work
 tests/                  unit and QA tests
 ```

@@ -33,11 +33,8 @@ data/processed/*
 # Generated output folders. Keep documentation/placeholders; ignore generated files.
 outputs/synthetic/*
 outputs/qa/*
-outputs/reports/*
 !outputs/README.md
 !outputs/synthetic/README.md
 !outputs/synthetic/.gitkeep
 !outputs/qa/README.md
 !outputs/qa/.gitkeep
-!outputs/reports/README.md
-!outputs/reports/.gitkeep

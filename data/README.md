@@ -12,6 +12,6 @@ and source terms are documented in [raw/README.md](raw/README.md).
 Generated artefacts in `interim/` and `processed/` are ignored by git by default and should
 be regenerated from source.
 
-Generated synthetic datasets, QA artefacts and reports are written under `outputs/` by
-default. They are Beta artefacts intended for local development, schema exploration and
-workflow testing while manual validation continues.
+Generated synthetic datasets and QA artefacts are written under `outputs/` by default. They
+are Beta artefacts intended for local development, schema exploration and workflow testing
+while manual validation continues.
