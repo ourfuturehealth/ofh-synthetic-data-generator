@@ -16,6 +16,7 @@ build/
 # Local configuration
 .env
 **/.DS_Store
+AGENTS.md
 
 # Previous local input folder. Use data/raw/ for new work.
 inputs/
@@ -23,8 +24,6 @@ inputs/
 # Data lifecycle folders. Keep documentation/placeholders; ignore generated data files.
 data/interim/*
 data/processed/*
-# Legacy generated-output location retained so old local runs stay ignored.
-data/synthetic/*
 !data/interim/README.md
 !data/interim/.gitkeep
 !data/processed/README.md

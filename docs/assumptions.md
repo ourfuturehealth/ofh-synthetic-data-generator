@@ -72,13 +72,12 @@ machine-readable metadata describing the exact config, seed and source files use
 
 ## Additional Plausibility Rules
 
-- Additional consistency rules, such as sex-specific responses or out-of-range smoking
+- Additional consistency rules, such as temporal coherence or out-of-range smoking
   quantities, should be documented as synthetic-generation assumptions that sit alongside
   source-derived release-schema questionnaire logic.
-- Candidate field-family analysis should be performed before adding these rules. Prefixes such
-  as `GYN*` can help identify likely female-specific/gynaecological fields, but field names,
+- Candidate field-family analysis should be performed before adding these rules. Field names,
   titles, descriptions, codings and existing `show_if` conditions should be reviewed before any
-  prefix heuristic becomes generation logic.
+  heuristic becomes generation logic.
 - Date, year, month and age fields should also be reviewed for temporal plausibility rules.
   Candidate rules include birth date preceding registration, consent and questionnaire
   submission dates; immigration year following birth year and preceding registration; and first
