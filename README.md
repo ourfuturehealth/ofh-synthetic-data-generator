@@ -155,3 +155,18 @@ in issues.
 
 For security, privacy or suspected data disclosure concerns, do not open a public issue.
 Follow the reporting route in [SECURITY.md](SECURITY.md).
+
+## Related Projects And Resources
+
+Related external tools and resources include:
+
+- [`ofhsyn`](https://github.com/hlnicholls/ofhsyn): an R package for generating broader
+  OFH-style synthetic cohort data, including participant, questionnaire, clinic measurement,
+  geography and linked healthcare-style tables.
+- [`phenofhy` ICD tutorial](https://studiovincentstraub.github.io/phenofhy/tutorials/icd.html):
+  a tutorial resource for ICD-code based phenotyping workflows, relevant to possible future
+  work involving linked healthcare-style data.
+
+These resources are not runtime dependencies of this generator. This repository currently
+focuses on source-driven generation of P14-shaped `participant` and baseline questionnaire V2
+outputs.
