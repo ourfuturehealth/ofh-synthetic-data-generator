@@ -16,6 +16,8 @@ Candidate rule families:
   last-child age where both are populated.
 - quantity bounds beyond the current broad numeric range heuristics, such as high smoking,
   alcohol or physical activity values.
+- unit-specific numeric bounds, including distinguishing hours per day from hours per week for
+  fields that may plausibly exceed 24.
 
 Implementation should start with candidate discovery rather than direct rules. A useful first
 artefact would be:
