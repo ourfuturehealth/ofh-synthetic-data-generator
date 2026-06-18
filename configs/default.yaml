@@ -2,8 +2,8 @@ paths:
   raw_data_dir: data/raw
   interim_data_dir: data/interim
   processed_data_dir: data/processed
-  synthetic_data_dir: data/synthetic
-  reports_dir: outputs/reports
+  synthetic_data_dir: outputs/synthetic
+  qa_dir: outputs/qa
 
 source_files:
   questionnaire_pdf: Our Future Health Baseline Health Questionnaire v2.pdf

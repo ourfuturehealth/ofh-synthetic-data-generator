@@ -12,5 +12,5 @@ Expected filenames:
 - `our_future_health_codings_v14.xlsx`
 
 These source artefacts are included to support reproducible registry builds. Generated
-artefacts derived from them remain under `data/processed/` and `data/synthetic/`, which are
-ignored by git by default.
+registries remain under `data/processed/`, and generated synthetic outputs are written under
+`outputs/synthetic/`. Generated artefacts are ignored by git by default.

@@ -23,16 +23,22 @@ inputs/
 # Data lifecycle folders. Keep documentation/placeholders; ignore generated data files.
 data/interim/*
 data/processed/*
+# Legacy generated-output location retained so old local runs stay ignored.
 data/synthetic/*
 !data/interim/README.md
 !data/interim/.gitkeep
 !data/processed/README.md
 !data/processed/.gitkeep
-!data/synthetic/README.md
-!data/synthetic/.gitkeep
 !data/README.md
 
-# Non-data generated artefacts
+# Generated output folders. Keep documentation/placeholders; ignore generated files.
+outputs/synthetic/*
+outputs/qa/*
 outputs/reports/*
 !outputs/README.md
+!outputs/synthetic/README.md
+!outputs/synthetic/.gitkeep
+!outputs/qa/README.md
+!outputs/qa/.gitkeep
+!outputs/reports/README.md
 !outputs/reports/.gitkeep

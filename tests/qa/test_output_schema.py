@@ -137,7 +137,7 @@ def _config_for_tmp_path(tmp_path: Path):
             interim_data_dir=tmp_path / "interim",
             processed_data_dir=tmp_path / "processed",
             synthetic_data_dir=tmp_path / "synthetic",
-            reports_dir=tmp_path / "reports",
+            qa_dir=tmp_path / "qa",
         ),
     )
 

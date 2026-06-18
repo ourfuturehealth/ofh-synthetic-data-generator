@@ -26,7 +26,7 @@ def write_decoded_outputs(
     """Write manual-QA copies of synthetic outputs with coded values decoded."""
 
     synthetic_dir = input_dir or config.paths.synthetic_data_dir
-    reports_dir = output_dir or config.paths.reports_dir
+    qa_dir = output_dir or config.paths.qa_dir
     participant_input = synthetic_dir / config.generation.participant_file
     questionnaire_input = synthetic_dir / config.generation.questionnaire_file
     field_registry_path = config.paths.processed_data_dir / "field_registry.csv"
@@ -49,9 +49,9 @@ def write_decoded_outputs(
         coding_lookup,
     )
 
-    participant_output = reports_dir / "participant_decoded.csv"
-    questionnaire_output = reports_dir / "questionnaire_decoded.csv"
-    manifest_output = reports_dir / "decoded_manifest.json"
+    participant_output = qa_dir / "participant_decoded.csv"
+    questionnaire_output = qa_dir / "questionnaire_decoded.csv"
+    manifest_output = qa_dir / "decoded_manifest.json"
 
     write_records_csv(
         decoded_participants.to_dict("records"),

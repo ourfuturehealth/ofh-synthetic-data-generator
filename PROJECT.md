@@ -44,9 +44,10 @@ Source locations:
 Generated and derived data should remain uncommitted by default:
 
 ```text
-data/processed/   # generated registries and derived metadata
-data/synthetic/   # generated synthetic datasets
-outputs/reports/  # generated reports and summaries
+data/processed/    # generated registries and derived metadata
+outputs/synthetic/ # generated synthetic datasets
+outputs/qa/        # decoded manual QA copies
+outputs/reports/   # generated reports and report-style summaries
 ```
 
 ## Requirements
@@ -92,10 +93,10 @@ Out of scope:
 
 ## Target Outputs
 
-Final Beta outputs are generated under `data/synthetic/`:
+Final Beta outputs are generated under `outputs/synthetic/`:
 
 ```text
-data/synthetic/
+outputs/synthetic/
   participant.csv
   questionnaire.csv
   manifest.json

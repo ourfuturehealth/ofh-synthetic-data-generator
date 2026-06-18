@@ -47,7 +47,7 @@ source artefacts.
 ## What It Builds
 
 Generation settings live in `configs/default.yaml`. A run writes linked participant and V2
-questionnaire outputs to the configured synthetic data directory:
+questionnaire outputs to the configured synthetic output directory:
 
 - `participant.csv`: one row per synthetic participant.
 - `questionnaire.csv`: one questionnaire row per synthetic participant.
@@ -147,7 +147,12 @@ configs/        reproducible generation settings
 data/raw/       public source artefacts used for registry builds
 data/interim/   parsed extracts and temporary derived files
 data/processed/ validated registries and generation metadata
-data/synthetic/ final synthetic datasets, ignored by git by default
+outputs/synthetic/
+                final synthetic datasets and manifest, ignored by git by default
+outputs/qa/
+                decoded manual QA copies, ignored by git by default
+outputs/reports/
+                generated reports and report-style summaries, ignored by git by default
 docs/           methodology, assumptions, project history and sharing notes
 tests/          focused unit tests
 ```
@@ -167,7 +172,7 @@ Current functionality:
 - keeps output columns in data dictionary order.
 - applies supported questionnaire `show_if` branching logic.
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
-- keeps generated processed and synthetic artefacts ignored by git by default.
+- keeps generated processed artefacts and outputs ignored by git by default.
 
 ## Next Steps
 

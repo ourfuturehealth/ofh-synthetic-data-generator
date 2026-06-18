@@ -68,7 +68,7 @@ def test_decode_table_replaces_coded_values_with_meanings() -> None:
 def test_write_decoded_outputs_writes_manual_qa_files(tmp_path: Path) -> None:
     processed_dir = tmp_path / "processed"
     synthetic_dir = tmp_path / "synthetic"
-    reports_dir = tmp_path / "reports"
+    qa_dir = tmp_path / "qa"
     processed_dir.mkdir()
     synthetic_dir.mkdir()
 
@@ -120,7 +120,7 @@ def test_write_decoded_outputs_writes_manual_qa_files(tmp_path: Path) -> None:
         paths=PathsConfig(
             processed_data_dir=processed_dir,
             synthetic_data_dir=synthetic_dir,
-            reports_dir=reports_dir,
+            qa_dir=qa_dir,
         ),
     )
 
