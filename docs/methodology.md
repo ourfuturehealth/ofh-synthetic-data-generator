@@ -7,16 +7,17 @@ The intended workflow is:
 
 1. Store source artefacts in `data/raw/` without editing them.
 2. Discover and validate the expected source artefacts.
-3. Parse the data dictionary, questionnaire codings and logic spreadsheets into `data/interim/`.
+3. Parse the data dictionary, questionnaire codings and questionnaire logic spreadsheet into
+   `data/interim/`.
 4. Build canonical schema, allowed-value and dependency files in `data/processed/`.
 5. Generate `participant.csv` and `questionnaire.csv` using explicit distributions and
    deterministic seeds.
-6. Validate the generated records against the schema and questionnaire logic.
+6. Validate the generated records against the schema and release-schema questionnaire logic.
 7. Export synthetic datasets to `outputs/synthetic/` with metadata describing the config,
    seed and source versions.
 
 Current generation is source-driven by the processed registries and applies supported
-questionnaire `show_if` branching logic. Generated outputs can be checked with
+release-schema questionnaire logic. Generated outputs can be checked with
 `poetry run ofh-synthetic-data validate`.
 
 ## Registry Build
@@ -44,10 +45,10 @@ The `generate` command writes:
 Generation populates fields using `value_strategy` from `field_registry.csv`, including
 synthetic identifiers, future dates, valid coded values, inferred numeric ranges and bracketed
 multi-select lists. Fields marked `blank` in the registry are left empty. Fields hidden by
-supported `show_if` logic are also left empty.
+supported release-schema questionnaire logic are also left empty.
 
-Output columns follow the source data dictionary row order for each entity. Questionnaire
-`show_if` order is used for dependency evaluation, not for rearranging exported columns.
+Output columns follow the source data dictionary row order for each entity. The questionnaire
+logic row order is used for dependency evaluation, not for rearranging exported columns.
 
 The generated `manifest.json` records Beta status, manual validation status, row count, seed,
 questionnaire version, output paths, config snapshot, source file fingerprints from
@@ -76,4 +77,4 @@ The `validate` command checks generated `participant.csv`, `questionnaire.csv` a
 presence, column order, broad field types, coded values, multi-select values, synthetic ID
 markers, future date markers, participant/questionnaire `PID` links, generated root logic
 fields with blank `show_if`, fields marked blank by V2 scoping and fields skipped by
-supported `show_if` logic.
+supported release-schema questionnaire logic.

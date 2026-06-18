@@ -32,8 +32,8 @@ repo.
 | `tests/test_decoded_export.py` | 2 | Decoded manual QA export behaviour, including single coded values, multi-select values, special codes and output file writing. |
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
-| `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and unsupported populated skip-logic fields. |
-| `tests/qa/test_output_schema.py` | 4 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that coded questionnaire fields absent from logic are still generated, that numeric-range fields with special codes only produce values allowed by their configured ranges or codings, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
+| `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and populated fields that should be blanked by supported skip logic. |
+| `tests/qa/test_output_schema.py` | 4 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that dictionary-coded questionnaire fields selected by registry policy are generated, that numeric-range fields with special codes only produce values allowed by their configured ranges or codings, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
 
 ## What The Tests Check
 
@@ -49,7 +49,7 @@ repo.
 - coded fields use values from the coding registry.
 - manual QA exports can replace coded values with coding meanings where available.
 - dictionary-derived numeric and date types are enforced during output validation.
-- supported questionnaire branching logic blanks skipped fields.
+- supported release-schema questionnaire logic blanks skipped fields.
 - validation reports key structural and data-quality issues.
 
 ## QA Checks
@@ -67,8 +67,8 @@ It checks that:
   type expected for that column.
 - string columns contain string values when populated.
 - literal `None` coding meanings in the source workbook remain `None` in processed codings.
-- non-superseded coded questionnaire fields absent from the logic workbook are generated
-  rather than blanked.
+- non-superseded coded questionnaire fields selected through dictionary/coding metadata are
+  generated rather than blanked.
 - fields generated with the `numeric_range_with_special_codes` strategy only contain blank
   values, values inside the configured numeric range or field-specific special codes.
 
