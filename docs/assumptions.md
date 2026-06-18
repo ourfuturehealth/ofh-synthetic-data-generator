@@ -55,6 +55,10 @@ machine-readable metadata describing the exact config, seed and source files use
 - Numeric ranges are inferred only for uncoded numeric fields, or numeric fields whose coding
   list contains special/missing codes but not ordinary values.
 - Inferred ranges are labelled with a `numeric_range_rule` so assumptions can be audited.
+- Current numeric ranges are broad Beta heuristics inferred from field names and units. For
+  example, fields containing `HRS` or `HOURS` currently use a `0-24` range, even where the
+  question wording may refer to hours per week. These fields are structurally valid but may
+  need more specific ranges in a future plausibility pass.
 - Multi-select values are serialized as bracketed comma lists, for example `[1,6]`.
 - `QUESTIONNAIRE_VERSION` is generated as the configured constant value, currently `"v2"`.
 

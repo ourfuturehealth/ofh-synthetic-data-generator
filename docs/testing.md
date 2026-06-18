@@ -1,6 +1,6 @@
 # Unit Test Summary
 
-This project currently has 13 unit tests and 4 QA tests under `tests/`.
+This project currently has 14 unit tests and 4 QA tests under `tests/`.
 
 Run all tests with:
 
@@ -28,7 +28,7 @@ repo.
 
 | Test module | Tests | Scope |
 | --- | ---: | --- |
-| `tests/test_config.py` | 2 | Default configuration values and YAML config overrides. |
+| `tests/test_config.py` | 3 | Default configuration values, YAML config overrides and legacy config compatibility for the QA output directory. |
 | `tests/test_decoded_export.py` | 2 | Decoded manual QA export behaviour, including single coded values, multi-select values, special codes and output file writing. |
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 4 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, column ordering and supported `show_if` logic. |
@@ -54,7 +54,7 @@ repo.
 
 ## QA Checks
 
-The QA test builds registries from the included public source artefacts, generates synthetic
+The QA tests build registries from the included public source artefacts, generate synthetic
 outputs in a temporary directory and checks the full `participant.csv` and `questionnaire.csv`
 schema.
 
