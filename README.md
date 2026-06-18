@@ -137,7 +137,7 @@ with drafting code, tests and documentation.
 
 ## License
 
-Code in this repository is intended to be licensed under the MIT License.
+Code in this repository is licensed under the MIT License. See [LICENSE](LICENSE).
 
 Generated synthetic outputs are not included in this repository.
 

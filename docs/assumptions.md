@@ -41,6 +41,19 @@ machine-readable metadata describing the exact config, seed and source files use
 - Relationships, table shape, coding validity and skip-logic behaviour are more important than
   real-world prevalence.
 
+## Value Generation
+
+- Coded single-choice fields are sampled from valid non-special OFH coding values. Where
+  special codes are available, they are included with a default 10% probability.
+- Multi-select fields are stored as bracketed comma lists. Each non-special option has a 50%
+  chance of selection, with at least one option selected unless a special code is used.
+- Uncoded numeric fields use uniform draws within inferred ranges. Current broad limits are:
+  ages `0-110`, years `3000-3026`, months `1-12`, days `0-7`, minutes `0-1440`, hours
+  `0-24`, height `50-220` cm, weight `2-300` kg, default integers `0-10` and default floats
+  `0-100`.
+- Integer values are generated as whole numbers. Float values are rounded to two decimal
+  places.
+
 ## Field Generation Metadata
 
 - The processed field registry records whether each field should be generated or blanked.

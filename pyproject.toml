@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Tools for generating reproducible synthetic Our Future Health-style questionnaire data."
 authors = [{ name = "Our Future Health" }]
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11,<4.0"
 dependencies = [
   "pandas>=2.2,<3.0",
