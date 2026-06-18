@@ -179,6 +179,16 @@ Current functionality:
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
 - keeps generated processed artefacts and outputs ignored by git by default.
 
+## License
+
+Code in this repository is intended to be licensed under the MIT License.
+
+Generated synthetic outputs are not included in this repository. If synthetic datasets are
+published separately, their download page should state the applicable data licence and
+attribution requirements.
+
+Source artefacts in `data/raw/` remain subject to their original source terms.
+
 ## Next Steps
 
 The next planned stretch goal is an auditable plausibility layer for additional
