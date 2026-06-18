@@ -38,8 +38,13 @@ non-synthetic data.
 The repository is intended to share the generator and its reproducible workflow rather than a
 hand-authored dataset. The generator is source-driven: it reads the public OFH source
 artefacts in `data/raw/`, builds processed registries from the data dictionary, codings and
-questionnaire logic, then uses those registries to generate linked synthetic participant and
-questionnaire rows.
+questionnaire logic file, then uses those registries to generate linked synthetic
+participant and questionnaire rows.
+
+The questionnaire logic file is aligned to the release schema. It is used here to
+generate and validate release-shaped synthetic outputs; it is not treated as a specification
+for reconstructing the raw questionnaire capture flow or website engine behaviour. It
+documents branching logic, not other validation rules or user-interface behaviour.
 
 Generated datasets are ignored by git by default. Regenerate them locally from the included
 source artefacts.
@@ -170,14 +175,15 @@ Current functionality:
 - builds `participant.csv` and `questionnaire.csv` from processed registries.
 - can export manual QA copies with coded values replaced by coding meanings where available.
 - keeps output columns in data dictionary order.
-- applies supported questionnaire `show_if` branching logic.
+- applies supported release-schema questionnaire logic.
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
 - keeps generated processed artefacts and outputs ignored by git by default.
 
 ## Next Steps
 
-The next planned stretch goal is an auditable plausibility layer for consistency checks that
-are not fully encoded in the source questionnaire logic.
+The next planned stretch goal is an auditable plausibility layer for additional
+synthetic-generation consistency checks that sit alongside source-derived release-schema
+questionnaire logic.
 
 Initial work will:
 
@@ -186,5 +192,5 @@ Initial work will:
 - review candidates before converting them into generation rules, starting with field
   families such as `GYN*`, date/year fields and high-quantity smoking or alcohol fields.
 - keep these rules configurable and documented as additional synthetic-generation
-  assumptions, separate from source-derived questionnaire logic.
+  assumptions, separate from source-derived release-schema questionnaire logic.
 - add tests and manifest metadata showing which plausibility rules were applied.

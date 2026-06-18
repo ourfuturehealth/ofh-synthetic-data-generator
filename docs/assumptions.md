@@ -15,6 +15,15 @@ machine-readable metadata describing the exact config, seed and source files use
 - Clinic measurements, lipid profile, geographies, linked NHS records and genetic data are out
   of scope for Beta.
 
+## Questionnaire Logic Source
+
+- The questionnaire logic file is aligned to the release schema, not the raw
+  questionnaire capture schema.
+- It is used to generate and validate release-shaped synthetic outputs.
+- It is not treated as a specification for reconstructing the raw questionnaire capture flow
+  or website engine behaviour.
+- It documents branching logic only, not other validation rules or user-interface behaviour.
+
 ## Synthetic Markers
 
 - Identifiers must visibly indicate synthetic data, using a `SYN` prefix.
@@ -37,12 +46,12 @@ machine-readable metadata describing the exact config, seed and source files use
 - The processed field registry records whether each field should be generated or blanked.
 - Fields superseded by a newer V2 field are marked blank with `superseded_by_v2_field`.
 - Questionnaire fields present in V2 logic are generated unless superseded.
-- Questionnaire fields absent from V2 logic are still generated when they are coding-backed,
-  non-superseded dictionary fields. These are marked
+- Questionnaire fields selected through dictionary/coding metadata are still generated when
+  they are coding-backed, non-superseded dictionary fields. These are marked
   `dictionary_coded_questionnaire_field` so they can be audited separately from logic-derived
   fields.
-- Uncoded questionnaire fields absent from V2 logic are marked blank with `not_in_v2_logic`,
-  except required metadata fields.
+- Uncoded questionnaire fields outside the generated V2 scope are marked blank with
+  `not_in_v2_logic`, except required metadata fields.
 - Numeric ranges are inferred only for uncoded numeric fields, or numeric fields whose coding
   list contains special/missing codes but not ordinary values.
 - Inferred ranges are labelled with a `numeric_range_rule` so assumptions can be audited.
@@ -54,19 +63,18 @@ machine-readable metadata describing the exact config, seed and source files use
 - Blank values mean a question was not asked, for example because of skip logic or v2 scoping.
 - Negative codes are treated as special or missing values when a question was asked but the
   response is unknown, refused or otherwise coded as special.
-- Unsupported or non-standard logic should be logged and handled conservatively rather than
-  stopping generation.
+- Non-standard logic patterns should be logged and handled conservatively rather than stopping
+  generation.
 - Supported `show_if` forms include equality, `NULL`, `is NOT NULL`, `ONE of`, `ANY of`,
   integer range tokens, `AND`, `OR` and duplicate logic rows combined as OR.
-- Unsupported `show_if` expressions currently default to shown so parser coverage does not
-  unintentionally suppress fields.
+- `show_if` expressions outside the supported parser patterns currently default to shown so
+  parser coverage does not unintentionally suppress fields.
 
-## Plausibility Rules Beyond Source Logic
+## Additional Plausibility Rules
 
-- The questionnaire logic workbook does not encode every real-world consistency constraint.
 - Additional consistency rules, such as sex-specific responses or out-of-range smoking
-  quantities, should be documented as synthetic-generation assumptions rather than
-  source-derived rules.
+  quantities, should be documented as synthetic-generation assumptions that sit alongside
+  source-derived release-schema questionnaire logic.
 - Candidate field-family analysis should be performed before adding these rules. Prefixes such
   as `GYN*` can help identify likely female-specific/gynaecological fields, but field names,
   titles, descriptions, codings and existing `show_if` conditions should be reviewed before any

@@ -14,8 +14,8 @@ The current `generate` command writes:
 
 The manifest records Beta status, manual validation status, row count, seed, questionnaire
 version, output paths, config snapshot, source file fingerprints and how many generated
-questionnaire values were skipped by supported `show_if` logic. Output columns follow the
-source data dictionary order for each entity.
+questionnaire values were skipped by supported release-schema questionnaire logic. Output
+columns follow the source data dictionary order for each entity.
 
 ## Interpreting Canonical Outputs
 
@@ -23,7 +23,7 @@ source data dictionary order for each entity.
 - IDs are visibly synthetic: `PID` values use `SYN-...`, and questionnaire `ID` values use
   `SYN-ID-...`.
 - The questionnaire output is V2-only. V1-only fields, superseded fields and fields skipped by
-  supported branching logic may be blank.
+  supported release-schema questionnaire logic may be blank.
 - Blank values mean not generated, not asked, skipped or out of V2 scope. Negative coded
   values mean an asked question has a coded special response, such as `Do not know`,
   `Prefer not to answer` or another field-specific value.

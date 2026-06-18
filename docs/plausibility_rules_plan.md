@@ -1,17 +1,21 @@
-# Plausibility Rules Beyond Source Logic
+# Additional Plausibility Rules
 
 ## Purpose
 
-The source questionnaire logic defines when many questions should be shown, but it does not
-encode every cross-field consistency rule that may be useful for synthetic data generation.
+The source questionnaire logic file defines the documented release-schema branching used by
+the generator. This plan describes a separate plausibility layer for additional
+synthetic-generation assumptions that sit alongside that questionnaire logic.
 
-This plan describes a separate plausibility layer for additional synthetic-generation
-assumptions. These rules should improve coherence of the Beta outputs without implying
-statistical fidelity to observed OFH data.
+The questionnaire logic file is not treated as a specification for reconstructing the raw
+questionnaire capture flow or website engine behaviour.
+
+These rules should improve coherence of the Beta outputs without implying statistical
+fidelity to observed OFH data.
 
 ## Principles
 
-- Keep source-derived questionnaire logic and additional plausibility rules separate.
+- Keep source-derived release-schema questionnaire logic and additional plausibility rules
+  separate.
 - Treat plausibility rules as documented synthetic-generation assumptions.
 - Review candidate fields before turning naming patterns into generation rules.
 - Prefer conservative rules that reduce clearly inconsistent outputs.
@@ -181,8 +185,8 @@ plausibility:
 ```
 
 The generator should apply approved plausibility rules after source-derived value generation
-and supported questionnaire logic, unless a specific rule needs to generate a shared context
-first.
+and supported release-schema questionnaire logic, unless a specific rule needs to generate a
+shared context first.
 
 ## Phase 5: Validation And Tests
 
@@ -211,4 +215,5 @@ The plausibility layer is ready when:
 - generated metadata records applied rule groups.
 - unit tests cover each implemented rule family.
 - QA checks run against full generated outputs.
-- source-derived questionnaire logic remains traceable separately from plausibility rules.
+- source-derived release-schema questionnaire logic remains traceable separately from
+  plausibility rules.

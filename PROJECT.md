@@ -19,7 +19,7 @@ Generate linked synthetic `participant.csv` and baseline health questionnaire V2
 
 - data dictionary
 - data codings
-- questionnaire logic
+- questionnaire logic file
 - questionnaire summary/PDF documentation
 
 The outputs should help researchers understand table shape, identifiers, codings,
@@ -30,6 +30,11 @@ non-synthetic data in the TRE.
 
 Public source artefacts are included in `data/raw/` to support reproducible registry builds.
 Source artefacts should be copied exactly as received. The current pipeline writes generated registries to `data/processed/`. `data/interim/` is reserved for temporary parsed extracts if a future processing step needs them.
+
+The questionnaire logic file is aligned to the release schema. It supports generation
+and validation of release-shaped synthetic outputs, but it is not treated as a specification
+for reconstructing the raw questionnaire capture flow or website engine behaviour. It
+documents branching logic only, not other validation rules or user-interface behaviour.
 
 Source locations:
 
@@ -76,7 +81,7 @@ In scope:
 - non-superseded coding-backed questionnaire fields from the P14 dictionary.
 - valid OFH coding values.
 - simple synthetic value generation.
-- supported questionnaire branching logic.
+- supported release-schema questionnaire logic.
 - assumptions and coverage documentation.
 
 Out of scope:
@@ -125,7 +130,7 @@ Current implementation:
 
 - builds source-derived registries from the included P14/V2 public artefacts.
 - generates linked `participant.csv`, `questionnaire.csv` and `manifest.json`.
-- applies supported questionnaire `show_if` branching logic.
+- applies supported release-schema questionnaire logic.
 - keeps output columns in source data dictionary order.
 - validates codings, synthetic markers, PID links, root logic fields and supported skip logic.
 - keeps generated processed and synthetic artefacts ignored by git by default.
@@ -153,7 +158,7 @@ Beta is complete when:
 - in-scope columns match the OFH P14 data dictionary.
 - generated coded values come from the OFH codings file.
 - V2 questionnaire scope is applied.
-- supported branching logic is applied.
+- supported release-schema questionnaire logic is applied.
 - skipped fields, superseded fields and uncoded non-V2 fields are blank.
 - `participant` and `questionnaire` rows link correctly by `PID`.
 - assumptions and current scope notes are documented.
@@ -161,11 +166,11 @@ Beta is complete when:
 - source files are included in `data/raw/`; generated datasets remain ignored by git by
   default.
 
-## Stretch Goal: Plausibility Rules Beyond Questionnaire Logic
+## Stretch Goal: Additional Plausibility Rules
 
-The questionnaire logic workbook does not encode every consistency constraint. As a stretch
-goal, add an explicit plausibility layer for assumptions that are not present in the source
-logic files.
+As a stretch goal, add an explicit plausibility layer for additional
+synthetic-generation assumptions that sit alongside the source-derived release-schema
+questionnaire logic.
 
 Detailed planning is in `docs/plausibility_rules_plan.md`.
 
@@ -189,8 +194,8 @@ Possible first rule families:
   heuristics.
 
 This layer should be configurable, documented as additional synthetic-generation logic and
-tested separately from source-derived questionnaire logic. It is a quality improvement, not a
-Beta blocker.
+tested separately from source-derived release-schema questionnaire logic. It is a quality
+improvement, not a Beta blocker.
 
 ## Known Assumptions
 
@@ -210,7 +215,7 @@ Version and entity structure:
 - Generate V2 questionnaire data only.
 - Presence in the V2 logic file is the main signal for questionnaire inclusion.
 - Non-superseded questionnaire fields with OFH codings are also generated when present in the
-  P14 dictionary, even if they are absent from the V2 logic workbook. These fields are marked
+  P14 dictionary and selected through dictionary/coding metadata. These fields are marked
   `dictionary_coded_questionnaire_field` in the processed registry.
 - Field suffixes alone are not enough to determine whether a field is live in V2.
 - `DEMOG_SEX_2_1`, `DEMOG_GENDER_2_1` and `DEMOG_ETHNICITY_1_1` are generated on

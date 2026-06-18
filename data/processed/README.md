@@ -8,7 +8,7 @@ The `build-registry` command writes:
 
 - `field_registry.csv`: one row per in-scope dictionary field
 - `coding_registry.csv`: valid coded values used by in-scope fields
-- `logic_registry.csv`: one row per v2 questionnaire logic entry
+- `logic_registry.csv`: one row per V2 questionnaire logic entry
 - `entity_registry.csv`: field counts and key metadata by entity
 - `coverage_summary.md`: generated coverage checks and source-specific notes
 - `source_manifest.json`: local raw file fingerprints, including filenames, sizes and hashes

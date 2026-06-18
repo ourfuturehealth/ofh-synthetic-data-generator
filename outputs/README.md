@@ -19,7 +19,8 @@ placeholder files under version control.
 - Report-style analysis artefacts, if generated, live in `outputs/reports/`.
 
 The generated dataset is scoped to baseline health questionnaire V2. Fields that are out of
-V2 scope, superseded by V2 fields or skipped by supported questionnaire logic may be blank.
+V2 scope, superseded by V2 fields or skipped by supported release-schema questionnaire logic
+may be blank.
 
 Synthetic IDs use a visible `SYN` prefix. Synthetic years and dates are deliberately
 future-dated, generally using years `3000+`. If a workflow calculates age from `BIRTH_YEAR`,

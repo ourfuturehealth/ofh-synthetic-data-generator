@@ -94,11 +94,11 @@ Implemented the supported `show_if` grammar from the logic workbook:
 Current verified output:
 
 - logic expressions are evaluated in questionnaire order.
-- participant fields are available to questionnaire logic.
+- participant fields are available to release-schema questionnaire logic.
 - duplicate logic rows for the same field are combined as OR.
 - skipped fields are left blank.
-- `manifest.json` records whether questionnaire logic was applied and how many values were
-  skipped by logic.
+- `manifest.json` records whether release-schema questionnaire logic was applied and how many
+  values were skipped by that logic.
 
 ## Phase 5: Generate Beta Tables
 
@@ -110,7 +110,7 @@ Generation order:
 2. Generate participants.
 3. Generate one questionnaire row per participant.
 4. Seed participant values into the questionnaire context for cross-entity logic.
-5. Apply V2 scoping and supported branching logic.
+5. Apply V2 scoping and supported release-schema questionnaire logic.
 6. Populate shown fields.
 7. Leave skipped or non-V2 fields blank.
 8. Write outputs in source data dictionary order.
