@@ -66,6 +66,24 @@ Suggested follow-up checks:
   a specific V2 minor-version logic position.
 - add focused tests for the version-changelog cases once the intended behaviour is confirmed.
 
+## Suppression Encodings
+
+The Beta generator should not model de-identification suppression values such as `-999` by
+default. These values are release-processing artefacts rather than questionnaire responses,
+and generating them could make it harder to distinguish questionnaire missingness from
+downstream disclosure-control behaviour.
+
+Recommended approach:
+
+- keep `-999` out of normal synthetic generation.
+- if `-999` appears in source coding metadata, treat it as a source quirk to review rather
+  than automatically generating it.
+- continue to use blanks for not asked, skipped or out-of-scope fields.
+- continue to use documented negative response codes, such as `Do not know` or
+  `Prefer not to answer`, where they are present in the codings file.
+- if suppression-like values are needed later for compatibility testing, add them as an
+  optional post-processing mode with separate documentation, metadata and tests.
+
 ## Validation
 
 Each implemented rule family should have:

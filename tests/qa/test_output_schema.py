@@ -130,6 +130,42 @@ def test_numeric_range_with_special_code_fields_generate_allowed_values(
     assert failures == []
 
 
+def test_default_outputs_do_not_generate_suppression_codes(tmp_path: Path) -> None:
+    config = _config_for_tmp_path(tmp_path)
+
+    build_registries(config)
+    tables = generate_tables_from_processed_registries(config)
+    write_generated_tables(tables, config.paths.synthetic_data_dir, config.generation)
+
+    participants = _read_csv(config.paths.synthetic_data_dir / config.generation.participant_file)
+    questionnaires = _read_csv(
+        config.paths.synthetic_data_dir / config.generation.questionnaire_file,
+    )
+    failures = []
+
+    for table_name, table in [
+        ("participant", participants),
+        ("questionnaire", questionnaires),
+    ]:
+        for column in table.columns:
+            values = table[column].astype(str)
+            suppression_values = sorted(
+                value
+                for value in values.unique()
+                if _contains_suppression_code(value)
+            )
+            if suppression_values:
+                failures.append(
+                    {
+                        "table": table_name,
+                        "column": column,
+                        "values": suppression_values,
+                    },
+                )
+
+    assert failures == []
+
+
 def _config_for_tmp_path(tmp_path: Path):
     config = load_config("configs/default.yaml")
     return replace(
@@ -332,6 +368,15 @@ def _numeric_value(value: object) -> float | None:
 
 def _is_blank(value: object) -> bool:
     return str(value).strip() == ""
+
+
+def _contains_suppression_code(value: object) -> bool:
+    text = str(value).strip()
+    if text == "-999":
+        return True
+    if text.startswith("[") and text.endswith("]"):
+        return any(option.strip() == "-999" for option in text[1:-1].split(","))
+    return False
 
 
 def _is_integer_text(value: str) -> bool:

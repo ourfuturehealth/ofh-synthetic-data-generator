@@ -15,6 +15,8 @@ from ofh_synthetic_data.config import AppConfig, GenerationConfig
 from ofh_synthetic_data.export.writers import write_metadata, write_records_csv
 from ofh_synthetic_data.generate.show_if import evaluate_show_if
 
+SUPPRESSION_CODES = {"-999"}
+
 
 @dataclass(frozen=True)
 class GeneratedTables:
@@ -268,7 +270,9 @@ def _generate_value(
         return _coded_single(field, coding_lookup, rng)
     if strategy == "numeric_range_with_special_codes":
         if _use_special_code(field, rng):
-            return _special_code(field, coding_lookup, rng)
+            special_code = _special_code(field, coding_lookup, rng)
+            if special_code:
+                return special_code
         return _numeric_range_value(field, rng)
     if strategy == "numeric_range":
         return _numeric_range_value(field, rng)
@@ -332,12 +336,12 @@ def _build_coding_lookup(coding_registry: pd.DataFrame) -> dict[str, dict[str, l
             "regular": [
                 code
                 for code, special in zip(codes, special_flags, strict=True)
-                if not special
+                if not special and not _is_suppression_code(code)
             ],
             "special": [
                 code
                 for code, special in zip(codes, special_flags, strict=True)
-                if special
+                if special and not _is_suppression_code(code)
             ],
         }
 
@@ -350,7 +354,9 @@ def _coded_single(
     rng: Random,
 ) -> str:
     if _use_special_code(field, rng):
-        return _special_code(field, coding_lookup, rng)
+        special_code = _special_code(field, coding_lookup, rng)
+        if special_code:
+            return special_code
 
     codes = _codes(field, coding_lookup, "regular")
     if not codes:
@@ -364,12 +370,20 @@ def _coded_multi_select(
     rng: Random,
 ) -> str:
     if _use_special_code(field, rng):
-        return f"[{_special_code(field, coding_lookup, rng)}]"
+        special_code = _special_code(field, coding_lookup, rng)
+        if special_code:
+            return f"[{special_code}]"
 
     regular_codes = _codes(field, coding_lookup, "regular")
     selected = [code for code in regular_codes if rng.random() < 0.5]
     if not selected and regular_codes:
         selected = [rng.choice(regular_codes)]
+    if not selected:
+        special_codes = _codes(field, coding_lookup, "special")
+        if special_codes:
+            selected = [rng.choice(special_codes)]
+    if not selected:
+        return ""
     return f"[{','.join(selected)}]"
 
 
@@ -445,6 +459,10 @@ def _format_code(value: object) -> str:
     if pd.notna(numeric) and float(numeric).is_integer():
         return str(int(numeric))
     return text
+
+
+def _is_suppression_code(code: str) -> bool:
+    return code in SUPPRESSION_CODES
 
 
 def _float_value(value: object, default: float | None = None) -> float | None:
