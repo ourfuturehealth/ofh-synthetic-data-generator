@@ -562,8 +562,6 @@ def _v2_inclusion_status(row: pd.Series) -> str:
         return "participant_context"
     if row["in_questionnaire_logic"]:
         return "v2_questionnaire_field"
-    if row["coding_found"]:
-        return "dictionary_coded_questionnaire_field"
     return "not_in_v2_logic"
 
 

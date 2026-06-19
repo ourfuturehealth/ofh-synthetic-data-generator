@@ -47,6 +47,25 @@ Potential first temporal rules:
 - keep immigration year after birth year and before registration where populated.
 - keep first-child age less than or equal to last-child age where both are populated.
 
+## Questionnaire Version Changelog Checks
+
+The Our Future Health questionnaire version changelog identifies several V2, V2.1 and V2.2
+logic fixes that should be checked explicitly against the synthetic generator.
+
+Suggested follow-up checks:
+
+- improve parsing of multi-line `show_if` expressions where `AND` or `OR` appear on separate
+  lines.
+- check smoking change follow-ups so `SMOKE_CHG_REDUCE_REASON_2_M` and
+  `SMOKE_CHG_REDUCE_ABST_1_1` are only populated when `SMOKE_CHG_2_1 = 3`.
+- check vaping follow-ups because the source logic references `SMOKE_REG_1`, while the
+  generated table contains `SMOKE_REG_1_M`.
+- review malformed numeric expressions such as `int(=>0 & <=7)` and decide whether to
+  normalise these during registry build or handle them in the `show_if` parser.
+- clarify whether `QUESTIONNAIRE_VERSION = "v2"` should represent the V2 family generally or
+  a specific V2 minor-version logic position.
+- add focused tests for the version-changelog cases once the intended behaviour is confirmed.
+
 ## Validation
 
 Each implemented rule family should have:

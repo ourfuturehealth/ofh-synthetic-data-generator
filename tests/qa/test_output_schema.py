@@ -64,7 +64,7 @@ def test_registry_preserves_literal_none_coding_meanings(tmp_path: Path) -> None
     assert lost_meanings == {}
 
 
-def test_coded_questionnaire_fields_absent_from_logic_are_generated(tmp_path: Path) -> None:
+def test_coded_questionnaire_fields_absent_from_logic_are_blank(tmp_path: Path) -> None:
     config = _config_for_tmp_path(tmp_path)
     result = build_registries(config)
     field_registry = _read_csv(result.field_registry)
@@ -75,17 +75,19 @@ def test_coded_questionnaire_fields_absent_from_logic_are_generated(tmp_path: Pa
         & ~field_registry["is_superseded_version"].map(_as_bool)
         & ~field_registry["in_questionnaire_logic"].map(_as_bool)
     ]
-    blanked_fields = coded_dictionary_fields[
-        coded_dictionary_fields["generation_action"] != "generate"
+    generated_fields = coded_dictionary_fields[
+        coded_dictionary_fields["generation_action"] != "blank"
     ]
 
     medicat = field_registry[field_registry["name"] == "MEDICAT_1_M"].iloc[0]
 
     assert not coded_dictionary_fields.empty
     assert "MEDICAT_1_M" not in set(coded_dictionary_fields["name"])
-    assert blanked_fields[["name", "v2_inclusion_status", "blank_reason"]].to_dict(
+    assert generated_fields[["name", "v2_inclusion_status", "blank_reason"]].to_dict(
         "records",
     ) == []
+    assert set(coded_dictionary_fields["v2_inclusion_status"]) == {"not_in_v2_logic"}
+    assert set(coded_dictionary_fields["blank_reason"]) == {"not_in_v2_logic"}
     assert _as_bool(medicat["in_questionnaire_logic"])
     assert medicat["v2_inclusion_status"] == "v2_questionnaire_field"
     assert medicat["generation_action"] == "generate"
