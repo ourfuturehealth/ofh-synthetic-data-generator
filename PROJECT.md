@@ -97,12 +97,6 @@ Detailed assumptions are documented in [docs/assumptions.md](docs/assumptions.md
 - multi-select values are serialized as bracketed comma lists, for example `[1,6]`.
 - `QUESTIONNAIRE_VERSION` is generated as `"v2"`.
 
-## Future Work
-
-Possible future improvements are tracked in [docs/future_work.md](docs/future_work.md). The
-main candidate area is an auditable plausibility layer for additional synthetic-generation
-assumptions, such as temporal consistency and quantity bounds.
-
 ## Useful Commands
 
 ```bash

@@ -95,7 +95,7 @@ values as codes. Decoded QA outputs replace coded values with Our Future Health 
 meanings where available.
 
 Synthetic IDs use a visible `SYN` prefix. Synthetic dates and years are deliberately
-future-dated where practical, generally using years `3000+`.
+future-dated where practical; generated dates use years `3000+` as a visible synthetic marker.
 
 ## Download Synthetic Example Data 
 
@@ -126,7 +126,6 @@ Source details and expected filenames are documented in
 - [docs/methodology.md](docs/methodology.md): how the pipeline works.
 - [docs/assumptions.md](docs/assumptions.md): generation assumptions and current limits.
 - [docs/testing.md](docs/testing.md): unit and QA test coverage.
-- [docs/future_work.md](docs/future_work.md): possible future improvements.
 - [data/README.md](data/README.md): source and generated data folder conventions.
 - [outputs/README.md](outputs/README.md): how to interpret generated output folders.
 - [SECURITY.md](SECURITY.md): security, privacy and dependency reporting.
