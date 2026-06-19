@@ -97,6 +97,21 @@ meanings where available.
 Synthetic IDs use a visible `SYN` prefix. Synthetic dates and years are deliberately
 future-dated where practical, generally using years `3000+`.
 
+## Download Synthetic Example Data 
+
+Pre-generated synthetic example outputs are available for users who want to inspect the table
+shape without running the generator:
+
+These files correspond to the current Beta synthetic participant and questionnaire outputs.
+
+PLACEHOLDER - these links are currently placeholders.
+
+- [Participant synthetic data](https://a.storyblok.com/f/228028/x/c1835e7466/participant_synthetic_our_future_health.csv)
+- [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/8c2a97f296/questionnaire_synthetic_our_future_health.csv)
+
+These files are synthetic example outputs, not real participant data.
+See [License](#license) for the data licence and usage terms.
+
 ## Source Artefacts
 
 The repository includes public source artefacts under `data/raw/` so the registries and
@@ -139,7 +154,15 @@ with drafting code, tests and documentation.
 
 Code in this repository is licensed under the MIT License. See [LICENSE](LICENSE).
 
-Generated synthetic outputs are not included in this repository.
+Synthetic example data linked from this README is licensed under the Creative Commons
+Attribution 4.0 International License (CC BY 4.0), unless otherwise stated. You are free to
+share and adapt the data, including for commercial purposes, provided appropriate credit is
+given.
+
+The data is provided as-is, without warranty or any commitment to maintain, update, correct or
+support it.
+
+Generated synthetic outputs are not committed to this repository by default.
 
 Source artefacts in `data/raw/` remain subject to their original source terms.
 
