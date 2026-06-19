@@ -10,10 +10,10 @@ prototyping.
 It is intended to help users understand table structure, identifiers, codings, joins and
 questionnaire branching before working with non-synthetic data. It is not intended to provide
 statistical fidelity, preserve real-world distributions, replace TRE data access, or model the
-full OFH P14 release.
+full Our Future Health P14 release.
 
-The wider OFH P14 release includes other data areas, including geography, genetic, clinic
-measurement and linked NHSE data. Those are outside the current Beta scope.
+The wider Our Future Health P14 release includes other data areas, including geography,
+genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
 
 Generated outputs are deterministic with a fixed seed and visibly synthetic, including
 `SYN`-prefixed identifiers and deliberately future-dated years where practical.
@@ -91,8 +91,8 @@ Default generated outputs are written under `outputs/`:
 - `outputs/qa/decoded_manifest.json`
 
 Generated files are ignored by git by default. The canonical synthetic outputs keep coded
-values as codes. Decoded QA outputs replace coded values with OFH coding meanings where
-available.
+values as codes. Decoded QA outputs replace coded values with Our Future Health coding
+meanings where available.
 
 Synthetic IDs use a visible `SYN` prefix. Synthetic dates and years are deliberately
 future-dated where practical, generally using years `3000+`.
@@ -158,11 +158,11 @@ Follow the reporting route in [SECURITY.md](SECURITY.md).
 
 ## Related Projects And Resources
 
-Related external tools and resources include:
+This project has been informed and inspired by related external work, particularly:
 
 - [`ofhsyn`](https://github.com/hlnicholls/ofhsyn): an R package for generating broader
-  OFH-style synthetic cohort data, including participant, questionnaire, clinic measurement,
-  geography and linked healthcare-style tables.
+  Our Future Health-style synthetic cohort data, including participant, questionnaire, clinic
+  measurement, geography and linked healthcare-style tables.
 - [`phenofhy` ICD tutorial](https://studiovincentstraub.github.io/phenofhy/tutorials/icd.html):
   a tutorial resource for ICD-code based phenotyping workflows, relevant to possible future
   work involving linked healthcare-style data.

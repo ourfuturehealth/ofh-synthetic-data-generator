@@ -13,8 +13,8 @@ placeholder files under version control.
 ## Reading The Outputs
 
 - Canonical synthetic datasets live in `outputs/synthetic/` and keep coded values as codes.
-- Decoded review copies live in `outputs/qa/` and replace coded values with OFH coding
-  meanings where possible.
+- Decoded review copies live in `outputs/qa/` and replace coded values with Our Future Health
+  coding meanings where possible.
 
 The generated dataset is scoped to baseline health questionnaire V2. Fields that are out of
 V2 scope, superseded by V2 fields or skipped by supported release-schema questionnaire logic

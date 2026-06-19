@@ -27,8 +27,8 @@ columns follow the source data dictionary order for each entity.
 - Blank values mean not generated, not asked, skipped or out of V2 scope. Negative coded
   values mean an asked question has a coded special response, such as `Do not know`,
   `Prefer not to answer` or another field-specific value.
-- Single-select coded fields keep OFH coding values as codes. Multi-select coded fields are
-  stored as bracketed code lists, for example `[1,6]`.
+- Single-select coded fields keep Our Future Health coding values as codes. Multi-select coded
+  fields are stored as bracketed code lists, for example `[1,6]`.
 - Synthetic dates and years are deliberately future-dated, generally `3000+`. For age
   calculations, use a synthetic reference year rather than the real current year. A reference
   year such as `3050` can be useful for local QA with the current generated birth-year range.
@@ -43,6 +43,6 @@ For manual QA, run:
 poetry run ofh-synthetic-data --config configs/default.yaml export-qa
 ```
 
-This writes decoded QA copies to `outputs/qa/` by default. Values with OFH codings are
-replaced with coding meanings where possible. Uncoded values and values without a matching
-coding are preserved.
+This writes decoded QA copies to `outputs/qa/` by default. Values with Our Future Health
+codings are replaced with coding meanings where possible. Uncoded values and values without a
+matching coding are preserved.

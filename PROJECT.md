@@ -1,9 +1,9 @@
-# OFH Synthetic Data Generator Project Brief
+# Our Future Health Synthetic Data Generator Project Brief
 
 ## Purpose
 
 Create a Python tool that generates Beta synthetic `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables from public OFH P14 documentation.
+questionnaire V2 `questionnaire.csv` tables from public Our Future Health P14 documentation.
 
 The aim is to help researchers understand table shape, identifiers, codings, joins and common
 branching patterns before working with non-synthetic data in the TRE. The project prioritises
@@ -28,7 +28,7 @@ Out of scope:
 - V1 questionnaire data.
 - geography, genetic, clinic measurement and linked NHSE data.
 - de-identification suppressions.
-- statistical fidelity to observed OFH distributions.
+- statistical fidelity to observed Our Future Health distributions.
 - reconstructing the raw questionnaire capture flow or website engine behaviour.
 
 ## Source Artefacts
@@ -69,7 +69,7 @@ Current verified behaviour:
 
 - linked `participant.csv` and `questionnaire.csv` are generated.
 - output columns follow source data dictionary order.
-- generated coded values come from the OFH codings file.
+- generated coded values come from the Our Future Health codings file.
 - supported release-schema questionnaire logic is applied.
 - skipped fields, superseded fields and uncoded non-V2 fields are blank.
 - participant and questionnaire rows link correctly by `PID`.

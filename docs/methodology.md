@@ -64,7 +64,8 @@ The `export-qa` command reads the generated synthetic outputs and writes decoded
 - `questionnaire_decoded.csv`
 - `decoded_manifest.json`
 
-These files replace coded values with OFH coding meanings where a coding is available.
+These files replace coded values with Our Future Health coding meanings where a coding is
+available.
 Multi-select values are decoded from bracketed code lists into semicolon-separated meanings.
 If a coding row exists but its meaning is blank, the decoded output uses an explicit
 `Code <value> (meaning unavailable)` label. Uncoded values and values without a matching
