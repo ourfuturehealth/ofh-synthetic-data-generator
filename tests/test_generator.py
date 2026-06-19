@@ -133,6 +133,80 @@ def test_generate_tables_orders_columns_by_dictionary_order() -> None:
     assert tables.manifest["column_order"]["source"] == "data_dictionary"
 
 
+def test_generate_tables_excludes_suppression_codes() -> None:
+    field_registry = pd.DataFrame(
+        [
+            _field("participant", "PID", "string", "synthetic_identifier"),
+            _field("questionnaire", "ID", "string", "synthetic_identifier"),
+            _field("questionnaire", "PID", "string", "synthetic_identifier"),
+            _field(
+                "questionnaire",
+                "SINGLE_1_1",
+                "integer",
+                "coded_single",
+                coding_name="SINGLE_1_1",
+                special_code_policy="include",
+                special_code_probability=1.0,
+            ),
+            _field(
+                "questionnaire",
+                "SPECIAL_SINGLE_1_1",
+                "integer",
+                "coded_single",
+                coding_name="SPECIAL_SINGLE_1_1",
+                special_code_policy="include",
+                special_code_probability=1.0,
+            ),
+            _field(
+                "questionnaire",
+                "MULTI_1_M",
+                "integer",
+                "coded_multi_select",
+                coding_name="MULTI_1_M",
+                special_code_policy="include",
+                special_code_probability=1.0,
+            ),
+            _field(
+                "questionnaire",
+                "NUMBER_1_1",
+                "integer",
+                "numeric_range_with_special_codes",
+                coding_name="NUMBER_1_1",
+                generation_min=10,
+                generation_max=10,
+                special_code_policy="include",
+                special_code_probability=1.0,
+            ),
+        ],
+    )
+    coding_registry = pd.DataFrame(
+        [
+            _code("SINGLE_1_1", 1, False),
+            _code("SINGLE_1_1", -999, True),
+            _code("SPECIAL_SINGLE_1_1", 1, False),
+            _code("SPECIAL_SINGLE_1_1", -1, True),
+            _code("SPECIAL_SINGLE_1_1", -999, True),
+            _code("MULTI_1_M", 1, False),
+            _code("MULTI_1_M", 2, False),
+            _code("MULTI_1_M", -999, True),
+            _code("NUMBER_1_1", -999, True),
+        ],
+    )
+
+    tables = generate_tables(
+        field_registry=field_registry,
+        coding_registry=coding_registry,
+        generation_config=GenerationConfig(rows=1, seed=1),
+    )
+
+    questionnaire = tables.questionnaires[0]
+    assert questionnaire["SINGLE_1_1"] == "1"
+    assert questionnaire["SPECIAL_SINGLE_1_1"] == "-1"
+    assert questionnaire["MULTI_1_M"] in {"[1]", "[2]", "[1,2]", "[2,1]"}
+    assert questionnaire["NUMBER_1_1"] == 10
+    assert "-999" not in {str(value) for value in questionnaire.values()}
+
+
 def test_show_if_evaluator_supports_expected_forms() -> None:
     context = {
         "SEX": "1",
