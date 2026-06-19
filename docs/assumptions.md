@@ -59,12 +59,9 @@ machine-readable metadata describing the exact config, seed and source files use
 - The processed field registry records whether each field should be generated or blanked.
 - Fields superseded by a newer V2 field are marked blank with `superseded_by_v2_field`.
 - Questionnaire fields present in V2 logic are generated unless superseded.
-- Questionnaire fields selected through dictionary/coding metadata are still generated when
-  they are coding-backed, non-superseded dictionary fields. These are marked
-  `dictionary_coded_questionnaire_field` so they can be audited separately from logic-derived
-  fields.
-- Uncoded questionnaire fields outside the generated V2 scope are marked blank with
-  `not_in_v2_logic`, except required metadata fields.
+- Questionnaire fields outside the generated V2 logic scope are marked blank with
+  `not_in_v2_logic`, except required metadata fields. Coding metadata alone does not bring a
+  questionnaire field into V2 generation.
 - Numeric ranges are inferred only for uncoded numeric fields, or numeric fields whose coding
   list contains special/missing codes but not ordinary values.
 - Inferred ranges are labelled with a `numeric_range_rule` so assumptions can be audited.

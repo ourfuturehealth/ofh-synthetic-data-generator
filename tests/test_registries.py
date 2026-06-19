@@ -43,8 +43,8 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     source_manifest = json.loads(result.source_manifest.read_text(encoding="utf-8"))
 
     assert result.counts == {
-        "fields": 6,
-        "codings": 6,
+        "fields": 7,
+        "codings": 8,
         "logic_rows": 4,
         "entities": 2,
     }
@@ -57,8 +57,9 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
         "ACTIVITY_WALK_DAYS_1_1",
         "ACTIVITY_WALK_DAYS_2_1",
         "MEDICAT_1_M",
+        "DICT_ONLY_1_1",
     ]
-    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4, 5]
+    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4, 5, 6]
 
     sex_field = field_registry[field_registry["name"] == "DEMOG_SEX_2_1"].iloc[0]
     assert bool(sex_field["in_questionnaire_logic"])
@@ -96,9 +97,17 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     assert medicat_field["v2_inclusion_status"] == "v2_questionnaire_field"
     assert medicat_field["value_strategy"] == "coded_multi_select"
 
+    dict_only_field = field_registry[field_registry["name"] == "DICT_ONLY_1_1"].iloc[0]
+    assert not bool(dict_only_field["in_questionnaire_logic"])
+    assert dict_only_field["coding_found"]
+    assert dict_only_field["generation_action"] == "blank"
+    assert dict_only_field["v2_inclusion_status"] == "not_in_v2_logic"
+    assert dict_only_field["blank_reason"] == "not_in_v2_logic"
+    assert dict_only_field["value_strategy"] == "blank"
+
     questionnaire_entity = entity_registry[entity_registry["entity"] == "questionnaire"].iloc[0]
     assert questionnaire_entity["generated_field_count"] == 3
-    assert questionnaire_entity["blank_field_count"] == 1
+    assert questionnaire_entity["blank_field_count"] == 2
 
     special_code = coding_registry[coding_registry["code"] == -1].iloc[0]
     assert bool(special_code["is_special_code"])
@@ -218,6 +227,21 @@ def _write_dictionary(path: Path) -> None:
                 "units": "",
                 "description": "Medication reasons",
             },
+            {
+                "entity": "questionnaire",
+                "name": "DICT_ONLY_1_1",
+                "type": "integer",
+                "primary_key_type": "",
+                "coding_name": "DICT_ONLY_1_1",
+                "is_sparse_coding": "",
+                "is_multi_select": False,
+                "referenced_entity_field": "",
+                "relationship": "",
+                "folder_path": "Questionnaire",
+                "title": "Dictionary only",
+                "units": "",
+                "description": "Coding-backed field absent from questionnaire logic",
+            },
         ],
     )
     clinic = pd.DataFrame(
@@ -282,6 +306,20 @@ def _write_codings(path: Path) -> None:
                 "coding_name": "MEDICAT_1_M",
                 "code": -7,
                 "meaning": "None of the above",
+                "display_order": 2,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "DICT_ONLY_1_1",
+                "code": 1,
+                "meaning": "Yes",
+                "display_order": 1,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "DICT_ONLY_1_1",
+                "code": -1,
+                "meaning": "Do not know",
                 "display_order": 2,
                 "parent_code": "",
             },
