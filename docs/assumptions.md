@@ -6,7 +6,7 @@ machine-readable metadata describing the exact config, seed and source files use
 
 ## Scope
 
-- Generate linked Beta synthetic `participant` and `questionnaire` tables from OFH
+- Generate linked Beta synthetic `participant` and `questionnaire` tables from Our Future Health
   documentation plus explicit assumptions.
 - Target release is P14.
 - Target questionnaire version is v2.
@@ -43,8 +43,8 @@ machine-readable metadata describing the exact config, seed and source files use
 
 ## Value Generation
 
-- Coded single-choice fields are sampled from valid non-special OFH coding values. Where
-  special codes are available, they are included with a default 10% probability.
+- Coded single-choice fields are sampled from valid non-special Our Future Health coding
+  values. Where special codes are available, they are included with a default 10% probability.
 - Multi-select fields are stored as bracketed comma lists. Each non-special option has a 50%
   chance of selection, with at least one option selected unless a special code is used.
 - Uncoded numeric fields use uniform draws within inferred ranges. Current broad limits are:
