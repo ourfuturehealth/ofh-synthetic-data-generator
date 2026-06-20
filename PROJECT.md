@@ -29,6 +29,10 @@ Out of scope:
 - geography, genetic, clinic measurement and linked NHSE data.
 - de-identification suppressions.
 - statistical fidelity to observed Our Future Health distributions.
+- temporal consistency across date, year and age fields.
+- additional plausibility rules beyond documented broad numeric range heuristics, such as
+  consistency between related answers or tighter quantity limits.
+- exhaustive checks for every questionnaire minor-version changelog edge case.
 - reconstructing the raw questionnaire capture flow or website engine behaviour.
 
 ## Source Artefacts

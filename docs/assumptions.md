@@ -14,6 +14,7 @@ machine-readable metadata describing the exact config, seed and source files use
 - Generate one questionnaire row per synthetic participant for Beta.
 - Clinic measurements, lipid profile, geographies, linked NHS records and genetic data are out
   of scope for Beta.
+- Temporal consistency across date, year and age fields is out of scope for Beta.
 
 ## Questionnaire Logic Source
 
