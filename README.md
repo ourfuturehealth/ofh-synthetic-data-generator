@@ -9,11 +9,13 @@ prototyping.
 
 It is intended to help users understand table structure, identifiers, codings, joins and
 questionnaire branching before working with non-synthetic data. It is not intended to provide
-statistical fidelity, preserve real-world distributions, replace TRE data access, or model the
-full Our Future Health P14 release.
+statistical fidelity, preserve real-world distributions, enforce temporal consistency across
+date, year and age fields, enforce broader plausibility rules between related answers, replace
+TRE data access, or model the full Our Future Health P14 release.
 
 The wider Our Future Health P14 release includes other data areas, including geography,
 genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
+For the full in-scope and out-of-scope list, see [PROJECT.md](PROJECT.md#scope).
 
 Generated outputs are deterministic with a fixed seed and visibly synthetic, including
 `SYN`-prefixed identifiers and deliberately future-dated years where practical.
@@ -140,7 +142,7 @@ data/interim/           temporary parsed extracts, ignored by git
 data/processed/         generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
 outputs/qa/             decoded manual QA outputs, ignored by git
-docs/                   methodology, assumptions, testing and future work
+docs/                   methodology, assumptions and testing
 tests/                  unit and QA tests
 ```
 
