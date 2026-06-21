@@ -19,8 +19,8 @@ In scope:
 - one questionnaire row per synthetic participant.
 - source-driven schema, coding and release-schema questionnaire logic.
 - deterministic generation from a fixed seed.
-- visible synthetic markers such as `SYN`-prefixed identifiers.
-- deliberately synthetic/future-dated dates where practical.
+- visible synthetic markers, including `SYN`-prefixed identifiers, generated
+  `CONSENT_VERSION` values beginning with `SYNTHETIC_` and dates or years using `3000+`.
 - unit tests and QA checks for schema, types, codings and linkage.
 
 Out of scope:
@@ -86,9 +86,9 @@ Current registry build result from the P14 source files:
 - 2,482 coding rows.
 - 288 questionnaire logic rows.
 - 2 in-scope entities: `participant` and `questionnaire`.
-- 325 fields marked for generation.
-- 48 fields marked blank.
-- 72 fields with inferred numeric ranges.
+- 299 fields marked for generation.
+- 74 fields marked blank.
+- 73 fields with inferred numeric ranges.
 
 ## Key Assumptions
 

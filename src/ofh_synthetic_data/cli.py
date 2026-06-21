@@ -20,6 +20,7 @@ DEFAULT_CONFIG = Path("configs/default.yaml")
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build the command line parser and attach subcommand handlers."""
     parser = argparse.ArgumentParser(prog="ofh-synthetic-data")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG), help="Path to a YAML config file.")
 
@@ -80,6 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the selected CLI subcommand."""
     parser = build_parser()
     args = parser.parse_args(argv)
     config = load_config(args.config)
@@ -87,6 +89,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def inspect_inputs(_args: argparse.Namespace, config: AppConfig) -> int:
+    """Report whether the expected raw source files are present."""
     statuses = discover_inputs(config.paths.raw_data_dir, config.source_files)
     missing = missing_inputs(statuses)
 
@@ -98,6 +101,7 @@ def inspect_inputs(_args: argparse.Namespace, config: AppConfig) -> int:
 
 
 def build_registry(_args: argparse.Namespace, config: AppConfig) -> int:
+    """Build processed registries from configured source artefacts."""
     result = build_registries(config)
 
     print(f"Wrote field registry to {result.field_registry}")
@@ -117,6 +121,7 @@ def build_registry(_args: argparse.Namespace, config: AppConfig) -> int:
 
 
 def generate(args: argparse.Namespace, config: AppConfig) -> int:
+    """Generate participant and questionnaire CSV outputs."""
     generation_config = config.generation
 
     if args.rows is not None:
@@ -141,6 +146,7 @@ def generate(args: argparse.Namespace, config: AppConfig) -> int:
 
 
 def validate(args: argparse.Namespace, config: AppConfig) -> int:
+    """Validate generated outputs against processed registries."""
     input_dir = args.input_dir or config.paths.synthetic_data_dir
     result = validate_synthetic_outputs(config, input_dir=input_dir)
 
@@ -155,6 +161,7 @@ def validate(args: argparse.Namespace, config: AppConfig) -> int:
 
 
 def export_qa(args: argparse.Namespace, config: AppConfig) -> int:
+    """Write decoded CSV copies for manual QA."""
     paths = write_decoded_outputs(
         config=config,
         input_dir=args.input_dir,

@@ -11,6 +11,7 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     field_registry = pd.DataFrame(
         [
             _field("participant", "PID", "string", "synthetic_identifier"),
+            _field("participant", "CONSENT_VERSION", "string", "synthetic_string"),
             _field("participant", "DEMOG_SEX_1_1", "integer", "blank"),
             _field(
                 "participant",
@@ -70,6 +71,7 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
         "SYN-000000000002",
         "SYN-000000000003",
     ]
+    assert participants["CONSENT_VERSION"].str.startswith("SYNTHETIC_CONSENT_VERSION_").all()
     assert questionnaires["PID"].tolist() == participants["PID"].tolist()
     assert questionnaires["ID"].str.startswith("SYN-ID-").all()
     assert questionnaires["QUESTIONNAIRE_VERSION"].eq("v2").all()
@@ -81,6 +83,10 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     assert tables.manifest["status"] == "beta"
     assert tables.manifest["manual_validation_status"] == "ongoing"
     assert tables.manifest["config"]["generation"]["rows"] == 3
+    assert tables.manifest["synthetic_markers"]["synthetic_string_prefix"] == "SYNTHETIC"
+    assert tables.manifest["synthetic_markers"]["synthetic_string_fields"] == [
+        "CONSENT_VERSION"
+    ]
     assert tables.manifest["phase"] == "7-beta-release-candidate"
 
 

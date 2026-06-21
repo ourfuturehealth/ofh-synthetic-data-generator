@@ -28,7 +28,8 @@ machine-readable metadata describing the exact config, seed and source files use
 ## Synthetic Markers
 
 - Identifiers must visibly indicate synthetic data, using a `SYN` prefix.
-- Dates should be deliberately synthetic, using future years where practical.
+- Dates and years use `3000+` as a visible synthetic marker.
+- Generated string markers, including `CONSENT_VERSION`, use a `SYNTHETIC_` prefix.
 - Generated data must not be derived from observed participant-level records.
 - `PID` values use a deterministic `SYN-...` format shared by `participant` and
   `questionnaire` rows.
@@ -37,6 +38,8 @@ machine-readable metadata describing the exact config, seed and source files use
 ## Statistical Fidelity
 
 - Statistical fidelity is not a Beta requirement.
+- Temporal fidelity is also out of scope for Beta. Date, year and age fields are generated for
+  structure and synthetic marking, not to preserve real-world timing relationships.
 - Default generation can use simple or uniform distributions where the documentation does not
   define distributions.
 - Relationships, table shape, coding validity and skip-logic behaviour are more important than
@@ -84,8 +87,8 @@ machine-readable metadata describing the exact config, seed and source files use
   response is unknown, refused or otherwise coded as special.
 - Suppression encodings are treated separately from questionnaire missingness and are excluded
   from default generation.
-- Non-standard logic patterns should be logged and handled conservatively rather than stopping
-  generation.
+- Unsupported `show_if` expressions are handled conservatively by treating the field as shown,
+  rather than stopping generation or accidentally suppressing the field.
 - Supported `show_if` forms include equality, `NULL`, `is NOT NULL`, `ONE of`, `ANY of`,
   integer range tokens, `AND`, `OR` and duplicate logic rows combined as OR.
 - `show_if` expressions outside the supported parser patterns currently default to shown so

@@ -16,6 +16,7 @@ class SourceFileStatus:
 
 
 def expected_source_files(config: SourceFilesConfig) -> dict[str, str]:
+    """Map source artefact roles to configured filenames."""
     return {
         "questionnaire_pdf": config.questionnaire_pdf,
         "questionnaire_logic": config.questionnaire_logic,
@@ -25,6 +26,7 @@ def expected_source_files(config: SourceFilesConfig) -> dict[str, str]:
 
 
 def discover_inputs(raw_data_dir: Path, config: SourceFilesConfig) -> list[SourceFileStatus]:
+    """Check whether each expected source file exists in the raw data directory."""
     return [
         SourceFileStatus(
             role=role,
@@ -36,4 +38,5 @@ def discover_inputs(raw_data_dir: Path, config: SourceFilesConfig) -> list[Sourc
 
 
 def missing_inputs(statuses: list[SourceFileStatus]) -> list[SourceFileStatus]:
+    """Return source file statuses that are missing."""
     return [status for status in statuses if not status.exists]

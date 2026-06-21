@@ -36,6 +36,7 @@ class GeneratedTablePaths:
 
 
 def generate_tables_from_processed_registries(config: AppConfig) -> GeneratedTables:
+    """Read processed registries and generate in-memory synthetic tables."""
     field_registry = _read_registry(config.paths.processed_data_dir / "field_registry.csv")
     coding_registry = _read_registry(config.paths.processed_data_dir / "coding_registry.csv")
     logic_registry = _read_registry(config.paths.processed_data_dir / "logic_registry.csv")
@@ -58,6 +59,7 @@ def generate_tables(
     config_snapshot: dict[str, Any] | None = None,
     source_manifest: dict[str, Any] | None = None,
 ) -> GeneratedTables:
+    """Generate linked participant and questionnaire records from registry metadata."""
     rng = Random(generation_config.seed)
     coding_lookup = _build_coding_lookup(coding_registry)
     logic_rules, logic_order = _build_logic_rules(logic_registry)
@@ -66,6 +68,14 @@ def generate_tables(
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
+    synthetic_string_fields = sorted(
+        field_registry.loc[
+            field_registry["value_strategy"].astype(str).eq("synthetic_string"),
+            "name",
+        ]
+        .astype(str)
+        .tolist()
+    )
 
     participants: list[dict[str, object]] = []
     questionnaires: list[dict[str, object]] = []
@@ -115,6 +125,8 @@ def generate_tables(
             "source_manifest": source_manifest or {},
             "synthetic_markers": {
                 "id_prefix": "SYN",
+                "synthetic_string_prefix": "SYNTHETIC",
+                "synthetic_string_fields": synthetic_string_fields,
                 "future_year_minimum": 3000,
             },
             "questionnaire_logic": {
@@ -137,6 +149,7 @@ def write_generated_tables(
     output_dir: Path,
     config: GenerationConfig,
 ) -> GeneratedTablePaths:
+    """Write generated tables and manifest to disk."""
     participant_path = output_dir / config.participant_file
     questionnaire_path = output_dir / config.questionnaire_file
     manifest_path = output_dir / config.manifest_file
@@ -169,6 +182,7 @@ def _generate_record(
     pid: str,
     generation_config: GenerationConfig,
 ) -> dict[str, object]:
+    """Generate a non-questionnaire record without branching logic."""
     record: dict[str, object] = {}
 
     for field in fields.to_dict("records"):
@@ -196,6 +210,7 @@ def _generate_questionnaire_record(
     generation_config: GenerationConfig,
     participant: dict[str, object],
 ) -> tuple[dict[str, object], int]:
+    """Generate a questionnaire row while applying release-schema show_if logic."""
     field_records = fields.to_dict("records")
     fields_by_name = {str(field["name"]): field for field in field_records}
     record = {str(field["name"]): "" for field in field_records}
@@ -253,6 +268,7 @@ def _generate_value(
     pid: str,
     generation_config: GenerationConfig,
 ) -> object:
+    """Generate one field value according to its registry value strategy."""
     strategy = str(field.get("value_strategy", ""))
     name = str(field["name"])
 
@@ -315,6 +331,7 @@ def _fields_for_entity(field_registry: pd.DataFrame, entity: str) -> pd.DataFram
 def _build_logic_rules(
     logic_registry: pd.DataFrame | None,
 ) -> tuple[dict[str, list[str]], list[str]]:
+    """Group show_if expressions by field while preserving logic row order."""
     if logic_registry is None or logic_registry.empty:
         return {}, []
 
@@ -333,6 +350,7 @@ def _build_logic_rules(
 
 
 def _build_coding_lookup(coding_registry: pd.DataFrame) -> dict[str, dict[str, list[str]]]:
+    """Build coding lists used for random value selection."""
     lookup: dict[str, dict[str, list[str]]] = {}
 
     for coding_name, rows in coding_registry.groupby("coding_name"):
@@ -360,6 +378,7 @@ def _coded_single(
     coding_lookup: dict[str, dict[str, list[str]]],
     rng: Random,
 ) -> str:
+    """Choose one coded value, optionally using a special code."""
     if _use_special_code(field, rng):
         special_code = _special_code(field, coding_lookup, rng)
         if special_code:
@@ -376,6 +395,7 @@ def _coded_multi_select(
     coding_lookup: dict[str, dict[str, list[str]]],
     rng: Random,
 ) -> str:
+    """Choose a bracketed comma-list of coded values for multi-select fields."""
     if _use_special_code(field, rng):
         special_code = _special_code(field, coding_lookup, rng)
         if special_code:
@@ -415,6 +435,7 @@ def _coded_choice(
     coding_lookup: dict[str, dict[str, list[str]]],
     rng: Random,
 ) -> str:
+    """Choose any coded option for numeric input fields with coded alternatives."""
     codes = _codes(field, coding_lookup, "all")
     return rng.choice(codes) if codes else ""
 
@@ -429,6 +450,7 @@ def _codes(
 
 
 def _numeric_range_value(field: dict[str, object], rng: Random) -> int | float | str:
+    """Generate an integer or float within registry min/max bounds."""
     minimum = _float_value(field.get("generation_min"))
     maximum = _float_value(field.get("generation_max"))
     if minimum is None or maximum is None:

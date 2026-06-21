@@ -24,6 +24,7 @@ def evaluate_show_if(expression: object, context: Mapping[str, object]) -> bool:
 
 
 def _evaluate_expression(expression: str, context: Mapping[str, object]) -> bool:
+    """Evaluate an expression tree with top-level OR before AND."""
     expression = _strip_wrapping_parentheses(expression.strip())
 
     or_parts = _split_top_level(expression, "OR")
@@ -38,6 +39,7 @@ def _evaluate_expression(expression: str, context: Mapping[str, object]) -> bool
 
 
 def _evaluate_atom(atom: str, context: Mapping[str, object]) -> bool:
+    """Evaluate one show_if condition against the current row context."""
     atom = _strip_wrapping_parentheses(atom.strip())
 
     null_match = re.fullmatch(r"\[([^\]]+)\]\s+is\s+NOT\s+NULL", atom, flags=re.IGNORECASE)
@@ -72,6 +74,7 @@ def _evaluate_atom(atom: str, context: Mapping[str, object]) -> bool:
 
 
 def _normalise_expression(expression: object) -> str:
+    """Clean workbook expression text before parsing."""
     text = str(expression or "").strip()
     if text.lower() == "nan":
         return ""
@@ -94,6 +97,7 @@ def _strip_wrapping_parentheses(expression: str) -> str:
 
 
 def _split_top_level(expression: str, operator: str) -> list[str]:
+    """Split on an operator only when outside parentheses and brackets."""
     parts: list[str] = []
     start = 0
     index = 0
@@ -130,6 +134,7 @@ def _split_top_level(expression: str, operator: str) -> list[str]:
 
 
 def _split_list_tokens(content: str) -> list[str]:
+    """Split list expressions while preserving nested int(...) predicates."""
     tokens: list[str] = []
     start = 0
     paren_depth = 0
@@ -161,6 +166,7 @@ def _matches_token(value: object, token: str) -> bool:
 
 
 def _matches_int_expression(value: object, expression: str) -> bool:
+    """Match a numeric value against an int(...) comparison expression."""
     numeric = _to_float(value)
     if numeric is None:
         return False
@@ -188,6 +194,7 @@ def _matches_int_expression(value: object, expression: str) -> bool:
 
 
 def _as_value_list(value: object) -> list[object]:
+    """Represent scalar and bracketed multi-select values as a list."""
     if _is_blank(value):
         return []
 

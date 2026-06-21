@@ -154,12 +154,14 @@ def decode_table(
 
 
 def _decode_single_value(value: object, value_lookup: dict[str, str]) -> object:
+    """Replace one coded value with its meaning when available."""
     if _is_blank(value):
         return ""
     return value_lookup.get(_format_code(value), value)
 
 
 def _decode_multi_select_value(value: object, value_lookup: dict[str, str]) -> object:
+    """Decode a bracketed list of coded values into readable meanings."""
     if _is_blank(value):
         return ""
 
@@ -175,6 +177,7 @@ def _decode_multi_select_value(value: object, value_lookup: dict[str, str]) -> o
 
 
 def _build_coding_lookup(coding_registry: pd.DataFrame) -> dict[str, dict[str, str]]:
+    """Build code-to-meaning maps for each coding name."""
     lookup: dict[str, dict[str, str]] = {}
     if coding_registry.empty:
         return lookup

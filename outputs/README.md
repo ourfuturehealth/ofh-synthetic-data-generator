@@ -20,8 +20,8 @@ The generated dataset is scoped to baseline health questionnaire V2. Fields that
 V2 scope, superseded by V2 fields or skipped by supported release-schema questionnaire logic
 may be blank.
 
-Synthetic IDs use a visible `SYN` prefix. Synthetic years and dates are deliberately
-future-dated; generated dates use years `3000+` as a visible synthetic marker. If a workflow
-calculates age from `BIRTH_YEAR`, use a synthetic reference year rather than the real current
-year. For example, a reference year such as `3050` gives plausible adult ages for current
-generated birth years while still keeping the data visibly synthetic.
+Synthetic markers include IDs with a visible `SYN` prefix, `CONSENT_VERSION` values beginning
+with `SYNTHETIC_` and dates or years using `3000+`. If a workflow calculates age from
+`BIRTH_YEAR`, use a synthetic reference year rather than the real current year. For example, a
+reference year such as `3050` gives plausible adult ages for current generated birth years
+while still keeping the data visibly synthetic.
