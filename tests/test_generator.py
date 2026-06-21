@@ -207,6 +207,58 @@ def test_generate_tables_excludes_suppression_codes() -> None:
     assert "-999" not in {str(value) for value in questionnaire.values()}
 
 
+def test_generate_tables_supports_numeric_ranges_with_coded_choices() -> None:
+    field_registry = pd.DataFrame(
+        [
+            _field("participant", "PID", "string", "synthetic_identifier"),
+            _field("questionnaire", "ID", "string", "synthetic_identifier"),
+            _field("questionnaire", "PID", "string", "synthetic_identifier"),
+            _field(
+                "questionnaire",
+                "AGE_VALUE_1_1",
+                "integer",
+                "numeric_range_with_coded_choices",
+                coding_name="AGE_VALUE_1_1",
+                generation_min=42,
+                generation_max=42,
+                special_code_policy="include",
+                special_code_probability=0.0,
+            ),
+            _field(
+                "questionnaire",
+                "AGE_CODE_1_1",
+                "integer",
+                "numeric_range_with_coded_choices",
+                coding_name="AGE_CODE_1_1",
+                generation_min=42,
+                generation_max=42,
+                special_code_policy="include",
+                special_code_probability=1.0,
+            ),
+        ],
+    )
+    coding_registry = pd.DataFrame(
+        [
+            _code("AGE_VALUE_1_1", 0, False),
+            _code("AGE_VALUE_1_1", -1, True),
+            _code("AGE_CODE_1_1", 0, False),
+            _code("AGE_CODE_1_1", -1, True),
+            _code("AGE_CODE_1_1", -999, True),
+        ],
+    )
+
+    tables = generate_tables(
+        field_registry=field_registry,
+        coding_registry=coding_registry,
+        generation_config=GenerationConfig(rows=1, seed=1),
+    )
+
+    questionnaire = tables.questionnaires[0]
+    assert questionnaire["AGE_VALUE_1_1"] == 42
+    assert str(questionnaire["AGE_CODE_1_1"]) in {"0", "-1"}
+    assert questionnaire["AGE_CODE_1_1"] != "-999"
+
+
 def test_show_if_evaluator_supports_expected_forms() -> None:
     context = {
         "SEX": "1",
