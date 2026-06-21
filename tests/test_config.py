@@ -22,6 +22,7 @@ paths:
 generation:
   rows: 10
   seed: 123
+  reference_year: 3100
 """,
         encoding="utf-8",
     )
@@ -32,6 +33,7 @@ generation:
     assert config.paths.processed_data_dir == Path("custom-processed")
     assert config.generation.rows == 10
     assert config.generation.seed == 123
+    assert not hasattr(config.generation, "reference_year")
 
 
 def test_load_config_accepts_legacy_reports_dir_as_qa_dir(tmp_path: Path) -> None:

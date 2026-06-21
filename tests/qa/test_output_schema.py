@@ -38,6 +38,7 @@ def test_generated_outputs_match_dictionary_schema(tmp_path: Path) -> None:
 
     _assert_table_matches_dictionary_schema(participants, field_registry, "participant")
     _assert_table_matches_dictionary_schema(questionnaires, field_registry, "questionnaire")
+    _assert_core_timeline_supports_adult_age(participants, questionnaires)
 
 
 def test_registry_preserves_literal_none_coding_meanings(tmp_path: Path) -> None:
@@ -217,6 +218,37 @@ def _assert_table_matches_dictionary_schema(
             _assert_date_values(name, non_blank)
         elif field_type == "string":
             _assert_string_values(name, non_blank)
+
+
+def _assert_core_timeline_supports_adult_age(
+    participants: pd.DataFrame,
+    questionnaires: pd.DataFrame,
+) -> None:
+    joined = participants.merge(
+        questionnaires[["PID", "SUBMISSION_DATE"]],
+        on="PID",
+        how="inner",
+    )
+    assert len(joined) == len(participants) == len(questionnaires)
+
+    registration_years = pd.to_numeric(joined["REGISTRATION_YEAR"])
+    registration_months = pd.to_numeric(joined["REGISTRATION_MONTH"])
+    consent_years = pd.to_numeric(joined["CONSENT_YEAR"])
+    consent_months = pd.to_numeric(joined["CONSENT_MONTH"])
+    birth_years = pd.to_numeric(joined["BIRTH_YEAR"])
+    birth_months = pd.to_numeric(joined["BIRTH_MONTH"])
+    submission_years = joined["SUBMISSION_DATE"].str.slice(0, 4).astype(int)
+    submission_months = joined["SUBMISSION_DATE"].str.slice(5, 7).astype(int)
+
+    assert registration_years.between(3095, 3100).all()
+    assert birth_years.between(3000, 3075).all()
+    assert registration_years.tolist() == consent_years.tolist()
+    assert registration_months.tolist() == consent_months.tolist()
+    assert registration_years.tolist() == submission_years.tolist()
+    assert registration_months.tolist() == submission_months.tolist()
+
+    age_months = (submission_years - birth_years) * 12 + (submission_months - birth_months)
+    assert age_months.ge(18 * 12).all()
 
 
 def _assert_integer_values(name: str, values: pd.Series) -> None:

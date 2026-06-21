@@ -110,8 +110,8 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
                 "integer",
                 "numeric_range",
                 generation_min=3000,
-                generation_max=3026,
-                numeric_range_rule="synthetic_year",
+                generation_max=3075,
+                numeric_range_rule="birth_year",
                 dictionary_order=2,
             ),
             _field(

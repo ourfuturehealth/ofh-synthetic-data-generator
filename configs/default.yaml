@@ -19,7 +19,6 @@ registry:
 generation:
   rows: 200
   seed: 42
-  reference_year: 2026
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv
   manifest_file: manifest.json

@@ -10,8 +10,8 @@ prototyping.
 It is intended to help users understand table structure, identifiers, codings, joins and
 questionnaire branching before working with non-synthetic data. It is not intended to provide
 statistical fidelity, preserve real-world distributions, enforce temporal consistency across
-date, year and age fields, enforce broader plausibility rules between related answers, replace
-TRE data access, or model the full Our Future Health P14 release.
+all date, year and age fields, enforce broader plausibility rules between related answers,
+replace TRE data access, or model the full Our Future Health P14 release.
 
 The wider Our Future Health P14 release includes other data areas, including geography,
 genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
@@ -111,6 +111,9 @@ PLACEHOLDER - these links are currently placeholders.
 
 - [Participant synthetic data](https://a.storyblok.com/f/228028/x/c1835e7466/participant_synthetic_our_future_health.csv)
 - [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/8c2a97f296/questionnaire_synthetic_our_future_health.csv)
+
+Before using these files, see [Reading The Outputs](outputs/README.md#reading-the-outputs)
+for notes on synthetic markers, blank values, coded values and date handling.
 
 These files are synthetic example outputs, not real participant data.
 See [License](#license) for the data licence and usage terms.

@@ -30,7 +30,6 @@ class SourceFilesConfig:
 class GenerationConfig:
     rows: int = 200
     seed: int = 42
-    reference_year: int = 2026
     participant_file: str = "participant.csv"
     questionnaire_file: str = "questionnaire.csv"
     manifest_file: str = "manifest.json"
@@ -54,7 +53,8 @@ class AppConfig:
         """Create config objects from a nested YAML-compatible dictionary."""
         paths = data.get("paths", {})
         source_files = data.get("source_files", {})
-        generation = data.get("generation", {})
+        generation = dict(data.get("generation", {}))
+        generation.pop("reference_year", None)
         registry = data.get("registry", {})
 
         return cls(
