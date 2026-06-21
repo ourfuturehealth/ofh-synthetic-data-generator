@@ -33,7 +33,7 @@ repo.
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 6 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, suppression-code exclusion, numeric input fields with coded choices, column ordering and supported `show_if` logic. |
 | `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and populated fields that should be blanked by supported skip logic. |
-| `tests/qa/test_output_schema.py` | 5 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that coded questionnaire fields absent from V2 logic are blanked, that numeric-range fields with special codes only produce values allowed by their configured ranges or codings, that suppression codes are not generated, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
+| `tests/qa/test_output_schema.py` | 5 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that coded questionnaire fields absent from V2 logic are blanked, that numeric-range fields with special codes only produce values allowed by their configured ranges or codings, that suppression codes are not generated, that the core timeline supports adult age calculation, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
 
 ## What The Tests Check
 
@@ -72,6 +72,8 @@ It checks that:
 - fields generated with the `numeric_range_with_special_codes` strategy only contain blank
   values, values inside the configured numeric range or field-specific special codes.
 - default generated outputs do not contain suppression encodings such as `-999`.
+- registration, consent and questionnaire submission year-month values align, and birth years
+  support adult age calculation against that core timeline.
 
 ## Current Limits
 

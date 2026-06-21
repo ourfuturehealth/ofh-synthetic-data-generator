@@ -14,6 +14,15 @@ import pandas as pd
 from ofh_synthetic_data.config import AppConfig, GenerationConfig
 from ofh_synthetic_data.export.writers import write_metadata, write_records_csv
 from ofh_synthetic_data.generate.show_if import evaluate_show_if
+from ofh_synthetic_data.synthetic_ranges import (
+    BIRTH_YEAR_MAX,
+    BIRTH_YEAR_MIN,
+    CORE_TIMELINE_YEAR_MAX,
+    CORE_TIMELINE_YEAR_MIN,
+    SYNTHETIC_DATE_DAY_MAX,
+    SYNTHETIC_DATE_DAY_MIN,
+    SYNTHETIC_YEAR_MIN,
+)
 
 SUPPRESSION_CODES = {"-999"}
 
@@ -33,6 +42,12 @@ class GeneratedTablePaths:
     participant: Path
     questionnaire: Path
     manifest: Path
+
+
+@dataclass(frozen=True)
+class CoreTimeline:
+    year: int
+    month: int
 
 
 def generate_tables_from_processed_registries(config: AppConfig) -> GeneratedTables:
@@ -83,6 +98,7 @@ def generate_tables(
 
     for row_index in range(generation_config.rows):
         pid = _participant_id(row_index)
+        timeline = _core_timeline(rng)
         participant = _generate_record(
             fields=participant_fields,
             coding_lookup=coding_lookup,
@@ -90,6 +106,7 @@ def generate_tables(
             row_index=row_index,
             pid=pid,
             generation_config=generation_config,
+            timeline=timeline,
         )
         questionnaire, skipped_for_row = _generate_questionnaire_record(
             fields=questionnaire_fields,
@@ -101,6 +118,7 @@ def generate_tables(
             pid=pid,
             generation_config=generation_config,
             participant=participant,
+            timeline=timeline,
         )
         skipped_by_logic_count += skipped_for_row
         participants.append(participant)
@@ -127,7 +145,12 @@ def generate_tables(
                 "id_prefix": "SYN",
                 "synthetic_string_prefix": "SYNTHETIC",
                 "synthetic_string_fields": synthetic_string_fields,
-                "future_year_minimum": 3000,
+                "future_year_minimum": SYNTHETIC_YEAR_MIN,
+                "core_timeline_year_range": [
+                    CORE_TIMELINE_YEAR_MIN,
+                    CORE_TIMELINE_YEAR_MAX,
+                ],
+                "birth_year_range": [BIRTH_YEAR_MIN, BIRTH_YEAR_MAX],
             },
             "questionnaire_logic": {
                 "applied": bool(logic_rules),
@@ -181,6 +204,7 @@ def _generate_record(
     row_index: int,
     pid: str,
     generation_config: GenerationConfig,
+    timeline: CoreTimeline,
 ) -> dict[str, object]:
     """Generate a non-questionnaire record without branching logic."""
     record: dict[str, object] = {}
@@ -194,6 +218,7 @@ def _generate_record(
             row_index=row_index,
             pid=pid,
             generation_config=generation_config,
+            timeline=timeline,
         )
 
     return record
@@ -209,6 +234,7 @@ def _generate_questionnaire_record(
     pid: str,
     generation_config: GenerationConfig,
     participant: dict[str, object],
+    timeline: CoreTimeline,
 ) -> tuple[dict[str, object], int]:
     """Generate a questionnaire row while applying release-schema show_if logic."""
     field_records = fields.to_dict("records")
@@ -229,6 +255,7 @@ def _generate_questionnaire_record(
                 row_index=row_index,
                 pid=pid,
                 generation_config=generation_config,
+                timeline=timeline,
             )
             context[name] = record[name]
 
@@ -250,6 +277,7 @@ def _generate_questionnaire_record(
                 row_index=row_index,
                 pid=pid,
                 generation_config=generation_config,
+                timeline=timeline,
             )
         else:
             record[name] = ""
@@ -267,6 +295,7 @@ def _generate_value(
     row_index: int,
     pid: str,
     generation_config: GenerationConfig,
+    timeline: CoreTimeline,
 ) -> object:
     """Generate one field value according to its registry value strategy."""
     strategy = str(field.get("value_strategy", ""))
@@ -279,7 +308,13 @@ def _generate_value(
     if strategy == "constant_questionnaire_version":
         return generation_config.questionnaire_version
     if strategy == "synthetic_future_date":
-        return _future_date(rng)
+        return _future_date(rng, timeline)
+    if name in {"REGISTRATION_YEAR", "CONSENT_YEAR"}:
+        return timeline.year
+    if name in {"REGISTRATION_MONTH", "CONSENT_MONTH"}:
+        return timeline.month
+    if name == "BIRTH_YEAR":
+        return rng.randint(BIRTH_YEAR_MIN, BIRTH_YEAR_MAX)
     if strategy == "coded_multi_select":
         return _coded_multi_select(field, coding_lookup, rng)
     if strategy == "coded_single":
@@ -473,11 +508,18 @@ def _participant_id(row_index: int) -> str:
     return f"SYN-{row_index + 1:012d}"
 
 
-def _future_date(rng: Random) -> str:
-    return date(
-        year=rng.randint(3000, 3026),
+def _core_timeline(rng: Random) -> CoreTimeline:
+    return CoreTimeline(
+        year=rng.randint(CORE_TIMELINE_YEAR_MIN, CORE_TIMELINE_YEAR_MAX),
         month=rng.randint(1, 12),
-        day=rng.randint(1, 28),
+    )
+
+
+def _future_date(rng: Random, timeline: CoreTimeline) -> str:
+    return date(
+        year=timeline.year,
+        month=timeline.month,
+        day=rng.randint(SYNTHETIC_DATE_DAY_MIN, SYNTHETIC_DATE_DAY_MAX),
     ).isoformat()
 
 

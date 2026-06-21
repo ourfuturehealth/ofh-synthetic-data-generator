@@ -14,7 +14,9 @@ machine-readable metadata describing the exact config, seed and source files use
 - Generate one questionnaire row per synthetic participant for Beta.
 - Clinic measurements, lipid profile, geographies, linked NHS records and genetic data are out
   of scope for Beta.
-- Temporal consistency across date, year and age fields is out of scope for Beta.
+- Reduced temporal consistency is applied only to the core birth, registration, consent and
+  questionnaire submission fields. Broader temporal consistency across other date, year and
+  age fields is out of scope for Beta.
 
 ## Questionnaire Logic Source
 
@@ -38,8 +40,9 @@ machine-readable metadata describing the exact config, seed and source files use
 ## Statistical Fidelity
 
 - Statistical fidelity is not a Beta requirement.
-- Temporal fidelity is also out of scope for Beta. Date, year and age fields are generated for
-  structure and synthetic marking, not to preserve real-world timing relationships.
+- Temporal fidelity beyond the reduced core timeline is also out of scope for Beta. Most date,
+  year and age fields are generated for structure and synthetic marking, not to preserve
+  real-world timing relationships.
 - Default generation can use simple or uniform distributions where the documentation does not
   define distributions.
 - Relationships, table shape, coding validity and skip-logic behaviour are more important than
@@ -56,11 +59,28 @@ machine-readable metadata describing the exact config, seed and source files use
 - Numeric `radioAndInput` questionnaire fields can generate ordinary numeric values plus coded
   response options from the codings file.
 - Uncoded numeric fields use uniform draws within inferred ranges. Current broad limits are:
-  ages `0-110`, years `3000-3026`, months `1-12`, days `0-7`, minutes `0-1440`, hours
-  `0-24`, height `50-220` cm, weight `2-300` kg, default integers `0-10` and default floats
-  `0-100`.
+  ages `0-110`, birth years `3000-3075`, core registration/consent/submission years
+  `3095-3100`, other years `3000-3075`, months `1-12`, days `0-7`, minutes `0-1440`,
+  hours `0-24`, height `50-220` cm, weight `2-300` kg, default integers `0-10` and default
+  floats `0-100`.
 - Integer values are generated as whole numbers. Float values are rounded to two decimal
   places.
+
+## Core Timeline Dates
+
+- `REGISTRATION_YEAR`/`REGISTRATION_MONTH`, `CONSENT_YEAR`/`CONSENT_MONTH` and
+  `SUBMISSION_DATE` share the same synthetic year-month per participant.
+- Core timeline years are sampled from `3095-3100`.
+- `BIRTH_YEAR` is sampled from `3000-3075` and `BIRTH_MONTH` from `1-12`, so participants are
+  at least 18 when age is calculated against the generated registration, consent or
+  questionnaire submission date.
+- `3100` is a suggested synthetic reference year for manual QA or analysis code that needs a
+  current year. It is not used as a generation setting.
+- Some date libraries may not support years this far in the future; year and month components
+  can be parsed from the generated strings when native date parsing fails.
+- Other age/year fields do not have temporal validity guarantees. For example,
+  `FATHER_AGE_1_1` or `IMMIGRATE_UK_YR_1_1` may not be consistent with `BIRTH_YEAR` or the
+  core registration/consent/submission timeline.
 
 ## Field Generation Metadata
 
@@ -102,10 +122,10 @@ machine-readable metadata describing the exact config, seed and source files use
 - Candidate field-family analysis should be performed before adding these rules. Field names,
   titles, descriptions, codings and existing `show_if` conditions should be reviewed before any
   heuristic becomes generation logic.
-- Date, year, month and age fields should also be reviewed for temporal plausibility rules.
-  Candidate rules include birth date preceding registration, consent and questionnaire
-  submission dates; immigration year following birth year and preceding registration; and first
-  child age being less than or equal to last child age where both are populated.
+- Date, year, month and age fields outside the reduced core timeline should also be reviewed
+  for temporal plausibility rules. Candidate rules include immigration year following birth
+  year and preceding registration, and first child age being less than or equal to last child
+  age where both are populated.
 - These constraints are a stretch goal for improving synthetic data quality, not a Beta
   requirement unless explicitly promoted into scope.
 

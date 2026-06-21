@@ -11,7 +11,55 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     field_registry = pd.DataFrame(
         [
             _field("participant", "PID", "string", "synthetic_identifier"),
+            _field(
+                "participant",
+                "REGISTRATION_YEAR",
+                "integer",
+                "numeric_range",
+                generation_min=3095,
+                generation_max=3100,
+            ),
+            _field(
+                "participant",
+                "REGISTRATION_MONTH",
+                "integer",
+                "numeric_range",
+                generation_min=1,
+                generation_max=12,
+            ),
             _field("participant", "CONSENT_VERSION", "string", "synthetic_string"),
+            _field(
+                "participant",
+                "CONSENT_YEAR",
+                "integer",
+                "numeric_range",
+                generation_min=3095,
+                generation_max=3100,
+            ),
+            _field(
+                "participant",
+                "CONSENT_MONTH",
+                "integer",
+                "numeric_range",
+                generation_min=1,
+                generation_max=12,
+            ),
+            _field(
+                "participant",
+                "BIRTH_YEAR",
+                "integer",
+                "numeric_range",
+                generation_min=3000,
+                generation_max=3075,
+            ),
+            _field(
+                "participant",
+                "BIRTH_MONTH",
+                "integer",
+                "numeric_range",
+                generation_min=1,
+                generation_max=12,
+            ),
             _field("participant", "DEMOG_SEX_1_1", "integer", "blank"),
             _field(
                 "participant",
@@ -75,7 +123,23 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     assert questionnaires["PID"].tolist() == participants["PID"].tolist()
     assert questionnaires["ID"].str.startswith("SYN-ID-").all()
     assert questionnaires["QUESTIONNAIRE_VERSION"].eq("v2").all()
-    assert questionnaires["SUBMISSION_DATE"].str.slice(0, 4).astype(int).ge(3000).all()
+    submission_years = questionnaires["SUBMISSION_DATE"].str.slice(0, 4).astype(int)
+    submission_months = questionnaires["SUBMISSION_DATE"].str.slice(5, 7).astype(int)
+    registration_years = participants["REGISTRATION_YEAR"].astype(int)
+    registration_months = participants["REGISTRATION_MONTH"].astype(int)
+    consent_years = participants["CONSENT_YEAR"].astype(int)
+    consent_months = participants["CONSENT_MONTH"].astype(int)
+    birth_years = participants["BIRTH_YEAR"].astype(int)
+    birth_months = participants["BIRTH_MONTH"].astype(int)
+
+    assert registration_years.between(3095, 3100).all()
+    assert birth_years.between(3000, 3075).all()
+    assert registration_years.tolist() == consent_years.tolist()
+    assert registration_months.tolist() == consent_months.tolist()
+    assert registration_years.tolist() == submission_years.tolist()
+    assert registration_months.tolist() == submission_months.tolist()
+    age_months = (submission_years - birth_years) * 12 + (submission_months - birth_months)
+    assert age_months.ge(18 * 12).all()
     assert participants["DEMOG_SEX_1_1"].isna().all()
     assert questionnaires["ACTIVITY_WALK_DAYS_1_1"].isna().all()
     assert questionnaires["ACTIVITY_WALK_DAYS_2_1"].astype(int).between(0, 7).all()

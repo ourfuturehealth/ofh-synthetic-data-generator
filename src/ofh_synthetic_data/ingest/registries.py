@@ -11,6 +11,14 @@ from pathlib import Path
 import pandas as pd
 
 from ofh_synthetic_data.config import AppConfig
+from ofh_synthetic_data.synthetic_ranges import (
+    BIRTH_YEAR_MAX,
+    BIRTH_YEAR_MIN,
+    CORE_TIMELINE_YEAR_MAX,
+    CORE_TIMELINE_YEAR_MIN,
+    SYNTHETIC_YEAR_MAX,
+    SYNTHETIC_YEAR_MIN,
+)
 
 FIELD_COLUMNS = [
     "source_sheet",
@@ -56,8 +64,6 @@ REQUIRED_METADATA_FIELDS = {
     "participant": {"PID"},
     "questionnaire": {"ID", "PID", "QUESTIONNAIRE_VERSION", "SUBMISSION_DATE"},
 }
-SYNTHETIC_YEAR_MIN = 3000
-SYNTHETIC_YEAR_MAX = 3026
 DEFAULT_SPECIAL_CODE_PROBABILITY = 0.1
 
 
@@ -639,6 +645,14 @@ def _numeric_range_info(row: pd.Series) -> dict[str, object]:
     name = str(row["name"]).upper()
     units = str(row["units"]).lower()
 
+    if name == "BIRTH_YEAR":
+        return _range(BIRTH_YEAR_MIN, BIRTH_YEAR_MAX, "birth_year")
+    if name in {"REGISTRATION_YEAR", "CONSENT_YEAR"}:
+        return _range(
+            CORE_TIMELINE_YEAR_MIN,
+            CORE_TIMELINE_YEAR_MAX,
+            "core_timeline_year",
+        )
     if "AGE" in name:
         return _range(0, 110, "name_contains_age")
     if "YEAR" in name or name.endswith("_YR") or "_YR_" in name:

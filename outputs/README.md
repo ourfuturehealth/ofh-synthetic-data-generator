@@ -21,7 +21,16 @@ V2 scope, superseded by V2 fields or skipped by supported release-schema questio
 may be blank.
 
 Synthetic markers include IDs with a visible `SYN` prefix, `CONSENT_VERSION` values beginning
-with `SYNTHETIC_` and dates or years using `3000+`. If a workflow calculates age from
-`BIRTH_YEAR`, use a synthetic reference year rather than the real current year. For example, a
-reference year such as `3050` gives plausible adult ages for current generated birth years
-while still keeping the data visibly synthetic.
+with `SYNTHETIC_` and dates or years using `3000+`.
+
+The core participant timeline has limited temporal consistency: registration year/month,
+consent year/month and questionnaire submission year/month are the same per participant and
+use years `3095-3100`. `BIRTH_YEAR` uses `3000-3075`, so age calculated against registration,
+consent or questionnaire submission should be adult. If analysis code needs a synthetic
+current year, use `3100` as a suggested reference year rather than the real current year.
+Some libraries, including pandas nanosecond datetimes, may not support years this far in the
+future; parse year and month components from the strings if native date parsing fails.
+
+Other age/year fields do not have temporal validity guarantees. For example,
+`FATHER_AGE_1_1` or `IMMIGRATE_UK_YR_1_1` may not be consistent with `BIRTH_YEAR` or the core
+timeline.
