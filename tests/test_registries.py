@@ -43,9 +43,9 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     source_manifest = json.loads(result.source_manifest.read_text(encoding="utf-8"))
 
     assert result.counts == {
-        "fields": 7,
-        "codings": 8,
-        "logic_rows": 4,
+        "fields": 8,
+        "codings": 12,
+        "logic_rows": 5,
         "entities": 2,
     }
     assert set(field_registry["entity"]) == {"participant", "questionnaire"}
@@ -56,10 +56,11 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
         "ID",
         "ACTIVITY_WALK_DAYS_1_1",
         "ACTIVITY_WALK_DAYS_2_1",
+        "EDU_COMP_AGE_2_1",
         "MEDICAT_1_M",
         "DICT_ONLY_1_1",
     ]
-    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4, 5, 6]
+    assert field_registry["dictionary_order"].tolist() == [0, 1, 2, 3, 4, 5, 6, 7]
 
     sex_field = field_registry[field_registry["name"] == "DEMOG_SEX_2_1"].iloc[0]
     assert bool(sex_field["in_questionnaire_logic"])
@@ -89,6 +90,16 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     assert v2_activity_field["numeric_range_rule"] == "name_contains_days"
     assert v2_activity_field["value_strategy"] == "numeric_range"
 
+    education_age_field = field_registry[
+        field_registry["name"] == "EDU_COMP_AGE_2_1"
+    ].iloc[0]
+    assert education_age_field["logic_template_types"] == "radioAndInput"
+    assert str(education_age_field["generation_min"]) == "0"
+    assert str(education_age_field["generation_max"]) == "110"
+    assert education_age_field["numeric_range_rule"] == "name_contains_age"
+    assert education_age_field["value_strategy"] == "numeric_range_with_coded_choices"
+    assert education_age_field["special_code_policy"] == "include"
+
     medicat_field = field_registry[field_registry["name"] == "MEDICAT_1_M"].iloc[0]
     assert bool(medicat_field["in_questionnaire_logic"])
     assert medicat_field["logic_sections"] == "4. Corrupted header section"
@@ -106,7 +117,7 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     assert dict_only_field["value_strategy"] == "blank"
 
     questionnaire_entity = entity_registry[entity_registry["entity"] == "questionnaire"].iloc[0]
-    assert questionnaire_entity["generated_field_count"] == 3
+    assert questionnaire_entity["generated_field_count"] == 4
     assert questionnaire_entity["blank_field_count"] == 2
 
     special_code = coding_registry[coding_registry["code"] == -1].iloc[0]
@@ -211,6 +222,21 @@ def _write_dictionary(path: Path) -> None:
                 "title": "Walk days",
                 "units": "",
                 "description": "V2 walking days field",
+            },
+            {
+                "entity": "questionnaire",
+                "name": "EDU_COMP_AGE_2_1",
+                "type": "integer",
+                "primary_key_type": "",
+                "coding_name": "EDU_COMP_AGE_2_1",
+                "is_sparse_coding": "",
+                "is_multi_select": False,
+                "referenced_entity_field": "",
+                "relationship": "",
+                "folder_path": "Questionnaire",
+                "title": "Education completion age",
+                "units": "",
+                "description": "Age completed continuous full-time education",
             },
             {
                 "entity": "questionnaire",
@@ -323,6 +349,34 @@ def _write_codings(path: Path) -> None:
                 "display_order": 2,
                 "parent_code": "",
             },
+            {
+                "coding_name": "EDU_COMP_AGE_2_1",
+                "code": 0,
+                "meaning": "Still in full time education",
+                "display_order": 1,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "EDU_COMP_AGE_2_1",
+                "code": -2,
+                "meaning": "Never went to school",
+                "display_order": 2,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "EDU_COMP_AGE_2_1",
+                "code": -1,
+                "meaning": "Do not know",
+                "display_order": 3,
+                "parent_code": "",
+            },
+            {
+                "coding_name": "EDU_COMP_AGE_2_1",
+                "code": -3,
+                "meaning": "Prefer not to answer",
+                "display_order": 4,
+                "parent_code": "",
+            },
         ],
     )
 
@@ -356,6 +410,16 @@ def _write_logic(path: Path) -> None:
             },
             {
                 "index": 3,
+                "sectio+B1:H59n": "4. Corrupted header section",
+                "question_text": "Education completion age",
+                "source": "",
+                "template_type": "radioAndInput",
+                "field_name": "EDU_COMP_AGE_2_1",
+                "question_type": "core",
+                "show_if": "",
+            },
+            {
+                "index": 4,
                 "sectio+B1:H59n": "4. Corrupted header section",
                 "question_text": (
                     "Do you regularly take medications for any of the following reasons?"

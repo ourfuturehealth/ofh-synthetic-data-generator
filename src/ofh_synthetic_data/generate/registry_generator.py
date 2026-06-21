@@ -274,6 +274,12 @@ def _generate_value(
             if special_code:
                 return special_code
         return _numeric_range_value(field, rng)
+    if strategy == "numeric_range_with_coded_choices":
+        if _use_special_code(field, rng):
+            coded_choice = _coded_choice(field, coding_lookup, rng)
+            if coded_choice:
+                return coded_choice
+        return _numeric_range_value(field, rng)
     if strategy == "numeric_range":
         return _numeric_range_value(field, rng)
     if strategy == "synthetic_string":
@@ -343,6 +349,7 @@ def _build_coding_lookup(coding_registry: pd.DataFrame) -> dict[str, dict[str, l
                 for code, special in zip(codes, special_flags, strict=True)
                 if special and not _is_suppression_code(code)
             ],
+            "all": [code for code in codes if not _is_suppression_code(code)],
         }
 
     return lookup
@@ -400,6 +407,15 @@ def _special_code(
     rng: Random,
 ) -> str:
     codes = _codes(field, coding_lookup, "special")
+    return rng.choice(codes) if codes else ""
+
+
+def _coded_choice(
+    field: dict[str, object],
+    coding_lookup: dict[str, dict[str, list[str]]],
+    rng: Random,
+) -> str:
+    codes = _codes(field, coding_lookup, "all")
     return rng.choice(codes) if codes else ""
 
 

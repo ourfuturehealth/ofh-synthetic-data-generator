@@ -347,8 +347,8 @@ def _validate_numeric_values(
     errors: list[ValidationIssue],
 ) -> None:
     name = str(field["name"])
-    special_codes = _special_codes(field, coding_lookup)
-    numeric_values = values[~values.map(lambda value: _format_code(value) in special_codes)]
+    ignored_codes = _numeric_validation_ignored_codes(field, coding_lookup)
+    numeric_values = values[~values.map(lambda value: _format_code(value) in ignored_codes)]
     parsed = pd.to_numeric(numeric_values, errors="coerce")
 
     if parsed.isna().any():
@@ -639,6 +639,15 @@ def _special_codes(
     coding_lookup: dict[str, dict[str, set[str]]],
 ) -> set[str]:
     return coding_lookup.get(str(field.get("coding_name", "")), {}).get("special", set())
+
+
+def _numeric_validation_ignored_codes(
+    field: dict[str, object],
+    coding_lookup: dict[str, dict[str, set[str]]],
+) -> set[str]:
+    if str(field.get("value_strategy", "")) == "numeric_range_with_coded_choices":
+        return _allowed_codes(field, coding_lookup)
+    return _special_codes(field, coding_lookup)
 
 
 def _multi_select_options(value: object) -> list[str] | None:

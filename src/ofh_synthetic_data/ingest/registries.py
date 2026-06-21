@@ -268,6 +268,7 @@ def add_logic_coverage(field_registry: pd.DataFrame, logic_registry: pd.DataFram
         .agg(
             logic_row_count=("field_name", "size"),
             logic_sections=("section", _join_unique),
+            logic_template_types=("template_type", _join_unique),
         )
         .reset_index()
         .rename(columns={"field_name": "name"})
@@ -276,6 +277,7 @@ def add_logic_coverage(field_registry: pd.DataFrame, logic_registry: pd.DataFram
     registry = field_registry.merge(logic_summary, on="name", how="left")
     registry["logic_row_count"] = registry["logic_row_count"].fillna(0).astype(int)
     registry["logic_sections"] = registry["logic_sections"].fillna("")
+    registry["logic_template_types"] = registry["logic_template_types"].fillna("")
     registry["in_questionnaire_logic"] = registry["logic_row_count"] > 0
     return registry
 
@@ -611,7 +613,11 @@ def _numeric_range_info(row: pd.Series) -> dict[str, object]:
     field_type = str(row["type"]).lower()
     if field_type not in {"integer", "float"}:
         return {"generation_min": "", "generation_max": "", "numeric_range_rule": ""}
-    if row["coding_found"] and row["coding_has_non_special_values"]:
+    if (
+        row["coding_found"]
+        and row["coding_has_non_special_values"]
+        and not _is_numeric_input_with_coded_choices(row)
+    ):
         return {"generation_min": "", "generation_max": "", "numeric_range_rule": ""}
 
     name = str(row["name"]).upper()
@@ -661,6 +667,8 @@ def _value_strategy(row: pd.Series) -> str:
         return "synthetic_future_date"
     if row["is_multi_select"]:
         return "coded_multi_select"
+    if _is_numeric_input_with_coded_choices(row):
+        return "numeric_range_with_coded_choices"
     if row["coding_found"] and row["coding_has_non_special_values"]:
         return "coded_single"
     if row["coding_found"] and row["coding_has_special_values"] and field_type in {
@@ -678,6 +686,8 @@ def _value_strategy(row: pd.Series) -> str:
 def _special_code_policy(row: pd.Series) -> str:
     if row["generation_action"] == "blank":
         return "not_applicable"
+    if _is_numeric_input_with_coded_choices(row) and row["coding_value_count"] > 0:
+        return "include"
     if row["coding_has_special_values"]:
         return "include"
     return "exclude"
@@ -695,6 +705,16 @@ def _multi_select_strategy(row: pd.Series) -> str:
     if row["is_multi_select"]:
         return "bracketed_comma_list"
     return "not_applicable"
+
+
+def _is_numeric_input_with_coded_choices(row: pd.Series) -> bool:
+    field_type = str(row["type"]).lower()
+    logic_template_types = str(row.get("logic_template_types", ""))
+    return (
+        field_type in {"integer", "float"}
+        and bool(row["coding_found"])
+        and "radioAndInput" in logic_template_types.split("; ")
+    )
 
 
 def _non_empty_values(series: pd.Series) -> set[str]:
