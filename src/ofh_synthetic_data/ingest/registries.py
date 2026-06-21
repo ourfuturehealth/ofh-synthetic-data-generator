@@ -154,6 +154,7 @@ def write_source_manifest(config: AppConfig, path: Path) -> None:
 
 
 def load_field_registry(path: Path, target_entities: Iterable[str]) -> pd.DataFrame:
+    """Load in-scope data dictionary fields and preserve dictionary order."""
     target_entity_set = set(target_entities)
     frames: list[pd.DataFrame] = []
     dictionary_order_start = 0
@@ -193,6 +194,7 @@ def load_field_registry(path: Path, target_entities: Iterable[str]) -> pd.DataFr
 
 
 def load_logic_registry(path: Path, field_registry: pd.DataFrame) -> pd.DataFrame:
+    """Load questionnaire logic rows and flag matches to dictionary fields."""
     frames: list[pd.DataFrame] = []
 
     workbook = pd.ExcelFile(path)
@@ -227,6 +229,7 @@ def load_logic_registry(path: Path, field_registry: pd.DataFrame) -> pd.DataFram
 
 
 def load_coding_registry(path: Path, used_coding_names: set[str]) -> pd.DataFrame:
+    """Load codings used by in-scope fields."""
     frames: list[pd.DataFrame] = []
 
     workbook = pd.ExcelFile(path)
@@ -257,6 +260,7 @@ def load_coding_registry(path: Path, used_coding_names: set[str]) -> pd.DataFram
 
 
 def add_logic_coverage(field_registry: pd.DataFrame, logic_registry: pd.DataFrame) -> pd.DataFrame:
+    """Attach questionnaire logic coverage metadata to dictionary fields."""
     if logic_registry.empty:
         field_registry["in_questionnaire_logic"] = False
         field_registry["logic_row_count"] = 0
@@ -286,6 +290,7 @@ def add_coding_coverage(
     field_registry: pd.DataFrame,
     coding_registry: pd.DataFrame,
 ) -> pd.DataFrame:
+    """Attach coding availability flags to field metadata."""
     available_codings = set(coding_registry["coding_name"])
     registry = field_registry.copy()
     registry["has_coding_name"] = registry["coding_name"].astype(str).str.strip() != ""
@@ -297,6 +302,7 @@ def add_generation_metadata(
     field_registry: pd.DataFrame,
     coding_registry: pd.DataFrame,
 ) -> pd.DataFrame:
+    """Derive generation actions, value strategies and broad numeric ranges."""
     registry = field_registry.copy()
     version_info = registry["name"].map(_field_version_info).apply(pd.Series)
     registry["field_stem"] = version_info["field_stem"].fillna("")
@@ -337,6 +343,7 @@ def add_generation_metadata(
 
 
 def build_entity_registry(field_registry: pd.DataFrame) -> pd.DataFrame:
+    """Summarise field coverage by output entity."""
     if field_registry.empty:
         return pd.DataFrame(
             columns=[
@@ -378,6 +385,7 @@ def build_coverage_summary(
     entity_registry: pd.DataFrame,
     target_entities: Iterable[str],
 ) -> str:
+    """Build a markdown summary of registry coverage and source quirks."""
     unmatched_logic = logic_registry[~logic_registry["dictionary_match"]]
     duplicate_logic = logic_registry["field_name"].value_counts()
     duplicate_logic = duplicate_logic[duplicate_logic > 1]
@@ -454,6 +462,7 @@ def build_coverage_summary(
 
 
 def _read_sheet(path: Path, sheet_name: str) -> pd.DataFrame:
+    """Read one workbook sheet with stable empty-string handling."""
     frame = pd.read_excel(
         path,
         sheet_name=sheet_name,
@@ -466,6 +475,7 @@ def _read_sheet(path: Path, sheet_name: str) -> pd.DataFrame:
 
 
 def _normalise_logic_columns(frame: pd.DataFrame) -> pd.DataFrame:
+    """Ensure questionnaire logic sheets expose the expected column names."""
     if "section" not in frame.columns:
         section_column = _find_section_column(frame.columns)
         frame = frame.rename(columns={section_column: "section"})
@@ -478,6 +488,7 @@ def _normalise_logic_columns(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def _normalise_known_logic_field_names(frame: pd.DataFrame) -> pd.DataFrame:
+    """Apply reviewed fixes for known source field-name quirks."""
     registry = frame.copy()
     field_name = registry["field_name"].astype(str).str.strip()
     question_text = registry["question_text"].astype(str).str.strip().str.casefold()
@@ -511,6 +522,7 @@ def _is_special_code(value: object) -> bool:
 
 
 def _field_version_info(field_name: object) -> dict[str, object]:
+    """Split a versioned field name into stem, version and variant."""
     parts = str(field_name).rsplit("_", 2)
     if len(parts) != 3:
         return {"field_stem": "", "field_version": "", "field_variant": ""}
@@ -527,6 +539,7 @@ def _field_version_info(field_name: object) -> dict[str, object]:
 
 
 def _max_versions_by_stem(registry: pd.DataFrame) -> dict[str, int]:
+    """Find the highest questionnaire version available for each field stem."""
     versioned = registry[
         (registry["field_stem"] != "")
         & (registry["field_version"] != "")
@@ -554,6 +567,7 @@ def _is_required_metadata(row: pd.Series) -> bool:
 
 
 def _v2_inclusion_status(row: pd.Series) -> str:
+    """Classify whether a field should be generated for the V2 Beta scope."""
     if row["is_required_metadata"]:
         return "metadata"
     if row["is_superseded_version"]:
@@ -582,6 +596,7 @@ def _blank_reason(v2_inclusion_status: str) -> str:
 
 
 def _coding_summary(coding_registry: pd.DataFrame) -> pd.DataFrame:
+    """Count regular and special coding values by coding name."""
     if coding_registry.empty:
         return pd.DataFrame(
             columns=[
@@ -607,6 +622,7 @@ def _coding_summary(coding_registry: pd.DataFrame) -> pd.DataFrame:
 
 
 def _numeric_range_info(row: pd.Series) -> dict[str, object]:
+    """Infer broad numeric generation bounds from field metadata."""
     if row["generation_action"] == "blank":
         return {"generation_min": "", "generation_max": "", "numeric_range_rule": ""}
 
@@ -653,6 +669,7 @@ def _range(minimum: int | float, maximum: int | float, rule: str) -> dict[str, o
 
 
 def _value_strategy(row: pd.Series) -> str:
+    """Choose the generator strategy for a field."""
     if row["generation_action"] == "blank":
         return "blank"
 
@@ -684,6 +701,7 @@ def _value_strategy(row: pd.Series) -> str:
 
 
 def _special_code_policy(row: pd.Series) -> str:
+    """Choose whether special response codes may be sampled."""
     if row["generation_action"] == "blank":
         return "not_applicable"
     if _is_numeric_input_with_coded_choices(row) and row["coding_value_count"] > 0:
@@ -700,6 +718,7 @@ def _special_code_probability(row: pd.Series) -> float:
 
 
 def _multi_select_strategy(row: pd.Series) -> str:
+    """Describe the output format for multi-select fields."""
     if row["generation_action"] == "blank":
         return "not_applicable"
     if row["is_multi_select"]:
@@ -708,6 +727,7 @@ def _multi_select_strategy(row: pd.Series) -> str:
 
 
 def _is_numeric_input_with_coded_choices(row: pd.Series) -> bool:
+    """Identify radio-and-input fields that mix numeric values with coded choices."""
     field_type = str(row["type"]).lower()
     logic_template_types = str(row.get("logic_template_types", ""))
     return (
@@ -746,6 +766,7 @@ def _write_registry(registry: pd.DataFrame, path: Path) -> None:
 
 
 def _source_file_entry(role: str, path: Path) -> dict[str, object]:
+    """Describe and fingerprint one source file for the source manifest."""
     entry: dict[str, object] = {
         "role": role,
         "path": str(path),

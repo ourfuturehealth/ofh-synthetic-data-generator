@@ -51,6 +51,7 @@ class AppConfig:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AppConfig:
+        """Create config objects from a nested YAML-compatible dictionary."""
         paths = data.get("paths", {})
         source_files = data.get("source_files", {})
         generation = data.get("generation", {})
@@ -90,6 +91,7 @@ class AppConfig:
         )
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-serialisable snapshot for output manifests."""
         data = asdict(self)
         data["paths"] = {key: str(value) for key, value in data["paths"].items()}
         data["registry"]["target_entities"] = list(data["registry"]["target_entities"])
@@ -97,6 +99,7 @@ class AppConfig:
 
 
 def load_config(path: str | Path) -> AppConfig:
+    """Load an application config from YAML."""
     config_path = Path(path)
     with config_path.open("r", encoding="utf-8") as file:
         data = yaml.safe_load(file) or {}

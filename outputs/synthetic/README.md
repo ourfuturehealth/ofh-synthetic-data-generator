@@ -29,9 +29,10 @@ columns follow the source data dictionary order for each entity.
   `Prefer not to answer` or another field-specific value.
 - Single-select coded fields keep Our Future Health coding values as codes. Multi-select coded
   fields are stored as bracketed code lists, for example `[1,6]`.
-- Synthetic dates and years are deliberately future-dated, generally `3000+`. For age
-  calculations, use a synthetic reference year rather than the real current year. A reference
-  year such as `3050` can be useful for local QA with the current generated birth-year range.
+- Synthetic markers include `SYN` identifiers, `CONSENT_VERSION` values beginning with
+  `SYNTHETIC_` and dates or years using `3000+`. For age calculations, use a synthetic
+  reference year rather than the real current year. A reference year such as `3050` can be
+  useful for local QA with the current generated birth-year range.
 - The generated data is structurally useful but not statistically representative.
 
 Run `poetry run ofh-synthetic-data --config configs/default.yaml validate` from the repository

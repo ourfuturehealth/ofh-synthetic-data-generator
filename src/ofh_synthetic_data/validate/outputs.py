@@ -136,6 +136,7 @@ def _validate_columns(
     entity: str,
     errors: list[ValidationIssue],
 ) -> int:
+    """Check output columns exactly match dictionary order."""
     expected = fields["name"].astype(str).tolist()
     actual = table.columns.astype(str).tolist()
     if actual == expected:
@@ -165,6 +166,7 @@ def _validate_row_counts(
     manifest: dict[str, Any],
     errors: list[ValidationIssue],
 ) -> int:
+    """Check row counts agree across outputs and manifest metadata."""
     if len(participants) != len(questionnaires):
         errors.append(
             ValidationIssue(
@@ -190,6 +192,7 @@ def _validate_pid_links(
     questionnaires: pd.DataFrame,
     errors: list[ValidationIssue],
 ) -> int:
+    """Check participant and questionnaire PID values link row by row."""
     if "PID" not in participants.columns or "PID" not in questionnaires.columns:
         errors.append(ValidationIssue("pid_links", "PID column missing from an output table"))
         return 1
@@ -212,6 +215,7 @@ def _validate_synthetic_ids(
     entity: str,
     errors: list[ValidationIssue],
 ) -> int:
+    """Check primary identifiers visibly use the synthetic prefix."""
     id_fields = fields[
         (fields["name"].isin({"ID", "PID"}))
         | (fields["primary_key_type"].astype(str).str.strip() != "")
@@ -238,6 +242,7 @@ def _validate_field_values(
     questionnaire_version: str,
     errors: list[ValidationIssue],
 ) -> int:
+    """Validate values according to each field's registry strategy."""
     for field in fields.to_dict("records"):
         name = str(field["name"])
         if name not in table.columns:
@@ -301,6 +306,7 @@ def _validate_coded_values(
     coding_lookup: dict[str, dict[str, set[str]]],
     errors: list[ValidationIssue],
 ) -> None:
+    """Check single coded values appear in the codings registry."""
     name = str(field["name"])
     allowed = _allowed_codes(field, coding_lookup)
     if not allowed:
@@ -322,6 +328,7 @@ def _validate_multi_select_values(
     coding_lookup: dict[str, dict[str, set[str]]],
     errors: list[ValidationIssue],
 ) -> None:
+    """Check bracketed multi-select values contain valid coding options."""
     name = str(field["name"])
     allowed = _allowed_codes(field, coding_lookup)
     invalid_count = 0
@@ -346,6 +353,7 @@ def _validate_numeric_values(
     coding_lookup: dict[str, dict[str, set[str]]],
     errors: list[ValidationIssue],
 ) -> None:
+    """Check numeric values parse, match integer type and stay in range."""
     name = str(field["name"])
     ignored_codes = _numeric_validation_ignored_codes(field, coding_lookup)
     numeric_values = values[~values.map(lambda value: _format_code(value) in ignored_codes)]
@@ -398,6 +406,7 @@ def _validate_future_dates(
     values: pd.Series,
     errors: list[ValidationIssue],
 ) -> None:
+    """Check generated date values are parseable and future-dated."""
     invalid_count = 0
     too_early_count = 0
 
@@ -434,6 +443,7 @@ def _validate_root_logic_fields(
     logic_registry: pd.DataFrame,
     errors: list[ValidationIssue],
 ) -> int:
+    """Check root logic fields are populated when they should be generated."""
     root_field_names = _root_logic_field_names(logic_registry)
     if not root_field_names:
         return 1
@@ -469,6 +479,7 @@ def _validate_source_logic_blanks(
     manifest: dict[str, Any],
     errors: list[ValidationIssue],
 ) -> int:
+    """Replay source show_if rules and check skipped fields are blank."""
     logic_rules, logic_order = _build_logic_rules(logic_registry)
     if not logic_rules:
         return 1
@@ -533,6 +544,7 @@ def _validate_no_source_text(
     logic_registry: pd.DataFrame,
     errors: list[ValidationIssue],
 ) -> int:
+    """Check synthetic outputs do not copy source question text or labels."""
     source_text = _source_text_values(field_registry, logic_registry)
     if not source_text:
         return 1
@@ -574,6 +586,7 @@ def _fields_for_entity(field_registry: pd.DataFrame, entity: str) -> pd.DataFram
 
 
 def _root_logic_field_names(logic_registry: pd.DataFrame) -> set[str]:
+    """Return logic fields with no show_if condition."""
     if logic_registry.empty or "field_name" not in logic_registry.columns:
         return set()
 
@@ -591,6 +604,7 @@ def _root_logic_field_names(logic_registry: pd.DataFrame) -> set[str]:
 
 
 def _build_logic_rules(logic_registry: pd.DataFrame) -> tuple[dict[str, list[str]], list[str]]:
+    """Group validation show_if expressions by field."""
     rules: dict[str, list[str]] = {}
     order: list[str] = []
 
@@ -607,6 +621,7 @@ def _build_logic_rules(logic_registry: pd.DataFrame) -> tuple[dict[str, list[str
 
 
 def _build_coding_lookup(coding_registry: pd.DataFrame) -> dict[str, dict[str, set[str]]]:
+    """Build sets of all and special codes by coding name."""
     if coding_registry.empty:
         return {}
 
@@ -645,6 +660,7 @@ def _numeric_validation_ignored_codes(
     field: dict[str, object],
     coding_lookup: dict[str, dict[str, set[str]]],
 ) -> set[str]:
+    """Return coded values that should not be range-checked as numbers."""
     if str(field.get("value_strategy", "")) == "numeric_range_with_coded_choices":
         return _allowed_codes(field, coding_lookup)
     return _special_codes(field, coding_lookup)
