@@ -21,7 +21,7 @@ Python dependencies are intentionally kept small. Runtime dependencies should be
 packages needed for reading source artefacts, generating synthetic outputs and validating
 those outputs.
 
-Before adding a new dependency, consider whether it is required at runtime, whether the same
+Before proposing a new dependency, consider whether it is required at runtime, whether the same
 task can be done with the standard library or an existing dependency, and whether it adds a
 file parser, network client, deserialiser or other higher-risk behaviour.
 
