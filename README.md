@@ -33,7 +33,6 @@ response times or future feature delivery.
 
 - Python `>=3.11,<4.0`
 - Poetry
-- Git
 - A terminal or shell environment
 - The source artefacts listed in [data/raw/README.md](data/raw/README.md)
 
@@ -190,18 +189,18 @@ Generated synthetic outputs are not committed to this repository by default.
 
 Source artefacts in `data/raw/` remain subject to their original source terms.
 
-## Support And Feedback
+## Feedback
 
 Use GitHub Issues to report bugs, documentation problems or suggested improvements.
 
 Before opening an issue, please check existing issues to avoid duplicates. Include the command
 you ran, the config used, the expected behaviour and the observed behaviour where relevant.
 
-Do not include real participant data, credentials, TRE outputs or other sensitive information
-in issues.
-
 For security, privacy or suspected data disclosure concerns, do not open a public issue.
 Follow the reporting route in [SECURITY.md](SECURITY.md).
+
+Do not include real participant data, credentials, TRE outputs or other sensitive information
+in issues.
 
 ## Related Projects And Resources
 
