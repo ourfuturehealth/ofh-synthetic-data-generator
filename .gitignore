@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Poetry / environments
+.venv/
+dist/
+build/
+
+# Local configuration
+.env
+**/.DS_Store
+AGENTS.md
+
+# Previous local input folder. Use data/raw/ for new work.
+inputs/
+
+# Data lifecycle folders. Keep documentation/placeholders; ignore generated data files.
+data/processed/*
+!data/processed/README.md
+!data/processed/.gitkeep
+!data/README.md
+
+# Generated output folders. Keep documentation/placeholders; ignore generated files.
+outputs/synthetic/*
+outputs/qa/*
+!outputs/README.md
+!outputs/synthetic/README.md
+!outputs/synthetic/.gitkeep
+!outputs/qa/README.md
+!outputs/qa/.gitkeep

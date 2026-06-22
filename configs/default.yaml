@@ -1,0 +1,23 @@
+paths:
+  raw_data_dir: data/raw
+  processed_data_dir: data/processed
+  synthetic_data_dir: outputs/synthetic
+  qa_dir: outputs/qa
+
+source_files:
+  questionnaire_logic: Our Future Health Baseline Questionnaire Logic v2.2.xlsx
+  data_dictionary: our_future_health_data_dictionary_v14.xlsx
+  codings: our_future_health_codings_v14.xlsx
+
+registry:
+  target_entities:
+    - participant
+    - questionnaire
+
+generation:
+  rows: 200
+  seed: 42
+  participant_file: participant.csv
+  questionnaire_file: questionnaire.csv
+  manifest_file: manifest.json
+  questionnaire_version: "v2"
