@@ -18,7 +18,6 @@ class SourceFileStatus:
 def expected_source_files(config: SourceFilesConfig) -> dict[str, str]:
     """Map source artefact roles to configured filenames."""
     return {
-        "questionnaire_pdf": config.questionnaire_pdf,
         "questionnaire_logic": config.questionnaire_logic,
         "data_dictionary": config.data_dictionary,
         "codings": config.codings,

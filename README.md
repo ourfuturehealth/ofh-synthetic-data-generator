@@ -39,7 +39,11 @@ response times or future feature delivery.
 
 ## Quickstart
 
+For more detail on what each stage does, see [methodology](docs/methodology.md).
+
 Install dependencies:
+
+This installs the Python packages needed to run the generator.
 
 ```bash
 poetry install
@@ -47,11 +51,16 @@ poetry install
 
 Check the expected source artefacts:
 
+This confirms the required raw documentation files are present locally.
+
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml inspect-inputs
 ```
 
 Build source-derived registries:
+
+This turns the dictionary, codings and questionnaire logic files into lookup tables used by
+the generator.
 
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml build-registry
@@ -59,11 +68,18 @@ poetry run ofh-synthetic-data --config configs/default.yaml build-registry
 
 Generate synthetic participant and questionnaire tables:
 
+This writes the linked synthetic outputs using the settings in `configs/default.yaml`.
+
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml generate
 ```
 
+The number of generated participants is configurable in `configs/default.yaml` under
+`generation.rows`. One questionnaire row is generated for each participant.
+
 Validate generated outputs:
+
+This checks the generated tables for expected structure, linkage and coded values.
 
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml validate
@@ -71,11 +87,15 @@ poetry run ofh-synthetic-data --config configs/default.yaml validate
 
 Create decoded manual QA copies:
 
+This writes optional review files where coded values are replaced with meanings where possible.
+
 ```bash
 poetry run ofh-synthetic-data --config configs/default.yaml export-qa
 ```
 
 Run tests and linting:
+
+This runs the automated checks for code behaviour and style.
 
 ```bash
 poetry run pytest
@@ -109,8 +129,10 @@ These files correspond to the current Beta synthetic participant and questionnai
 
 PLACEHOLDER - these links are currently placeholders.
 
-- [Participant synthetic data](https://a.storyblok.com/f/228028/x/c1835e7466/participant_synthetic_our_future_health.csv)
-- [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/8c2a97f296/questionnaire_synthetic_our_future_health.csv)
+- [Participant synthetic data]()
+- [Participant synthetic data - decoded]()
+- [Questionnaire synthetic data]()
+- [Questionnaire synthetic data - decoded]()
 
 Before using these files, see [Reading The Outputs](outputs/README.md#reading-the-outputs)
 for notes on synthetic markers, blank values, coded values and date handling.
@@ -142,7 +164,6 @@ Source details and expected filenames are documented in
 src/ofh_synthetic_data/  package source code
 configs/                reproducible generation settings
 data/raw/               public source artefacts
-data/interim/           temporary parsed extracts, ignored by git
 data/processed/         generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
 outputs/qa/             decoded manual QA outputs, ignored by git

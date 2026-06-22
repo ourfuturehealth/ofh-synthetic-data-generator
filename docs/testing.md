@@ -77,7 +77,4 @@ It checks that:
 
 ## Current Limits
 
-The unit tests do not replace manual validation of the generated Beta outputs. They do not
-verify statistical fidelity, complete field-by-field plausibility, or every source-file edge
-case in the full P14/V2 artefacts. Those checks remain part of ongoing manual review and
-future plausibility-rule work.
+The unit tests do not replace manual validation of the generated Beta outputs.

@@ -19,6 +19,8 @@ def test_load_config(tmp_path: Path) -> None:
 paths:
   raw_data_dir: custom-raw
   processed_data_dir: custom-processed
+source_files:
+  data_dictionary: dictionary.xlsx
 generation:
   rows: 10
   seed: 123
@@ -31,6 +33,7 @@ generation:
 
     assert config.paths.raw_data_dir == Path("custom-raw")
     assert config.paths.processed_data_dir == Path("custom-processed")
+    assert config.source_files.data_dictionary == "dictionary.xlsx"
     assert config.generation.rows == 10
     assert config.generation.seed == 123
     assert not hasattr(config.generation, "reference_year")

@@ -12,7 +12,6 @@ import yaml
 @dataclass(frozen=True)
 class PathsConfig:
     raw_data_dir: Path = Path("data/raw")
-    interim_data_dir: Path = Path("data/interim")
     processed_data_dir: Path = Path("data/processed")
     synthetic_data_dir: Path = Path("outputs/synthetic")
     qa_dir: Path = Path("outputs/qa")
@@ -20,7 +19,6 @@ class PathsConfig:
 
 @dataclass(frozen=True)
 class SourceFilesConfig:
-    questionnaire_pdf: str = "Our Future Health Baseline Health Questionnaire v2.pdf"
     questionnaire_logic: str = "Our Future Health Baseline Questionnaire Logic v2.2.xlsx"
     data_dictionary: str = "our_future_health_data_dictionary_v14.xlsx"
     codings: str = "our_future_health_codings_v14.xlsx"
@@ -60,11 +58,6 @@ class AppConfig:
         return cls(
             paths=PathsConfig(
                 raw_data_dir=_path_value(paths, "raw_data_dir", PathsConfig.raw_data_dir),
-                interim_data_dir=_path_value(
-                    paths,
-                    "interim_data_dir",
-                    PathsConfig.interim_data_dir,
-                ),
                 processed_data_dir=_path_value(
                     paths,
                     "processed_data_dir",

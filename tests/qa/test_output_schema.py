@@ -173,7 +173,6 @@ def _config_for_tmp_path(tmp_path: Path):
         config,
         paths=PathsConfig(
             raw_data_dir=config.paths.raw_data_dir,
-            interim_data_dir=tmp_path / "interim",
             processed_data_dir=tmp_path / "processed",
             synthetic_data_dir=tmp_path / "synthetic",
             qa_dir=tmp_path / "qa",
