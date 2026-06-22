@@ -20,12 +20,10 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
     _write_dictionary(raw_dir / "dictionary.xlsx")
     _write_codings(raw_dir / "codings.xlsx")
     _write_logic(raw_dir / "logic.xlsx")
-    (raw_dir / "questionnaire.pdf").write_bytes(b"synthetic fixture pdf")
 
     config = AppConfig(
         paths=PathsConfig(raw_data_dir=raw_dir, processed_data_dir=processed_dir),
         source_files=SourceFilesConfig(
-            questionnaire_pdf="questionnaire.pdf",
             questionnaire_logic="logic.xlsx",
             data_dictionary="dictionary.xlsx",
             codings="codings.xlsx",
@@ -132,13 +130,12 @@ def test_build_registries_from_source_workbooks(tmp_path: Path) -> None:
 
     manifest_files = {entry["role"]: entry for entry in source_manifest["files"]}
     assert set(manifest_files) == {
-        "questionnaire_pdf",
         "questionnaire_logic",
         "data_dictionary",
         "codings",
     }
-    assert manifest_files["questionnaire_pdf"]["exists"]
-    assert manifest_files["questionnaire_pdf"]["sha256"]
+    assert manifest_files["questionnaire_logic"]["exists"]
+    assert manifest_files["questionnaire_logic"]["sha256"]
 
 
 def _write_dictionary(path: Path) -> None:

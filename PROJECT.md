@@ -21,8 +21,7 @@ In scope:
 - deterministic generation from a fixed seed.
 - visible synthetic markers, including `SYN`-prefixed identifiers, generated
   `CONSENT_VERSION` values beginning with `SYNTHETIC_` and dates or years using `3000+`.
-- reduced core timeline consistency for birth, registration, consent and questionnaire
-  submission fields.
+- temporal consistency for dates used to generate age only (i.e. core timeline).
 - unit tests and QA checks for schema, types, codings and linkage.
 
 Out of scope:
@@ -33,10 +32,9 @@ Out of scope:
 - statistical fidelity to observed Our Future Health distributions.
 - temporal consistency across other date, year and age fields outside the reduced core
   timeline.
-- additional plausibility rules beyond documented broad numeric range heuristics, such as
+- field-specific plausibility rules beyond documented broad numeric range heuristics, such as
   consistency between related answers or tighter quantity limits.
 - exhaustive checks for every questionnaire minor-version changelog edge case.
-- reconstructing the raw questionnaire capture flow or website engine behaviour.
 
 ## Source Artefacts
 

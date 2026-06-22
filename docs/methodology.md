@@ -1,19 +1,17 @@
 # Methodology
 
-This project should produce synthetic data that is useful for development, testing and
+This project aims to produce synthetic data that is useful for development, testing and
 demonstration without representing observed participants.
 
 The intended workflow is:
 
 1. Store source artefacts in `data/raw/` without editing them.
 2. Discover and validate the expected source artefacts.
-3. Parse the data dictionary, questionnaire codings and questionnaire logic spreadsheet into
-   `data/interim/`.
-4. Build canonical schema, allowed-value and dependency files in `data/processed/`.
-5. Generate `participant.csv` and `questionnaire.csv` using explicit distributions and
+3. Build canonical schema, allowed-value and dependency files in `data/processed/`.
+4. Generate `participant.csv` and `questionnaire.csv` using explicit distributions and
    deterministic seeds.
-6. Validate the generated records against the schema and release-schema questionnaire logic.
-7. Export synthetic datasets to `outputs/synthetic/` with metadata describing the config,
+5. Validate the generated records against the schema and release-schema questionnaire logic.
+6. Export synthetic datasets to `outputs/synthetic/` with metadata describing the config,
    seed and source versions.
 
 Current generation is source-driven by the processed registries and applies supported
@@ -21,6 +19,8 @@ release-schema questionnaire logic. Generated outputs can be checked with
 `poetry run ofh-synthetic-data validate`.
 
 ## Registry Build
+
+This step turns the raw documentation into lookup tables used by later pipeline stages.
 
 The `build-registry` command creates the first source-driven layer in `data/processed/`:
 
@@ -35,6 +35,8 @@ These files are generated artefacts and should be reproducible from `data/raw/`,
 and `configs/default.yaml`.
 
 ## Synthetic Outputs
+
+This step writes the linked coded participant and questionnaire CSV files.
 
 The `generate` command writes:
 
@@ -57,6 +59,8 @@ summary.
 
 ## Manual QA Exports
 
+This step creates optional decoded copies of synthetic data.
+
 The `export-qa` command reads the generated synthetic outputs and writes decoded QA copies to
 `outputs/qa/` by default:
 
@@ -72,6 +76,8 @@ If a coding row exists but its meaning is blank, the decoded output uses an expl
 coding are preserved. The canonical synthetic outputs in `outputs/synthetic/` remain coded.
 
 ## Validation
+
+This step checks that generated outputs match the expected structure and supported rules.
 
 The `validate` command checks generated `participant.csv`, `questionnaire.csv` and
 `manifest.json` against the processed registries. The current checks cover output file

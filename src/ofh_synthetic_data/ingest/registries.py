@@ -140,7 +140,6 @@ def write_source_manifest(config: AppConfig, path: Path) -> None:
     """Write a manifest that fingerprints local raw files without committing them."""
 
     source_files = {
-        "questionnaire_pdf": config.source_files.questionnaire_pdf,
         "questionnaire_logic": config.source_files.questionnaire_logic,
         "data_dictionary": config.source_files.data_dictionary,
         "codings": config.source_files.codings,
