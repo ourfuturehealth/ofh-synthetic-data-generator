@@ -22,7 +22,7 @@ packages = [{ include = "ofh_synthetic_data", from = "src" }]
 [tool.poetry.group.dev.dependencies]
 pytest = ">=9.0.1,<10.0"
 ruff = ">=0.6,<1.0"
-types-pyyaml = ">=6.0,<7.0"
+types-pyyaml = ">=6.0.12.20260724,<7.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
