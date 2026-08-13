@@ -23,7 +23,7 @@ future-dated years using `3000+`.
 
 ## Beta Status
 
-This repository is a Beta release candidate. The pipeline has unit and QA tests, but generated
+This repository is currently in beta. The pipeline has unit and QA tests, but generated
 synthetic outputs are still undergoing manual validation.
 
 This repository is shared without a commitment to ongoing development, maintenance, support
@@ -33,7 +33,6 @@ response times or future feature delivery.
 
 - Python `>=3.11,<4.0`
 - Poetry
-- Git
 - A terminal or shell environment
 - The source artefacts listed in [data/raw/README.md](data/raw/README.md)
 
@@ -127,12 +126,10 @@ shape without running the generator:
 
 These files correspond to the current Beta synthetic participant and questionnaire outputs.
 
-PLACEHOLDER - these links are currently placeholders.
-
-- [Participant synthetic data]()
-- [Participant synthetic data - decoded]()
-- [Questionnaire synthetic data]()
-- [Questionnaire synthetic data - decoded]()
+- [Participant synthetic data](https://a.storyblok.com/f/228028/x/0b65f5a1fe/participant_synthetic_ourfuturehealth.csv)
+- [Participant synthetic data - decoded](https://a.storyblok.com/f/228028/x/bc2abca18a/participant_synthetic_coding_ourfuturehealth.csv)
+- [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/b82860f150/questionnaire_synthetic_ourfuturehealth.csv)
+- [Questionnaire synthetic data - decoded](https://a.storyblok.com/f/228028/x/4e1b3af0de/questionnaire_synthetic_coding_ourfuturehealth.csv)
 
 Before using these files, see [Reading The Outputs](outputs/README.md#reading-the-outputs)
 for notes on synthetic markers, blank values, coded values and date handling.
@@ -192,18 +189,18 @@ Generated synthetic outputs are not committed to this repository by default.
 
 Source artefacts in `data/raw/` remain subject to their original source terms.
 
-## Support And Feedback
+## Feedback
 
 Use GitHub Issues to report bugs, documentation problems or suggested improvements.
 
 Before opening an issue, please check existing issues to avoid duplicates. Include the command
 you ran, the config used, the expected behaviour and the observed behaviour where relevant.
 
-Do not include real participant data, credentials, TRE outputs or other sensitive information
-in issues.
-
 For security, privacy or suspected data disclosure concerns, do not open a public issue.
 Follow the reporting route in [SECURITY.md](SECURITY.md).
+
+Do not include real participant data, credentials, TRE outputs or other sensitive information
+in issues.
 
 ## Related Projects And Resources
 
