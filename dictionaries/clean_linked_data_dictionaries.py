@@ -12,8 +12,8 @@ import pandas as pd
 # mapping colloquial names to entity names on TRE for legibility
 DF_NAMES = {
     "deaths" : "nhse_engwal_deaths",
-    "apc"    : "nhse_engwal_inpat",
-    "op" : "nhse_engwal_outpat"
+    "apc"    : "nhse_eng_inpat",
+    "op" : "nhse_eng_outpat"
 }
 OUT_PATH = "dictionaries/processed/linked-data/"
 
@@ -31,11 +31,6 @@ df_dicts = {
 df_codings = {
     key : raw_coding_file.loc[raw_coding_file["coding_name"].str.contains(key), ["coding_name", "code", "meaning"]] for key in DF_NAMES.keys()
 }
-# cleaning column name for legibility and easier merging
-for key, value in df_codings.items():
-    # some datasets do not have set codes which appear in the coding file
-    if len(value) > 0:
-        value["name"] = value["coding_name"].replace("", f"_{key}_coding")
 
 # separating out ICD-10 and OPCS-4 codes from raw coding file
 # using startswith for Beta version to exclude PatientTumour ICD10 coding, which is more idiosyncratic
