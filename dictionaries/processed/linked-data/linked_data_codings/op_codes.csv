@@ -1,0 +1,376 @@
+coding_name,code,meaning
+ADMINCAT_op_coding,01,NHS patient  including overseas visitors charged under the  National Health Service (Overseas Visitors Hospital Charging Regulations)
+ADMINCAT_op_coding,02,Private patient  one who uses accommodation or services authorised under the National Health Service Act 2006
+ADMINCAT_op_coding,03,Amenity patient  one who pays for the use of a single room or small ward in accordance with the National Health Service Act 2006
+ADMINCAT_op_coding,04,Category II patient  one for whom work is undertaken by hospital medical or dental staff within category II as defined in paragraph 37 of the Terms and Conditions of Service of Hospital Medical and Dental Staff
+ADMINCAT_op_coding,98,Not applicable
+ADMINCAT_op_coding,99,Not known (to 2022-23) Administrative Category Code not known (V6.3 2022-23 onwards)
+ATTENDED_op_coding,2,Appointment cancelled by  or on behalf of  the patient
+ATTENDED_op_coding,3,Did not attend - no advance warning given
+ATTENDED_op_coding,4,Appointment cancelled or postponed by the Health Care Provider
+ATTENDED_op_coding,5,Seen  having attended on time or  if late  before the relevant care professional was ready to see the patient
+ATTENDED_op_coding,6,Arrived late  after the relevant care professional was ready to see the patient  but was seen
+ATTENDED_op_coding,7,Did not attend - patient arrived late and could not be seen
+ATTENDED_op_coding,9,Not known
+FIRSTATT_op_coding,1,First attendance face to face
+FIRSTATT_op_coding,2,Follow-up attendance face to face
+FIRSTATT_op_coding,3,First telephone or telemedicine consultation
+FIRSTATT_op_coding,4,Follow-up telephone or telemedicine consultation
+FIRSTATT_op_coding,9,Not known (prior to 2008/09)
+FIRSTATT_op_coding,X,Not known  (from 2008/09)
+MAINSPEF_op_coding,&,Not Known (Until 2022-23)
+MAINSPEF_op_coding,100,General Surgery
+MAINSPEF_op_coding,101,Urology
+MAINSPEF_op_coding,107,Vascular Surgery (Introduced 1 April 2021)
+MAINSPEF_op_coding,110,Trauma and Orthopaedics
+MAINSPEF_op_coding,120,Ear Nose and Throat
+MAINSPEF_op_coding,130,Ophthalmology
+MAINSPEF_op_coding,140,Oral Surgery
+MAINSPEF_op_coding,141,Restorative Dentistry
+MAINSPEF_op_coding,142,Paediatric Dentistry
+MAINSPEF_op_coding,143,Orthodontics
+MAINSPEF_op_coding,145,Oral and Maxillofacial Surgery
+MAINSPEF_op_coding,146,Endodontics
+MAINSPEF_op_coding,147,Periodontics
+MAINSPEF_op_coding,148,Prosthodontics
+MAINSPEF_op_coding,149,Surgical Dentistry
+MAINSPEF_op_coding,150,Neurosurgery
+MAINSPEF_op_coding,160,Plastic Surgery
+MAINSPEF_op_coding,170,Cardiothoracic Surgery
+MAINSPEF_op_coding,171,Paediatric Surgery
+MAINSPEF_op_coding,180,Emergency Medicine
+MAINSPEF_op_coding,190,Anaesthetics
+MAINSPEF_op_coding,191,Pain Management (Retired 1 April 2004)
+MAINSPEF_op_coding,192,Intensive Care Medicine
+MAINSPEF_op_coding,199,Non-UK Provider - Specialty Function Not Known  Treatment Mainly Surgical (Until 2022-23)
+MAINSPEF_op_coding,200,Aviation and Space Medicine (Introduced 1 April 2021)
+MAINSPEF_op_coding,300,General Internal Medicine
+MAINSPEF_op_coding,301,Gastroenterology
+MAINSPEF_op_coding,302,Endocrinology and Diabetes
+MAINSPEF_op_coding,303,Clinical Haematology
+MAINSPEF_op_coding,304,Clinical Physiology
+MAINSPEF_op_coding,305,Clinical Pharmacology
+MAINSPEF_op_coding,310,Audio Vestibular Medicine
+MAINSPEF_op_coding,311,Clinical Genetics
+MAINSPEF_op_coding,312,Clinical Cytogenetics and Molecular Genetics (Retired 1 April 2010). National Code 312 is retained for consultants qualified in this Main Specialty prior to 1 April 2010
+MAINSPEF_op_coding,313,Clinical Immunology
+MAINSPEF_op_coding,314,Rehabilitation Medicine
+MAINSPEF_op_coding,315,Palliative Medicine
+MAINSPEF_op_coding,317,Allergy (Introduced 1 April 2021)
+MAINSPEF_op_coding,320,Cardiology
+MAINSPEF_op_coding,321,Paediatric Cardiology
+MAINSPEF_op_coding,325,Sport and Exercise Medicine
+MAINSPEF_op_coding,326,Acute Internal Medicine
+MAINSPEF_op_coding,330,Dermatology
+MAINSPEF_op_coding,340,Respiratory Medicine
+MAINSPEF_op_coding,350,Infectious Diseases
+MAINSPEF_op_coding,352,Tropical Medicine
+MAINSPEF_op_coding,360,Genitourinary Medicine
+MAINSPEF_op_coding,361,Renal Medicine
+MAINSPEF_op_coding,370,Medical Oncology
+MAINSPEF_op_coding,371,Nuclear Medicine
+MAINSPEF_op_coding,400,Neurology
+MAINSPEF_op_coding,401,Clinical Neurophysiology
+MAINSPEF_op_coding,410,Rheumatology
+MAINSPEF_op_coding,420,Paediatrics
+MAINSPEF_op_coding,421,Paediatric Neurology
+MAINSPEF_op_coding,430,Geriatric Medicine
+MAINSPEF_op_coding,450,Dental Medicine
+MAINSPEF_op_coding,451,Special Care Dentistry
+MAINSPEF_op_coding,460,Medical Ophthalmology
+MAINSPEF_op_coding,499,Non-UK Provider - Specialty Function Not Known  Treatment Mainly Medical (Until 2022-23)
+MAINSPEF_op_coding,500,Obstetrics and Gynaecology      National Code 500 is not acceptable for Central Returns including      Hospital Episode Statistics (From 2022-23)
+MAINSPEF_op_coding,501,Obstetrics
+MAINSPEF_op_coding,502,Gynaecology
+MAINSPEF_op_coding,504,Community Sexual and Reproductive Health
+MAINSPEF_op_coding,510,Antenatal Clinic (Retired 1 April 2004)
+MAINSPEF_op_coding,520,Postnatal Clinic (Retired 1 April 2004)
+MAINSPEF_op_coding,560,Midwifery
+MAINSPEF_op_coding,600,General Medical Practice
+MAINSPEF_op_coding,601,General Dental Practice
+MAINSPEF_op_coding,610,Maternity Function (Retired 1 April 2004)
+MAINSPEF_op_coding,620,Other than Maternity (Retired 1 April 2004)
+MAINSPEF_op_coding,700,Learning Disability
+MAINSPEF_op_coding,710,Adult Mental Illness
+MAINSPEF_op_coding,711,Child and Adolescent Psychiatry
+MAINSPEF_op_coding,712,Forensic Psychiatry
+MAINSPEF_op_coding,713,Medical Psychotherapy
+MAINSPEF_op_coding,715,Old Age Psychiatry
+MAINSPEF_op_coding,800,Clinical Oncology
+MAINSPEF_op_coding,810,Radiology
+MAINSPEF_op_coding,820,General Pathology
+MAINSPEF_op_coding,821,Blood Transfusion
+MAINSPEF_op_coding,822,Chemical Pathology
+MAINSPEF_op_coding,823,Haematology
+MAINSPEF_op_coding,824,Histopathology
+MAINSPEF_op_coding,830,Immunopathology
+MAINSPEF_op_coding,831,Medical Microbiology and Virology
+MAINSPEF_op_coding,832,Neuropathology (Retired 1 April 2004)
+MAINSPEF_op_coding,833,Medical Microbiology
+MAINSPEF_op_coding,834,Medical Virology
+MAINSPEF_op_coding,900,Community Medicine
+MAINSPEF_op_coding,901,Occupational Medicine
+MAINSPEF_op_coding,902,Community Health Services Dental
+MAINSPEF_op_coding,903,Public Health Medicine
+MAINSPEF_op_coding,904,Public Health Dental
+MAINSPEF_op_coding,950,Nursing
+MAINSPEF_op_coding,960,Allied Health Professional
+MAINSPEF_op_coding,990,Joint Consultant Clinics (Retired 1 April 2004)
+MAINSPEF_op_coding,Null,Other Maternity Event (Until 2022-23)
+OUTCOME_op_coding,1,PATIENT discharged from the care of the CARE PROFESSIONAL without Personalised Out-Patient Follow Up (From 2022-23 onwards) or Discharged from consultant's care (last attendance) (to 2022-23)
+OUTCOME_op_coding,2,PATIENT given a Timed Out-Patient Follow Up Appointment while at the out-patient attendance without Personalised Out-Patient Follow Up (From 2022-23 onwards) or Another appointment given (Until 2022-23)
+OUTCOME_op_coding,3,PATIENT to be given a Timed Out-Patient Follow Up Appointment at a later date without Personalised Out-Patient Follow Up (From 2022-23 onwards) or Appointment to be made at a later date (Until 2022-23)
+OUTCOME_op_coding,4,PATIENT moved to a Personalised Out-Patient Follow Up Pathway (From 2022-23 onwards)
+OUTCOME_op_coding,5,PATIENT discharged to a Personalised Out-Patient Follow Up Pathway (From 2022-23 onwards)
+OUTCOME_op_coding,9,Not known
+PRIORITY_op_coding,1,Routine
+PRIORITY_op_coding,2,Urgent
+PRIORITY_op_coding,3,Two week wait
+PRIORITY_op_coding,9,Not known
+PROTYPE_op_coding,CARETRUST,Care trust
+PROTYPE_op_coding,CCG,Clinical Commissioning Group
+PROTYPE_op_coding,FOUNDATION,NHS foundation trust
+PROTYPE_op_coding,IND,Independent sector provider
+PROTYPE_op_coding,INDSITE,Independent sector provider site
+PROTYPE_op_coding,INDSITETC,Treatment centre at independent sector provider site
+PROTYPE_op_coding,OTHERPROV,Other provider organisation
+PROTYPE_op_coding,PCT,Primary care trust
+PROTYPE_op_coding,TRUST,NHS trust
+PROTYPE_op_coding,TRUSTSITETC,Treatment centre at NHS trust site
+REFSOURC_op_coding,01,Following an emergency admission (Initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,02,Following a domiciliary visit (Initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,03,Referral from a general medical practitioner (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,04,Referral from an accident and emergency department (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,05,Referral from a consultant  other than in an accident and emergency department (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,06,Self Referral (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,07,Referral from prosthetist (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,08,Other source of Referral (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,10,Following an Accident and Emergency Attendance (Initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,11,Other (Initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,12,Referral from GP with special interest (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,13,Referral from a specialist nurse (secondary care) (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,14,Referral from an allied health professional (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,15,Referral from an optometrist (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,16,Referral from a orthoptist (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,17,Referral from a national screening programme (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,92,General dental practitioner (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,93,Community dental service (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,97,Other – not initiated by the consultant responsible for the consultant outpatient episode (Not initiated by the consultant responsible for the outpatient attendance)
+REFSOURC_op_coding,99,Not known (Not initiated by the consultant responsible for the outpatient attendance)
+RTTPERSTAT_op_coding,10,First activity in a referral to treatment period (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_op_coding,11,First activity at the start of a new referral to treatment period following active monitoring (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_op_coding,12,First activity at the start of a new referral to treatment period following a decision to refer directly to the consultant or NHS allied health professional service (referral to treatment measurement) for a separate condition (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_op_coding,20,Subsequent activity during a referral to treatment period - further activities anticipated (Subsequent activity during a referral to treatment period)
+RTTPERSTAT_op_coding,21,Subsequent activity by another health care provider following a transfer to another health care provider during a referral to treatment period anticipated (Subsequent activity during a referral to treatment period)
+RTTPERSTAT_op_coding,30,Start of first definitive treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,31,Start of active monitoring initiated by the patient (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,32,Start of active monitoring initiated by the care professional (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,33,Did not attend - the patient did not attend the first care activity after the referral1 (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,34,Decision not to treat - decision not to treat made or no further contact required2 (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,35,Patient declined offered treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,36,Patient died before treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_op_coding,90,After treatment - first definitive treatment occurred previously (e.g. admitted as an emergency from A&E or the activity is after the start of treatment) (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_op_coding,91,Care activity during active monitoring (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_op_coding,92,Not yet referred for treatment  undergoing diagnostic tests by general practitioner before referral (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_op_coding,98,Not applicable - activity not applicable to referral to treatment periods (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_op_coding,99,Not yet known (Activity where the referral to treatment period status is not yet known)
+SUSSPELLID_op_coding,-1,Unspellable episodes
+SUSSPELLID_op_coding,Null,Records that have excluded from PbR in SUS as the activity is outside the scope of PbR
+TRETSPEF_op_coding,&,Not known (Until 2022-23)
+TRETSPEF_op_coding,100, General Surgery Service
+TRETSPEF_op_coding,101, Urology Service
+TRETSPEF_op_coding,102, Transplant Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,103, Breast Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,104, Colorectal Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,105, Hepatobiliary and Pancreatic Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,106, Upper Gastrointestinal Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,107, Vascular Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,108, Spinal Surgery Service (From April 2013)
+TRETSPEF_op_coding,109, Bariatric Surgery Service (From 1 April 2021)
+TRETSPEF_op_coding,110, Trauma and Orthopaedic Service
+TRETSPEF_op_coding,111, Orthopaedic Service (From 1 April 2021)
+TRETSPEF_op_coding,113, Endocrine Surgery Service (From 1 April 2021)
+TRETSPEF_op_coding,115, Trauma Surgery Service (From 1 April 2021)
+TRETSPEF_op_coding,120, Ear Nose and Throat Service
+TRETSPEF_op_coding,130, Ophthalmology Service
+TRETSPEF_op_coding,140, Oral Surgery Service
+TRETSPEF_op_coding,141, Restorative Dentistry Service
+TRETSPEF_op_coding,142, Paediatric Dentistry Service (From 1999-2000)
+TRETSPEF_op_coding,143, Orthodontic Service
+TRETSPEF_op_coding,144, Maxillofacial Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,145, Oral and Maxillofacial Surgery Service (From 1 April 2021)
+TRETSPEF_op_coding,150, Neurosurgical Service
+TRETSPEF_op_coding,160, Plastic Surgery Service
+TRETSPEF_op_coding,161, Burns Care Service (From 1 April 2004)
+TRETSPEF_op_coding,170, Cardiothoracic Surgery Service
+TRETSPEF_op_coding,171, Paediatric Surgery Service
+TRETSPEF_op_coding,172, Cardiac Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,173, Thoracic Surgery Service (From 1 April 2004)
+TRETSPEF_op_coding,174, Cardiothoracic Transplantation Service (From 1 April 2004)
+TRETSPEF_op_coding,180, Emergency Medicine Service
+TRETSPEF_op_coding,190, Anaesthetic Service
+TRETSPEF_op_coding,191, Pain Management Service (From 1998-99)
+TRETSPEF_op_coding,192, Intensive Care Medicine Service (From 1 April 2004)
+TRETSPEF_op_coding,199, Non-UK Provider; specialty function not known  treatment mainly surgical (Until 2022-23)
+TRETSPEF_op_coding,200, Aviation and Space Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,211, Paediatric Urology Service (From 2006-07)
+TRETSPEF_op_coding,212, Paediatric Transplantation Surgery Service (From 2006-07)
+TRETSPEF_op_coding,213, Paediatric Gastrointestinal Surgery Service (From 2006-07)
+TRETSPEF_op_coding,214, Paediatric Trauma and Orthopaedic Service (From 2006-07)
+TRETSPEF_op_coding,215, Paediatric Ear Nose and Throat Service (From 2006-07)
+TRETSPEF_op_coding,216, Paediatric Ophthalmology Service (From 2006-07)
+TRETSPEF_op_coding,217, Paediatric Oral and Maxillofacial Surgery Service (From 2006-07)
+TRETSPEF_op_coding,218, Paediatric Neurosurgery Service (From 2006-07)
+TRETSPEF_op_coding,219, Paediatric Plastic Surgery Service (From 2006-07)
+TRETSPEF_op_coding,220, Paediatric Burns Care Service (From 2006-07)
+TRETSPEF_op_coding,221, Paediatric Cardiac Surgery Service (From 2006-07)
+TRETSPEF_op_coding,222, Paediatric Thoracic Surgery Service (From 2006-07)
+TRETSPEF_op_coding,223, Paediatric Epilepsy Service (From April 2013)
+TRETSPEF_op_coding,230, Paediatric Clinical Pharmacology Service (From 1 April 2021)
+TRETSPEF_op_coding,240, Paediatric Palliative Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,241, Paediatric Pain Management Service (From 2006-07)
+TRETSPEF_op_coding,242, Paediatric Intensive Care Service (From 2006-07)
+TRETSPEF_op_coding,250, Paediatric Hepatology Service (From 1 April 2021)
+TRETSPEF_op_coding,251, Paediatric Gastroenterology Service (From 2006-07)
+TRETSPEF_op_coding,252, Paediatric Endocrinology Service (From 2006-07)
+TRETSPEF_op_coding,253, Paediatric Clinical Haematology Service (From 2006-07)
+TRETSPEF_op_coding,254, Paediatric Audio Vestibular Medicine Service (From 2006-07)
+TRETSPEF_op_coding,255, Paediatric Clinical Immunology and Allergy Service (From 2006-07)
+TRETSPEF_op_coding,256, Paediatric Infectious Diseases Service (From 2006-07)
+TRETSPEF_op_coding,257, Paediatric Dermatology Service (From 2006-07)
+TRETSPEF_op_coding,258, Paediatric Respiratory Medicine Service (From 2006-07)
+TRETSPEF_op_coding,259, Paediatric Nephrology Service (From 2006-07)
+TRETSPEF_op_coding,260, Paediatric Medical Oncology Service (From 2006-07)
+TRETSPEF_op_coding,261, Paediatric Inherited Metabolic Medicine Service (From 2006-07)
+TRETSPEF_op_coding,262, Paediatric Rheumatology Service (From 2006-07)
+TRETSPEF_op_coding,263, Paediatric Diabetes Service (From 1 April 2004)
+TRETSPEF_op_coding,264, Paediatric Cystic Fibrosis Service (From 1 April 2004)
+TRETSPEF_op_coding,270, Paediatric Emergency Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,280, Paediatric Interventional Radiology Service (From 2006-07)
+TRETSPEF_op_coding,290, Community Paediatric Service (From 2006-07)
+TRETSPEF_op_coding,291, Paediatric Neurodisability Service (From 2006-07)
+TRETSPEF_op_coding,300, General Internal Medicine Service
+TRETSPEF_op_coding,301, Gastroenterology Service
+TRETSPEF_op_coding,302, Endocrinology Service
+TRETSPEF_op_coding,303, Clinical Haematology Service
+TRETSPEF_op_coding,304, Clinical Physiology Service (From 2008-09)
+TRETSPEF_op_coding,305, Clinical Pharmacology Service
+TRETSPEF_op_coding,306, Hepatology Service (From 1 April 2004)
+TRETSPEF_op_coding,307, Diabetes Service (From 1 April 2004)
+TRETSPEF_op_coding,308, Blood and Marrow Transplantation Service (From 1 April 2004)
+TRETSPEF_op_coding,309, Haemophilia Service (From 1 April 2004)
+TRETSPEF_op_coding,310, Audio Vestibular Medicine Service
+TRETSPEF_op_coding,311, Clinical Genetics Service
+TRETSPEF_op_coding,312,Invalid
+TRETSPEF_op_coding,313, Clinical Immunology and Allergy Service (From 1991-92)
+TRETSPEF_op_coding,314, Rehabilitation Medicine Service (From 1991-92)
+TRETSPEF_op_coding,315, Palliative Medicine Service
+TRETSPEF_op_coding,316, Clinical Immunology Service (From 1 April 2004)
+TRETSPEF_op_coding,317, Allergy Service (From 1 April 2004)
+TRETSPEF_op_coding,318, Intermediate Care Service (From 1 April 2004)
+TRETSPEF_op_coding,319, Respite Care Service (From 1 April 2004)
+TRETSPEF_op_coding,320, Cardiology Service
+TRETSPEF_op_coding,321, Paediatric Cardiology Service (From 1 April 2004)
+TRETSPEF_op_coding,322, Clinical Microbiology Service (From 1 April 2004)
+TRETSPEF_op_coding,323, Spinal Injuries Service (From 2006-07)
+TRETSPEF_op_coding,324, Anticoagulant Service (From 1 April 2004)
+TRETSPEF_op_coding,325, Sport and Exercise Medicine Service (From 1 April 2004)
+TRETSPEF_op_coding,326, Acute Internal Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,327, Cardiac Rehabilitation Service (From 1 April 2004)
+TRETSPEF_op_coding,328, Stroke Medicine Service (From 1 April 2004)
+TRETSPEF_op_coding,329, Transient Ischaemic Attack Service (From 1 April 2004)
+TRETSPEF_op_coding,330, Dermatology Service
+TRETSPEF_op_coding,331, Congenital Heart Disease Service (From April 2013)
+TRETSPEF_op_coding,333, Rare Disease Service (From 1 April 2021)
+TRETSPEF_op_coding,335, Inherited Metabolic Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,340, Respiratory Medicine Service
+TRETSPEF_op_coding,341, Respiratory Physiology Service (From 1 April 2004)
+TRETSPEF_op_coding,342, Pulmonary Rehabilitation Service (From 1 April 2004)
+TRETSPEF_op_coding,343, Adult Cystic Fibrosis Service (From 1 April 2004)
+TRETSPEF_op_coding,344, Complex Specialised Rehabilitation Service (From April 2013)
+TRETSPEF_op_coding,345, Specialist Rehabilitation Service (From April 2013)
+TRETSPEF_op_coding,346, Local Specialist Rehabilitation Service (From April 2013)
+TRETSPEF_op_coding,347, Sleep Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,348, Post-COVID-19 Syndrome Service (From 1 April 2021)
+TRETSPEF_op_coding,350, Infectious Diseases Service
+TRETSPEF_op_coding,352, Tropical Medicine Service (From 1 April 2004)
+TRETSPEF_op_coding,360, Genitourinary Medicine Service
+TRETSPEF_op_coding,361, Renal Medicine Service
+TRETSPEF_op_coding,370, Medical Oncology Service
+TRETSPEF_op_coding,371, Nuclear Medicine Service (From 2008-09)
+TRETSPEF_op_coding,400, Neurology Service
+TRETSPEF_op_coding,401, Clinical Neurophysiology Service (From 2008-09)
+TRETSPEF_op_coding,410, Rheumatology Service
+TRETSPEF_op_coding,420, Paediatric Service
+TRETSPEF_op_coding,421, Paediatric Neurology Service
+TRETSPEF_op_coding,422, Neonatal Critical Care Service (From 1 April 2004)
+TRETSPEF_op_coding,424, Well Baby Service (From 1 April 2004)
+TRETSPEF_op_coding,430, Elderly Medicine Service
+TRETSPEF_op_coding,431, Orthogeriatric Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,450, Dental Medicine Service (From 1990-91)
+TRETSPEF_op_coding,451, Special Care Dentistry Service (From 1 April 2021)
+TRETSPEF_op_coding,460, Medical Ophthalmology Service (From 1993-94)
+TRETSPEF_op_coding,461, Ophthalmic and Vision Science Service (From 1 April 2021)
+TRETSPEF_op_coding,499, Non-UK Provider; specialty function not known  treatment mainly medical (Until 2022-23)
+TRETSPEF_op_coding,501, Obstetrics Service
+TRETSPEF_op_coding,502, Gynaecology Service
+TRETSPEF_op_coding,503, Gynaecological Oncology Service (From 1 April 2004)
+TRETSPEF_op_coding,504, Community Sexual and Reproductive Health Service (From 1 April 2021)
+TRETSPEF_op_coding,505, Fetal Medicine Service (From 1 April 2021)
+TRETSPEF_op_coding,510,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,520,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,560, Midwifery Service (From October 1995)
+TRETSPEF_op_coding,610,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,620,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,650, Physiotherapy Service (From 2006-07)
+TRETSPEF_op_coding,651, Occupational Therapy Service (From 2006-07)
+TRETSPEF_op_coding,652, Speech and Language Therapy Service (From 2006-07)
+TRETSPEF_op_coding,653, Podiatry Service (From 2006-07)
+TRETSPEF_op_coding,654, Dietetics Service (From 2006-07)
+TRETSPEF_op_coding,655, Orthoptics Service (From 2006-07)
+TRETSPEF_op_coding,656, Clinical Psychology Service (From 2006-07)
+TRETSPEF_op_coding,657, Prosthetics Service (From 1 April 2004)
+TRETSPEF_op_coding,658, Orthotics Service (From 1 April 2004)
+TRETSPEF_op_coding,659, Dramatherapy Service (From 1 April 2004)
+TRETSPEF_op_coding,660, Art Therapy Service (From 1 April 2004)
+TRETSPEF_op_coding,661, Music Therapy Service (From 1 April 2004)
+TRETSPEF_op_coding,662, Optometry Service (From 1 April 2004)
+TRETSPEF_op_coding,663, Podiatric Surgery Service (From April 2013)
+TRETSPEF_op_coding,670, Urological Physiology Service (From 1 April 2021)
+TRETSPEF_op_coding,673, Vascular Physiology Service (From 1 April 2021)
+TRETSPEF_op_coding,675, Cardiac Physiology Service (From 1 April 2021)
+TRETSPEF_op_coding,677, Gastrointestinal Physiology Service (From 1 April 2021)
+TRETSPEF_op_coding,700, Learning Disability Service
+TRETSPEF_op_coding,710, Adult Mental Health Service
+TRETSPEF_op_coding,711, Child and Adolescent Psychiatry Service
+TRETSPEF_op_coding,712, Forensic Psychiatry Service
+TRETSPEF_op_coding,713, Medical Psychotherapy Service
+TRETSPEF_op_coding,715, Old Age Psychiatry Service (From 1990-91)
+TRETSPEF_op_coding,720, Eating Disorders Service (From 2006-07)
+TRETSPEF_op_coding,721, Addiction Service (From 2006-07)
+TRETSPEF_op_coding,722, Liaison Psychiatry Service (From 2006-07)
+TRETSPEF_op_coding,723, Psychiatric Intensive Care Service (From 2006-07)
+TRETSPEF_op_coding,724, Perinatal Mental Health Service (From 2006-07)
+TRETSPEF_op_coding,725, Mental Health Recovery and Rehabilitation Service (From April 2013)
+TRETSPEF_op_coding,726, Mental Health Dual Diagnosis Service (From April 2013)
+TRETSPEF_op_coding,727, Dementia Assessment Service (From April 2013)
+TRETSPEF_op_coding,730, Neuropsychiatry Service (From 1 April 2021)
+TRETSPEF_op_coding,800, Clinical Oncology Service
+TRETSPEF_op_coding,810,Invalid
+TRETSPEF_op_coding,811, Interventional Radiology Service (From 1 April 2004)
+TRETSPEF_op_coding,812, Diagnostic Imaging Service (From 2008-09)
+TRETSPEF_op_coding,820,Invalid
+TRETSPEF_op_coding,822, Chemical Pathology Service
+TRETSPEF_op_coding,823,Invalid
+TRETSPEF_op_coding,824,Invalid
+TRETSPEF_op_coding,830,Invalid
+TRETSPEF_op_coding,831,Invalid
+TRETSPEF_op_coding,832,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,834, Medical Virology Service (From 1 April 2004)
+TRETSPEF_op_coding,840, Audiology Service (From 2008-09)
+TRETSPEF_op_coding,900,Invalid
+TRETSPEF_op_coding,901,Invalid
+TRETSPEF_op_coding,920, Diabetic Education Service (From April 2013)
+TRETSPEF_op_coding,950,Invalid
+TRETSPEF_op_coding,990,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_op_coding,Null,Other Maternity Event (Until 2022-23)

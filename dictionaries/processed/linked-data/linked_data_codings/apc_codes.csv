@@ -1,0 +1,468 @@
+coding_name,code,meaning
+ACSCFLAG_apc_coding,0,Episode does not contain a diagnosis that is ambulatory care sensitive
+ACSCFLAG_apc_coding,1,Episode contains a diagnosis that is ambulatory care sensitive
+ADMIDATE_apc_coding,1800-01-01,Null
+ADMIDATE_apc_coding,1801-01-01,invalid date submitted
+ADMIMETH_apc_coding,-999,Suppressed
+ADMIMETH_apc_coding,11,Waiting list. A Patient admitted electively from a waiting list having been given no date of admission at a time a decision was made to admit (Elective Admission  when the decision to admit could be separated in time from the actual admission)
+ADMIMETH_apc_coding,12,Booked. A Patient admitted having been given a date at the time the decision to admit was made  determined mainly on the grounds of resource availability (Elective Admission  when the decision to admit could be separated in time from the actual admission)
+ADMIMETH_apc_coding,13,Planned. A Patient admitted  having been given a date or approximate date at the time that the decision to admit was made. This is usually part of a planned sequence of clinical care determined mainly on social or clinical criteria (e.g. check cystoscopy). A planned admission is one where the date of admission is determined by the needs of the treatment  rather than by the availability of resources. (Elective Admission  when the decision to admit could be separated in time from the actual admission)
+ADMIMETH_apc_coding,21,Emergency Care Department or acute or emergency dental service (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,22,General Practitioner:  after a request for immediate admission has been made direct to a Hospital Provider  i.e. not through a Bed bureau  by a GP or deputy (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,23,Bed bureau (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,24,Consultant Clinic  of this or another Health Care Provider (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,28,Other means  examples are:- admitted from the Accident and Emergency Department of another provider where they had not been admitted- transfer of an admitted PATIENT from another Hospital Provider in an emergency- baby born at home as intended (retired on 2022-23) (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,2A,Emergency Care Department of another provider where the patient had not been admitted (available from 2013/14) (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,2B,Transfer of an admitted patient from another Hospital Provider in an emergency (available from 2013/14) (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,2D,Other emergency admission (available from 2013/14) (Emergency Admission  when admission is unpredictable and at short notice because of clinical need)
+ADMIMETH_apc_coding,31,Admitted ante-partum (Maternity Admission  of a pregnant or recently pregnant woman to a maternity ward (including delivery facilities) except when the intention is to terminate the pregnancy)
+ADMIMETH_apc_coding,32,Admitted post-partum (Maternity Admission  of a pregnant or recently pregnant woman to a maternity ward (including delivery facilities) except when the intention is to terminate the pregnancy)
+ADMIMETH_apc_coding,81,Transfer of any admitted patient from other Hospital Provider other than in an emergency (Other Admission not specified above)
+ADMIMETH_apc_coding,82,The birth of a baby in this Health Care Provider (Other Admission not specified above)
+ADMIMETH_apc_coding,89,HSPH Admissions Waiting List of a High Security Psychiatric Hospital (available between 1999 and 2006) (Other Admission not specified above)
+ADMIMETH_apc_coding,98,Not applicable (available from 1996/97) (Other Admission not specified above)
+ADMIMETH_apc_coding,99,Method of admission not known (Other Admission not specified above)
+ADMINCAT_apc_coding,01,NHS patient  including overseas visitors charged under the  National Health Service (Overseas Visitors Hospital Charging Regulations)
+ADMINCAT_apc_coding,02,Private patient  one who uses accommodation or services authorised under the National Health Service Act 2006
+ADMINCAT_apc_coding,03,Amenity patient  one who pays for the use of a single room or small ward in accordance with the National Health Service Act 2006
+ADMINCAT_apc_coding,04,Category II patient  one for whom work is undertaken by hospital medical or dental staff within category II as defined in paragraph 37 of the Terms and Conditions of Service of Hospital Medical and Dental Staff
+ADMINCAT_apc_coding,98,Not applicable
+ADMINCAT_apc_coding,99,Administravite category not known
+ADMISORC_apc_coding,-999,Suppressed
+ADMISORC_apc_coding,19,The usual place of residence  unless listed below  for example  a private dwelling whether owner occupied or owned by Local Authority  housing association or other landlord. This includes wardened accommodation but not residential accommodation where health care is provided. It also includes patients with no fixed abode.
+ADMISORC_apc_coding,29,Temporary place of residence when usually resident elsewhere  for example  hotels and residential educational establishments
+ADMISORC_apc_coding,30,Repatriation from high security psychiatric hospital (1999-00 to 2006-07)
+ADMISORC_apc_coding,51,NHS other hospital provider: ward for general patients or the younger physically disabled or Emergency and Care department
+ADMISORC_apc_coding,52,NHS other hospital provider: ward for maternity patients or neonates
+ADMISORC_apc_coding,53,NHS other hospital provider: ward for patients who are mentally ill or have learning disabilities
+ADMISORC_apc_coding,54,NHS run care home (retired in 2022-23)
+ADMISORC_apc_coding,55,Care Home with Nursing
+ADMISORC_apc_coding,56,Care Home without Nursing
+ADMISORC_apc_coding,65,Local authority residential accommodation i.e. where care is provided (retired in 2022-23)
+ADMISORC_apc_coding,66,Local authority foster care  but not in residential accommodation i.e. where care is provided
+ADMISORC_apc_coding,69,Local authority home or care (1989-90 to 1995-96)
+ADMISORC_apc_coding,79,Babies born in or on the way to hospital
+ADMISORC_apc_coding,85,Non-NHS (other than local authority) run care home (retired in 2022-23)
+ADMISORC_apc_coding,86,Non-NHS (other than local authority) run nursing home
+ADMISORC_apc_coding,87,Independent Sector Healthcare Provider run hospital
+ADMISORC_apc_coding,88,Hospice
+ADMISORC_apc_coding,89,Non-NHS institution (1989-90 to 1995-96)
+ADMISORC_apc_coding,98,Not applicable
+ADMISORC_apc_coding,99,Admission Source Not known
+BEDYEAR_apc_coding,Null,Not applicable (other maternity event / not known)
+CARERSI_apc_coding,01,Yes - Carer support is available
+CARERSI_apc_coding,02,No - Carer support is not available
+CARERSI_apc_coding,99,Not known
+CLASSPAT_apc_coding,1,Ordinary admission
+CLASSPAT_apc_coding,2,Day case admission
+CLASSPAT_apc_coding,3,Regular day attender
+CLASSPAT_apc_coding,4,Regular night attender
+CLASSPAT_apc_coding,5,Mothers and babies using only delivery facilities
+CLASSPAT_apc_coding,8,Not applicable (other maternity event)
+CLASSPAT_apc_coding,9,Not known
+DISDATE_apc_coding,1800-01-01,Null
+DISDATE_apc_coding,1801-01-01,invalid date submitted
+DISDEST_apc_coding,-999,Suppressed
+DISDEST_apc_coding,19,The usual place of residence  including no fixed abode
+DISDEST_apc_coding,29,Temporary place of residence when usually resident elsewhere  for example  hotels and residential educational establishments
+DISDEST_apc_coding,30,Repatriation from high security psychiatric hospital (from 1999-2000)
+DISDEST_apc_coding,37,Penal establishment - court (from 1999-2000)
+DISDEST_apc_coding,51,NHS other hospital provider - ward for general PATIENTS or the younger physically disabled
+DISDEST_apc_coding,52,NHS other hospital provider - ward for maternity PATIENTS or Neonates
+DISDEST_apc_coding,53,NHS other hospital provider - ward for PATIENTS who are mentally ill or have learning disabilities
+DISDEST_apc_coding,54,NHS run Care Home (retired in 2022-23)
+DISDEST_apc_coding,55,Care Home With Nursing
+DISDEST_apc_coding,56,Care Home Without Nursing
+DISDEST_apc_coding,65,Local Authority residential accommodation i.e. where care is provided (retired in 2022-23)
+DISDEST_apc_coding,66,Local Authority foster care
+DISDEST_apc_coding,69,Local Authority home or care (1989-1990 to 1995-1996)
+DISDEST_apc_coding,79,PATIENT died or still birth
+DISDEST_apc_coding,84,Independent Sector Healthcare Provider run hospital - medium secure unit
+DISDEST_apc_coding,85,Non-NHS (other than Local Authority) run Care Home (retired in 2022-23)
+DISDEST_apc_coding,86,Non-NHS (other than Local Authority) run nursing home (from 1996-1997)
+DISDEST_apc_coding,87,Independent Sector Healthcare Provider run hospital - excluding medium secure unit
+DISDEST_apc_coding,88,Hospice
+DISDEST_apc_coding,98,Not applicable - Hospital Provider Spell not finished at episode end (i.e. not discharged) or current episode unfinished
+DISDEST_apc_coding,99,Destination of Discharge Not Known
+DISMETH_apc_coding,1,Patient discharged on clinical advice or with clinical consent
+DISMETH_apc_coding,2,Patient discharged him/herself or was discharged by a relative or advocate (retired in 2022-23)
+DISMETH_apc_coding,3,Patient discharged by a mental health review tribunal  Home Secretary or court
+DISMETH_apc_coding,4,Patient died
+DISMETH_apc_coding,5,Stillbirth
+DISMETH_apc_coding,6,Patient discharged himself/herself (available from 2022-23)
+DISMETH_apc_coding,7,Patient discharged by a relative or advocate (available from 2022-23)
+DISMETH_apc_coding,8,Not applicable - Hospital Provider Spell not finished at episode end (i.e. not discharged) or current episode unfinished
+DISMETH_apc_coding,9,Method of Discharge Not Known
+ELECDATE_apc_coding,1800-01-01,Null date submitted
+ELECDATE_apc_coding,1801-01-01,invalid date submitted
+ELECDUR_apc_coding,9998,Not applicable
+ELECDUR_apc_coding,9999,Not Known (no date known for Decision to Admit)
+EPIDUR_apc_coding,Null,Not applicable (other maternity event or not known)
+EPIEND_apc_coding,1800-01-01,Null
+EPIEND_apc_coding,1801-01-01,invalid date submitted
+EPIORDER_apc_coding,98,Not applicable
+EPIORDER_apc_coding,99,Not known: a validation error
+EPIORDER_apc_coding,Null,Not applicable: other maternity event
+EPISTART_apc_coding,1800-01-01,Null date submitted
+EPISTART_apc_coding,1801-01-01,invalid date submitted
+EPITYPE_apc_coding,1,General episode (anything that is not covered by the other codes)
+EPITYPE_apc_coding,2,Delivery episode
+EPITYPE_apc_coding,3,Birth episode
+EPITYPE_apc_coding,4,Formally detained under the provisions of mental health legislation or long-term (over one year) psychiatric patients who should have additional information recorded on the psychiatric census (until 2016-17)
+EPITYPE_apc_coding,5,Other delivery event
+EPITYPE_apc_coding,6,Other birth event
+FIRSTREG_apc_coding,0,First in a series
+FIRSTREG_apc_coding,1,Subsequent to first in a series
+FIRSTREG_apc_coding,2,Invalid
+FIRSTREG_apc_coding,3,Invalid
+FIRSTREG_apc_coding,4,Invalid
+FIRSTREG_apc_coding,8,Not applicable: this episode of care is neither the first nor any subsequent attendance within a sequence of regular day/night admissions (valid between 2002-03 and 2007-08)
+FIRSTREG_apc_coding,9,Not known: this episode is an attendance within a sequence of regular day/night admissions  but the status of this episode within the attendance is not known: a validation error (valid between 2002-03 and 2007-08)
+INTMANIG_apc_coding,1,Patient to stay in hospital for at least one night
+INTMANIG_apc_coding,2,Patient not to stay in hospital overnight
+INTMANIG_apc_coding,3,Patient to have a planned series of admissions at least one overnight stay
+INTMANIG_apc_coding,4,Patient to have a planned sequence of admissions no overnight stay
+INTMANIG_apc_coding,5,Patient to be admitted regularly for a sequence of nights rest of the 24 hour period at home
+INTMANIG_apc_coding,8,Not applicable
+INTMANIG_apc_coding,9,Intendend Management not known
+MAINSPEF_apc_coding,&,Not Known
+MAINSPEF_apc_coding,100,General Surgery
+MAINSPEF_apc_coding,101,Urology
+MAINSPEF_apc_coding,107,Vascular Surgery (Introduced 1 April 2021)
+MAINSPEF_apc_coding,110,Trauma and Orthopaedics
+MAINSPEF_apc_coding,120,Ear Nose and Throat
+MAINSPEF_apc_coding,130,Ophthalmology
+MAINSPEF_apc_coding,140,Oral Surgery
+MAINSPEF_apc_coding,141,Restorative Dentistry
+MAINSPEF_apc_coding,142,Paediatric Dentistry
+MAINSPEF_apc_coding,143,Orthodontics
+MAINSPEF_apc_coding,145,Oral and Maxillofacial Surgery
+MAINSPEF_apc_coding,146,Endodontics
+MAINSPEF_apc_coding,147,Periodontics
+MAINSPEF_apc_coding,148,Prosthodontics
+MAINSPEF_apc_coding,149,Surgical Dentistry
+MAINSPEF_apc_coding,150,Neurosurgery
+MAINSPEF_apc_coding,160,Plastic Surgery
+MAINSPEF_apc_coding,170,Cardiothoracic Surgery
+MAINSPEF_apc_coding,171,Paediatric Surgery
+MAINSPEF_apc_coding,180,Emergency Medicine
+MAINSPEF_apc_coding,190,Anaesthetics
+MAINSPEF_apc_coding,191,Pain Management (Retired 1 April 2004)
+MAINSPEF_apc_coding,192,Intensive Care Medicine
+MAINSPEF_apc_coding,199,Non-UK Provider - Specialty Function Not Known  Treatment Mainly Surgical
+MAINSPEF_apc_coding,200,Aviation and Space Medicine (Introduced 1 April 2021)
+MAINSPEF_apc_coding,300,General Internal Medicine
+MAINSPEF_apc_coding,301,Gastroenterology
+MAINSPEF_apc_coding,302,Endocrinology and Diabetes
+MAINSPEF_apc_coding,303,Clinical Haematology
+MAINSPEF_apc_coding,304,Clinical Physiology
+MAINSPEF_apc_coding,305,Clinical Pharmacology
+MAINSPEF_apc_coding,310,Audio Vestibular Medicine
+MAINSPEF_apc_coding,311,Clinical Genetics
+MAINSPEF_apc_coding,312,Clinical Cytogenetics and Molecular Genetics (Retired 1 April 2010). National Code 312 is retained for consultants qualified in this Main Specialty prior to 1 April 2010
+MAINSPEF_apc_coding,313,Clinical Immunology
+MAINSPEF_apc_coding,314,Rehabilitation Medicine
+MAINSPEF_apc_coding,315,Palliative Medicine
+MAINSPEF_apc_coding,317,Allergy (Introduced 1 April 2021)
+MAINSPEF_apc_coding,320,Cardiology
+MAINSPEF_apc_coding,321,Paediatric Cardiology
+MAINSPEF_apc_coding,325,Sport and Exercise Medicine
+MAINSPEF_apc_coding,326,Acute Internal Medicine
+MAINSPEF_apc_coding,330,Dermatology
+MAINSPEF_apc_coding,340,Respiratory Medicine
+MAINSPEF_apc_coding,350,Infectious Diseases
+MAINSPEF_apc_coding,352,Tropical Medicine
+MAINSPEF_apc_coding,360,Genitourinary Medicine
+MAINSPEF_apc_coding,361,Renal Medicine
+MAINSPEF_apc_coding,370,Medical Oncology
+MAINSPEF_apc_coding,371,Nuclear Medicine
+MAINSPEF_apc_coding,400,Neurology
+MAINSPEF_apc_coding,401,Clinical Neurophysiology
+MAINSPEF_apc_coding,410,Rheumatology
+MAINSPEF_apc_coding,420,Paediatrics
+MAINSPEF_apc_coding,421,Paediatric Neurology
+MAINSPEF_apc_coding,430,Geriatric Medicine
+MAINSPEF_apc_coding,450,Dental Medicine
+MAINSPEF_apc_coding,451,Special Care Dentistry
+MAINSPEF_apc_coding,460,Medical Ophthalmology
+MAINSPEF_apc_coding,499,Non-UK Provider - Specialty Function Not Known  Treatment Mainly Medical
+MAINSPEF_apc_coding,500,Invalid
+MAINSPEF_apc_coding,501,Obstetrics
+MAINSPEF_apc_coding,502,Gynaecology
+MAINSPEF_apc_coding,504,Community Sexual and Reproductive Health
+MAINSPEF_apc_coding,510,Antenatal Clinic (Retired 1 April 2004)
+MAINSPEF_apc_coding,520,Postnatal Clinic (Retired 1 April 2004)
+MAINSPEF_apc_coding,560,Midwifery
+MAINSPEF_apc_coding,600,General Medical Practice
+MAINSPEF_apc_coding,601,General Dental Practice
+MAINSPEF_apc_coding,610,Maternity Function (Retired 1 April 2004)
+MAINSPEF_apc_coding,620,Other than Maternity (Retired 1 April 2004)
+MAINSPEF_apc_coding,700,Learning Disability
+MAINSPEF_apc_coding,710,Adult Mental Illness
+MAINSPEF_apc_coding,711,Child and Adolescent Psychiatry
+MAINSPEF_apc_coding,712,Forensic Psychiatry
+MAINSPEF_apc_coding,713,Medical Psychotherapy
+MAINSPEF_apc_coding,715,Old Age Psychiatry
+MAINSPEF_apc_coding,800,Clinical Oncology
+MAINSPEF_apc_coding,810,Radiology
+MAINSPEF_apc_coding,820,General Pathology
+MAINSPEF_apc_coding,821,Blood Transfusion
+MAINSPEF_apc_coding,822,Chemical Pathology
+MAINSPEF_apc_coding,823,Haematology
+MAINSPEF_apc_coding,824,Histopathology
+MAINSPEF_apc_coding,830,Immunopathology
+MAINSPEF_apc_coding,831,Medical Microbiology and Virology
+MAINSPEF_apc_coding,832,Neuropathology (Retired 1 April 2004)
+MAINSPEF_apc_coding,833,Medical Microbiology
+MAINSPEF_apc_coding,834,Medical Virology
+MAINSPEF_apc_coding,900,Community Medicine
+MAINSPEF_apc_coding,901,Occupational Medicine
+MAINSPEF_apc_coding,902,Community Health Services Dental
+MAINSPEF_apc_coding,903,Public Health Medicine
+MAINSPEF_apc_coding,904,Public Health Dental
+MAINSPEF_apc_coding,950,Nursing
+MAINSPEF_apc_coding,960,Allied Health Professional
+MAINSPEF_apc_coding,990,Joint Consultant Clinics (Retired 1 April 2004)
+MAINSPEF_apc_coding,Null,Other Maternity Event
+OPDATE_apc_coding,1800-01-01,Null
+OPDATE_apc_coding,1801-01-01,Invalid date submitted
+OPERSTAT_apc_coding,0,Invalid
+OPERSTAT_apc_coding,1,One or more operative procedures carried out
+OPERSTAT_apc_coding,2,Invalid
+OPERSTAT_apc_coding,8,No operative procedures performed or intended
+OPERSTAT_apc_coding,9,Not known  i.e. finished episode but no data entered or the episode is unfinished and no data needs to be present (this would only be a validation error for a finished episode).
+POSOPDUR_apc_coding,Null,Not applicable: no procedure or episode is unfinished
+PREOPDUR_apc_coding,Null,Not applicable: no operation or procedure unfinished
+PROTYPE_apc_coding,CARETRUST,Care trust
+PROTYPE_apc_coding,CCG,Clinical Commissioning Group
+PROTYPE_apc_coding,FOUNDATION,NHS foundation trust
+PROTYPE_apc_coding,IND,Independent sector provider
+PROTYPE_apc_coding,INDSITE,Independent sector provider site
+PROTYPE_apc_coding,INDSITETC,Treatment centre at independent sector provider site
+PROTYPE_apc_coding,OTHERPROV,Other provider organisation
+PROTYPE_apc_coding,PCT,Primary care trust
+PROTYPE_apc_coding,TRUST,NHS trust
+PROTYPE_apc_coding,TRUSTSITETC,Treatment centre at NHS trust site
+RTTPERSTAT_apc_coding,10,First activity in a referral to treatment period (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_apc_coding,11,First activity at the start of a new referral to treatment period following active monitoring (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_apc_coding,12,First activity at the start of a new referral to treatment period following a decision to refer directly to the consultant or NHS allied health professional service (referral to treatment measurement) for a separate condition (The first activity in a referral to treatment period where the first definitive treatment will be a subsequent activity)
+RTTPERSTAT_apc_coding,20,Subsequent activity during a referral to treatment period - further activities anticipated (Subsequent activity during a referral to treatment period)
+RTTPERSTAT_apc_coding,21,Subsequent activity by another health care provider following a transfer to another health care provider during a referral to treatment period anticipated (Subsequent activity during a referral to treatment period)
+RTTPERSTAT_apc_coding,30,Start of first definitive treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,31,Start of active monitoring initiated by the patient (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,32,Start of active monitoring initiated by the care professional (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,33,Did not attend - the patient did not attend the first care activity after the referral1 (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,34,Decision not to treat - decision not to treat made or no further contact required2 (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,35,Patient declined offered treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,36,Patient died before treatment (Activity that ends the referral to treatment period)
+RTTPERSTAT_apc_coding,90,After treatment - first definitive treatment occurred previously (e.g. admitted as an emergency from A&E or the activity is after the start of treatment) (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_apc_coding,91,Care activity during active monitoring (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_apc_coding,92,Not yet referred for treatment  undergoing diagnostic tests by general practitioner before referral (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_apc_coding,98,Not applicable - activity not applicable to referral to treatment periods (Activity that is not part of a referral to treatment period)
+RTTPERSTAT_apc_coding,99,Not yet known (Activity where the referral to treatment period status is not yet known)
+SPELBGIN_apc_coding,0,Not the first episode of spell
+SPELBGIN_apc_coding,1,First episode of spell that started in a previous year
+SPELBGIN_apc_coding,2,First episode of spell that started in current year
+SPELBGIN_apc_coding,Null,Not applicable
+SPELEND_apc_coding,N,Not last episode of spell
+SPELEND_apc_coding,Y,Last episode of spell
+SUSSPELLID_apc_coding,-1,Unspellable episodes
+SUSSPELLID_apc_coding,Null,Records that have excluded from PbR in SUS as the activity is outside the scope of PbR
+TRETSPEF_apc_coding,&,Not known (Until 2022-23)
+TRETSPEF_apc_coding,000,Invalid
+TRETSPEF_apc_coding,100, General Surgery Service
+TRETSPEF_apc_coding,101, Urology Service
+TRETSPEF_apc_coding,102, Transplant Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,103, Breast Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,104, Colorectal Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,105, Hepatobiliary and Pancreatic Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,106, Upper Gastrointestinal Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,107, Vascular Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,108, Spinal Surgery Service (From April 2013)
+TRETSPEF_apc_coding,109, Bariatric Surgery Service (From 1 April 2021)
+TRETSPEF_apc_coding,110, Trauma and Orthopaedic Service
+TRETSPEF_apc_coding,111, Orthopaedic Service (From 1 April 2021)
+TRETSPEF_apc_coding,113, Endocrine Surgery Service (From 1 April 2021)
+TRETSPEF_apc_coding,115, Trauma Surgery Service (From 1 April 2021)
+TRETSPEF_apc_coding,120, Ear Nose and Throat Service
+TRETSPEF_apc_coding,130, Ophthalmology Service
+TRETSPEF_apc_coding,140, Oral Surgery Service
+TRETSPEF_apc_coding,141, Restorative Dentistry Service
+TRETSPEF_apc_coding,142, Paediatric Dentistry Service (From 1999-2000)
+TRETSPEF_apc_coding,143, Orthodontic Service
+TRETSPEF_apc_coding,144, Maxillofacial Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,145, Oral and Maxillofacial Surgery Service (From 1 April 2021)
+TRETSPEF_apc_coding,150, Neurosurgical Service
+TRETSPEF_apc_coding,160, Plastic Surgery Service
+TRETSPEF_apc_coding,161, Burns Care Service (From 1 April 2004)
+TRETSPEF_apc_coding,170, Cardiothoracic Surgery Service
+TRETSPEF_apc_coding,171, Paediatric Surgery Service
+TRETSPEF_apc_coding,172, Cardiac Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,173, Thoracic Surgery Service (From 1 April 2004)
+TRETSPEF_apc_coding,174, Cardiothoracic Transplantation Service (From 1 April 2004)
+TRETSPEF_apc_coding,180, Emergency Medicine Service
+TRETSPEF_apc_coding,190, Anaesthetic Service
+TRETSPEF_apc_coding,191, Pain Management Service (From 1998-99)
+TRETSPEF_apc_coding,192, Intensive Care Medicine Service (From 1 April 2004)
+TRETSPEF_apc_coding,199, Non-UK Provider; specialty function not known  treatment mainly surgical (Until 2022-23)
+TRETSPEF_apc_coding,200, Aviation and Space Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,211, Paediatric Urology Service (From 2006-07)
+TRETSPEF_apc_coding,212, Paediatric Transplantation Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,213, Paediatric Gastrointestinal Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,214, Paediatric Trauma and Orthopaedic Service (From 2006-07)
+TRETSPEF_apc_coding,215, Paediatric Ear Nose and Throat Service (From 2006-07)
+TRETSPEF_apc_coding,216, Paediatric Ophthalmology Service (From 2006-07)
+TRETSPEF_apc_coding,217, Paediatric Oral and Maxillofacial Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,218, Paediatric Neurosurgery Service (From 2006-07)
+TRETSPEF_apc_coding,219, Paediatric Plastic Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,220, Paediatric Burns Care Service (From 2006-07)
+TRETSPEF_apc_coding,221, Paediatric Cardiac Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,222, Paediatric Thoracic Surgery Service (From 2006-07)
+TRETSPEF_apc_coding,223, Paediatric Epilepsy Service (From April 2013)
+TRETSPEF_apc_coding,230, Paediatric Clinical Pharmacology Service (From 1 April 2021)
+TRETSPEF_apc_coding,240, Paediatric Palliative Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,241, Paediatric Pain Management Service (From 2006-07)
+TRETSPEF_apc_coding,242, Paediatric Intensive Care Service (From 2006-07)
+TRETSPEF_apc_coding,250, Paediatric Hepatology Service (From 1 April 2021)
+TRETSPEF_apc_coding,251, Paediatric Gastroenterology Service (From 2006-07)
+TRETSPEF_apc_coding,252, Paediatric Endocrinology Service (From 2006-07)
+TRETSPEF_apc_coding,253, Paediatric Clinical Haematology Service (From 2006-07)
+TRETSPEF_apc_coding,254, Paediatric Audio Vestibular Medicine Service (From 2006-07)
+TRETSPEF_apc_coding,255, Paediatric Clinical Immunology and Allergy Service (From 2006-07)
+TRETSPEF_apc_coding,256, Paediatric Infectious Diseases Service (From 2006-07)
+TRETSPEF_apc_coding,257, Paediatric Dermatology Service (From 2006-07)
+TRETSPEF_apc_coding,258, Paediatric Respiratory Medicine Service (From 2006-07)
+TRETSPEF_apc_coding,259, Paediatric Nephrology Service (From 2006-07)
+TRETSPEF_apc_coding,260, Paediatric Medical Oncology Service (From 2006-07)
+TRETSPEF_apc_coding,261, Paediatric Inherited Metabolic Medicine Service (From 2006-07)
+TRETSPEF_apc_coding,262, Paediatric Rheumatology Service (From 2006-07)
+TRETSPEF_apc_coding,263, Paediatric Diabetes Service (From 1 April 2004)
+TRETSPEF_apc_coding,264, Paediatric Cystic Fibrosis Service (From 1 April 2004)
+TRETSPEF_apc_coding,270, Paediatric Emergency Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,280, Paediatric Interventional Radiology Service (From 2006-07)
+TRETSPEF_apc_coding,290, Community Paediatric Service (From 2006-07)
+TRETSPEF_apc_coding,291, Paediatric Neurodisability Service (From 2006-07)
+TRETSPEF_apc_coding,300, General Internal Medicine Service
+TRETSPEF_apc_coding,301, Gastroenterology Service
+TRETSPEF_apc_coding,302, Endocrinology Service
+TRETSPEF_apc_coding,303, Clinical Haematology Service
+TRETSPEF_apc_coding,304, Clinical Physiology Service (From 2008-09)
+TRETSPEF_apc_coding,305, Clinical Pharmacology Service
+TRETSPEF_apc_coding,306, Hepatology Service (From 1 April 2004)
+TRETSPEF_apc_coding,307, Diabetes Service (From 1 April 2004)
+TRETSPEF_apc_coding,308, Blood and Marrow Transplantation Service (From 1 April 2004)
+TRETSPEF_apc_coding,309, Haemophilia Service (From 1 April 2004)
+TRETSPEF_apc_coding,310, Audio Vestibular Medicine Service
+TRETSPEF_apc_coding,311, Clinical Genetics Service
+TRETSPEF_apc_coding,313, Clinical Immunology and Allergy Service (From 1991-92)
+TRETSPEF_apc_coding,314, Rehabilitation Medicine Service (From 1991-92)
+TRETSPEF_apc_coding,315, Palliative Medicine Service
+TRETSPEF_apc_coding,316, Clinical Immunology Service (From 1 April 2004)
+TRETSPEF_apc_coding,317, Allergy Service (From 1 April 2004)
+TRETSPEF_apc_coding,318, Intermediate Care Service (From 1 April 2004)
+TRETSPEF_apc_coding,319, Respite Care Service (From 1 April 2004)
+TRETSPEF_apc_coding,320, Cardiology Service
+TRETSPEF_apc_coding,321, Paediatric Cardiology Service (From 1 April 2004)
+TRETSPEF_apc_coding,322, Clinical Microbiology Service (From 1 April 2004)
+TRETSPEF_apc_coding,323, Spinal Injuries Service (From 2006-07)
+TRETSPEF_apc_coding,324, Anticoagulant Service (From 1 April 2004)
+TRETSPEF_apc_coding,325, Sport and Exercise Medicine Service (From 1 April 2004)
+TRETSPEF_apc_coding,326, Acute Internal Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,327, Cardiac Rehabilitation Service (From 1 April 2004)
+TRETSPEF_apc_coding,328, Stroke Medicine Service (From 1 April 2004)
+TRETSPEF_apc_coding,329, Transient Ischaemic Attack Service (From 1 April 2004)
+TRETSPEF_apc_coding,330, Dermatology Service
+TRETSPEF_apc_coding,331, Congenital Heart Disease Service (From April 2013)
+TRETSPEF_apc_coding,333, Rare Disease Service (From 1 April 2021)
+TRETSPEF_apc_coding,335, Inherited Metabolic Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,340, Respiratory Medicine Service
+TRETSPEF_apc_coding,341, Respiratory Physiology Service (From 1 April 2004)
+TRETSPEF_apc_coding,342, Pulmonary Rehabilitation Service (From 1 April 2004)
+TRETSPEF_apc_coding,343, Adult Cystic Fibrosis Service (From 1 April 2004)
+TRETSPEF_apc_coding,344, Complex Specialised Rehabilitation Service (From April 2013)
+TRETSPEF_apc_coding,345, Specialist Rehabilitation Service (From April 2013)
+TRETSPEF_apc_coding,346, Local Specialist Rehabilitation Service (From April 2013)
+TRETSPEF_apc_coding,347, Sleep Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,348, Post-COVID-19 Syndrome Service (From 1 April 2021)
+TRETSPEF_apc_coding,350, Infectious Diseases Service
+TRETSPEF_apc_coding,352, Tropical Medicine Service (From 1 April 2004)
+TRETSPEF_apc_coding,360, Genitourinary Medicine Service
+TRETSPEF_apc_coding,361, Renal Medicine Service
+TRETSPEF_apc_coding,370, Medical Oncology Service
+TRETSPEF_apc_coding,371, Nuclear Medicine Service (From 2008-09)
+TRETSPEF_apc_coding,400, Neurology Service
+TRETSPEF_apc_coding,401, Clinical Neurophysiology Service (From 2008-09)
+TRETSPEF_apc_coding,410, Rheumatology Service
+TRETSPEF_apc_coding,420, Paediatric Service
+TRETSPEF_apc_coding,421, Paediatric Neurology Service
+TRETSPEF_apc_coding,422, Neonatal Critical Care Service (From 1 April 2004)
+TRETSPEF_apc_coding,424, Well Baby Service (From 1 April 2004)
+TRETSPEF_apc_coding,430, Elderly Medicine Service
+TRETSPEF_apc_coding,431, Orthogeriatric Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,450, Dental Medicine Service (From 1990-91)
+TRETSPEF_apc_coding,451, Special Care Dentistry Service (From 1 April 2021)
+TRETSPEF_apc_coding,460, Medical Ophthalmology Service (From 1993-94)
+TRETSPEF_apc_coding,461, Ophthalmic and Vision Science Service (From 1 April 2021)
+TRETSPEF_apc_coding,499, Non-UK Provider; specialty function not known  treatment mainly medical (Until 2022-23)
+TRETSPEF_apc_coding,501, Obstetrics Service
+TRETSPEF_apc_coding,502, Gynaecology Service
+TRETSPEF_apc_coding,503, Gynaecological Oncology Service (From 1 April 2004)
+TRETSPEF_apc_coding,504, Community Sexual and Reproductive Health Service (From 1 April 2021)
+TRETSPEF_apc_coding,505, Fetal Medicine Service (From 1 April 2021)
+TRETSPEF_apc_coding,510,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,520,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,560, Midwifery Service (From October 1995)
+TRETSPEF_apc_coding,610,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,620,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,650, Physiotherapy Service (From 2006-07)
+TRETSPEF_apc_coding,651, Occupational Therapy Service (From 2006-07)
+TRETSPEF_apc_coding,652, Speech and Language Therapy Service (From 2006-07)
+TRETSPEF_apc_coding,653, Podiatry Service (From 2006-07)
+TRETSPEF_apc_coding,654, Dietetics Service (From 2006-07)
+TRETSPEF_apc_coding,655, Orthoptics Service (From 2006-07)
+TRETSPEF_apc_coding,656, Clinical Psychology Service (From 2006-07)
+TRETSPEF_apc_coding,657, Prosthetics Service (From 1 April 2004)
+TRETSPEF_apc_coding,658, Orthotics Service (From 1 April 2004)
+TRETSPEF_apc_coding,659, Dramatherapy Service (From 1 April 2004)
+TRETSPEF_apc_coding,660, Art Therapy Service (From 1 April 2004)
+TRETSPEF_apc_coding,661, Music Therapy Service (From 1 April 2004)
+TRETSPEF_apc_coding,662, Optometry Service (From 1 April 2004)
+TRETSPEF_apc_coding,663, Podiatric Surgery Service (From April 2013)
+TRETSPEF_apc_coding,670, Urological Physiology Service (From 1 April 2021)
+TRETSPEF_apc_coding,673, Vascular Physiology Service (From 1 April 2021)
+TRETSPEF_apc_coding,675, Cardiac Physiology Service (From 1 April 2021)
+TRETSPEF_apc_coding,677, Gastrointestinal Physiology Service (From 1 April 2021)
+TRETSPEF_apc_coding,700, Learning Disability Service
+TRETSPEF_apc_coding,710, Adult Mental Health Service
+TRETSPEF_apc_coding,711, Child and Adolescent Psychiatry Service
+TRETSPEF_apc_coding,712, Forensic Psychiatry Service
+TRETSPEF_apc_coding,713, Medical Psychotherapy Service
+TRETSPEF_apc_coding,715, Old Age Psychiatry Service (From 1990-91)
+TRETSPEF_apc_coding,720, Eating Disorders Service (From 2006-07)
+TRETSPEF_apc_coding,721, Addiction Service (From 2006-07)
+TRETSPEF_apc_coding,722, Liaison Psychiatry Service (From 2006-07)
+TRETSPEF_apc_coding,723, Psychiatric Intensive Care Service (From 2006-07)
+TRETSPEF_apc_coding,724, Perinatal Mental Health Service (From 2006-07)
+TRETSPEF_apc_coding,725, Mental Health Recovery and Rehabilitation Service (From April 2013)
+TRETSPEF_apc_coding,726, Mental Health Dual Diagnosis Service (From April 2013)
+TRETSPEF_apc_coding,727, Dementia Assessment Service (From April 2013)
+TRETSPEF_apc_coding,730, Neuropsychiatry Service (From 1 April 2021)
+TRETSPEF_apc_coding,800, Clinical Oncology Service
+TRETSPEF_apc_coding,810,Invalid
+TRETSPEF_apc_coding,811, Interventional Radiology Service (From 1 April 2004)
+TRETSPEF_apc_coding,812, Diagnostic Imaging Service (From 2008-09)
+TRETSPEF_apc_coding,820,Invalid
+TRETSPEF_apc_coding,821,Invalid
+TRETSPEF_apc_coding,822, Chemical Pathology Service
+TRETSPEF_apc_coding,823,Invalid
+TRETSPEF_apc_coding,824,Invalid
+TRETSPEF_apc_coding,830,Invalid
+TRETSPEF_apc_coding,831,Invalid
+TRETSPEF_apc_coding,832,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,834, Medical Virology Service (From 1 April 2004)
+TRETSPEF_apc_coding,840, Audiology Service (From 2008-09)
+TRETSPEF_apc_coding,900,Invalid
+TRETSPEF_apc_coding,920, Diabetic Education Service (From April 2013)
+TRETSPEF_apc_coding,950,Invalid
+TRETSPEF_apc_coding,990,Retired but retained for historical purposes (From 2022-23)
+TRETSPEF_apc_coding,Null,Other Maternity Event (Until 2022-23)

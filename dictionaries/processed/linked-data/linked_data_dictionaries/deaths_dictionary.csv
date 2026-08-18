@@ -1,0 +1,21 @@
+name,type,coding_name,is_sparse_coding,description
+PID,string,,,Participant ID
+REG_DATE,date,,,Date of Registration
+REG_DATE_OF_DEATH,date,,,Date of death
+ROW_ID,string,,,OFH generated local key
+S_COD_CODE_1,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_10,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_11,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_12,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_13,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_14,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_15,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_2,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_3,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_4,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_5,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_6,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_7,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_8,string,ICD10_coding,yes,ICD10 Original mention codes
+S_COD_CODE_9,string,ICD10_coding,yes,ICD10 Original mention codes
+S_UNDERLYING_COD_ICD10,string,ICD10_coding,yes,ICD10 Original Underlying code
