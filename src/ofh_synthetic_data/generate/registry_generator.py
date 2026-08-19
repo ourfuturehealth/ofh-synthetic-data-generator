@@ -8,6 +8,7 @@ from datetime import date
 from pathlib import Path
 from random import Random
 from typing import Any
+from faker import Faker
 
 import pandas as pd
 
@@ -23,6 +24,8 @@ from ofh_synthetic_data.synthetic_ranges import (
     SYNTHETIC_DATE_DAY_MIN,
     SYNTHETIC_YEAR_MIN,
 )
+from ofh_synthetic_data.constants import *
+from ofh_synthetic_data.generate.linked_data_transformations import *
 
 SUPPRESSION_CODES = {"-999"}
 
@@ -94,6 +97,7 @@ def generate_tables(
 
     participants: list[dict[str, object]] = []
     questionnaires: list[dict[str, object]] = []
+    deaths: list[dict[str, object]] = []
     skipped_by_logic_count = 0
 
     for row_index in range(generation_config.rows):
@@ -120,15 +124,22 @@ def generate_tables(
             participant=participant,
             timeline=timeline,
         )
+
         skipped_by_logic_count += skipped_for_row
         participants.append(participant)
         questionnaires.append(questionnaire)
 
+        if random_chance_that_they_died:
+            death = _generate_death_record(, row_number=len(deaths))
+            deaths.append(death)
+
     return GeneratedTables(
         participants=participants,
         questionnaires=questionnaires,
+        deaths=deaths,
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
+        deaths_columns=deaths_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -287,6 +298,28 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
+def _generate_death_record(pid: str, path: Path, row_number:int) -> dict[str, object]:
+    # load dictionaries and coding files
+    df_dicts = get_dictionaries(path=path, df_name="deaths")
+    
+    fake=Faker()
+    coded_pairs_dicts = create_coded_pairs(data_dictionary=df_dicts)
+
+    deaths_record = {}
+
+    deaths_record["PID"] = pid
+    for k,v in coded_pairs_dict.items():
+        deaths_record[k] = pick_random_code(df_name=v, data_dictionary=df_dicts)
+
+    deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["deaths"]["start"], end_date=DATE_BOOKENDS["deaths"]["end"])
+    deaths_record["REG_DATE"] = fake.date_between(
+        start_date=deaths_record["REG_DATE_OF_DEATH"], 
+        end_date=deaths_record["REG_DATE_OF_DEATH"] + datetime.timedelta(days=10)
+    )
+
+    deaths_record["ROW_ID"] = row_number
+
+    return deaths_record
 
 def _generate_value(
     field: dict[str, object],
