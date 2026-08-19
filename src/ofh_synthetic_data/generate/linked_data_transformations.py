@@ -70,3 +70,17 @@ def pick_random_code(df_name: str, data_dictionary: dict[str, pd.DataFrame]):
     fake = Faker()
     return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
 
+def create_coded_pairs(data_dictionary: dict[str, pd.DataFrame]) -> dict:
+    """
+    Creating coded pairs from the data dictionary to explicitly assign values
+    """
+    # creating dictionary of coded pairs to extract relevant codes
+    coded_pairs = data_dictionary["dictionary"].loc[~data_dictionary["dictionary"]["coding_name"].isna(), ["name", "coding_name"]]
+    # converting to dictionary of name and coding name value pairs
+    return dict(
+        zip(
+            coded_pairs["name"], 
+            coded_pairs["coding_name"]
+        )
+    )
+
