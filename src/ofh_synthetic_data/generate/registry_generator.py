@@ -6,6 +6,7 @@ import json
 from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
+import random
 from random import Random
 from typing import Any
 from faker import Faker
@@ -34,8 +35,10 @@ SUPPRESSION_CODES = {"-999"}
 class GeneratedTables:
     participants: list[dict[str, object]]
     questionnaires: list[dict[str, object]]
+    deaths: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
+    deaths_columns: list[str]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -44,6 +47,7 @@ class GeneratedTables:
 class GeneratedTablePaths:
     participant: Path
     questionnaire: Path
+    deaths: Path
     manifest: Path
 
 
@@ -131,8 +135,8 @@ def generate_tables(
         questionnaires.append(questionnaire)
 
         # 5% chance a given PID will have died and therefore have a death record
-        if random.random() > 0.05:
-            death = _generate_death_record(pid=pid, path="/dictionaries/processed/linked-data/", row_number=len(deaths))
+        if random.random() < 0.05:
+            death = _generate_death_record(pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
             deaths.append(death)
 
     return GeneratedTables(
@@ -311,7 +315,7 @@ def _generate_death_record(pid: str, path: Path, row_number:int) -> dict[str, ob
     df_dicts = get_dictionaries(path=path, df_name="deaths")
     
     fake=Faker()
-    coded_pairs_dicts = create_coded_pairs(data_dictionary=df_dicts)
+    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
 
     deaths_record = {}
 

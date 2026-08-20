@@ -1,6 +1,7 @@
 paths:
-  raw_data_dir: data/raw
-  processed_data_dir: data/processed
+  raw_data_dir: dictionaries/raw
+  processed_data_dir: dictionaries/processed
+  linked_data_dir: dictionaries/processed/linked-data
   synthetic_data_dir: outputs/synthetic
   qa_dir: outputs/qa
 
@@ -15,9 +16,10 @@ registry:
     - questionnaire
 
 generation:
-  rows: 200
+  rows: 500
   seed: 42
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv
+  deaths_file: nhse_engwal_deaths.csv
   manifest_file: manifest.json
   questionnaire_version: "v2"
