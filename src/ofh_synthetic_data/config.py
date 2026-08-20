@@ -11,8 +11,9 @@ import yaml
 
 @dataclass(frozen=True)
 class PathsConfig:
-    raw_data_dir: Path = Path("data/raw")
-    processed_data_dir: Path = Path("data/processed")
+    raw_data_dir: Path = Path("dictionaries/raw")
+    processed_data_dir: Path = Path("dictionaries/processed")
+    linked_data_dir: Path=Path("dictionaries/processed/linked-data")
     synthetic_data_dir: Path = Path("outputs/synthetic")
     qa_dir: Path = Path("outputs/qa")
 
