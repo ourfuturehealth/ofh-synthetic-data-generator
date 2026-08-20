@@ -26,7 +26,7 @@ class SourceFilesConfig:
 
 @dataclass(frozen=True)
 class GenerationConfig:
-    rows: int = 200
+    rows: int = 1000
     seed: int = 42
     participant_file: str = "participant.csv"
     questionnaire_file: str = "questionnaire.csv"

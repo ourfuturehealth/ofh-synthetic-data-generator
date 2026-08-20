@@ -9,7 +9,7 @@ import numpy as np
 from pathlib import Path
 from faker import Faker
 # from faker.providers import DynamicProvider, BaseProvider
-from constants import DATE_BOOKENDS, ONTOLOGY_DICT
+from ofh_synthetic_data.constants import DATE_BOOKENDS, ONTOLOGY_DICT
 
 def load_linked_dictionary(path: Path, df_name:str) -> pd.DataFrame:
     """
