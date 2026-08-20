@@ -320,7 +320,7 @@ def _generate_death_record(pid: str, path: Path, row_number:int, seed:int) -> di
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
     # ordering the coded columns
-    ordered_columns_dict = order_numbered_columns(coded_pairs_df=coded_pairs_dict)
+    ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
 
     # defining fields which will always be populated with coded values
     always_populated = [x for x in coded_pairs_dict.keys() if not re.search("|".join(ordered_columns_dict.keys()), x) or re.search("_1$", x)]
