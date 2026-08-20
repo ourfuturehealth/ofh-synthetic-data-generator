@@ -136,7 +136,7 @@ def generate_tables(
 
         # 5% chance a given PID will have died and therefore have a death record
         if random.random() < 0.05:
-            death = _generate_death_record(pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
+            death = _generate_death_record(pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths), rng=rng)
             deaths.append(death)
 
     return GeneratedTables(
@@ -310,11 +310,12 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
-def _generate_death_record(pid: str, path: Path, row_number:int) -> dict[str, object]:
+def _generate_death_record(pid: str, path: Path, row_number:int, rng: Random) -> dict[str, object]:
     # load dictionaries and coding files
     df_dicts = get_dictionaries(path=path, df_name="deaths")
     
     fake=Faker()
+    Faker.seed(rng)
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
 
     deaths_record = {}
