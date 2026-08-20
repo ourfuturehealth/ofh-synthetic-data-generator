@@ -316,13 +316,30 @@ def _generate_death_record(pid: str, path: Path, row_number:int, rng: Random) ->
     
     fake=Faker()
     Faker.seed(rng)
+
+    # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs_df=coded_pairs_dict)
+
+    # defining fields which will always be populated with coded values
+    always_populated = [x for x in coded_pairs_dict.keys() if not re.search("|".join(ordered_columns_dict.keys()), x) or re.search("_1$", x)]
 
     deaths_record = {}
 
     deaths_record["PID"] = pid
-    for k,v in coded_pairs_dict.items():
-        deaths_record[k] = pick_random_code(df_name=v, data_dictionary=df_dicts)
+
+    # adding ICD codes to first cause of death column and underlying cause of death column
+    for colname in always_populated:
+            deaths_record[colname] = fake.random_element(elements=df_dicts["deaths"]["code"].unique())
+
+    # conditionally populating ICD cause of death columns to mimic missingness in real data
+    for base_colname, ordered_col_list in ordered_columns_dict.items():
+        for i in range(0, len(ordered_col_list)-1):
+            if fake.random_int(min=0, max=10) < 8 and isinstance(deaths_record[ordered_col_list[i]], str):
+                deaths_record[ordered_col_list[i+1]] = fake.random_element(elements=df_dicts["deaths"]["code"].unique())
+            else:
+                deaths_record[ordered_col_list[i+1]] = np.nan
 
     deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["deaths"]["start"], end_date=DATE_BOOKENDS["deaths"]["end"])
     deaths_record["REG_DATE"] = fake.date_between(
