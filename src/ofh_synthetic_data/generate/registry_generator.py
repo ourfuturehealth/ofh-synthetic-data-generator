@@ -84,6 +84,7 @@ def generate_tables(
 
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
+    deaths_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="deaths")["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -129,8 +130,9 @@ def generate_tables(
         participants.append(participant)
         questionnaires.append(questionnaire)
 
-        if random_chance_that_they_died:
-            death = _generate_death_record(, row_number=len(deaths))
+        # 5% chance a given PID will have died and therefore have a death record
+        if random.random() > 0.05:
+            death = _generate_death_record(pid=pid, path="/dictionaries/processed/linked-data/", row_number=len(deaths))
             deaths.append(death)
 
     return GeneratedTables(
@@ -149,6 +151,7 @@ def generate_tables(
             "outputs": {
                 "participant": generation_config.participant_file,
                 "questionnaire": generation_config.questionnaire_file,
+                "deaths" : generation_config.deaths_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -171,6 +174,7 @@ def generate_tables(
                 "source": "data_dictionary",
                 "participant_columns": len(participant_columns),
                 "questionnaire_columns": len(questionnaire_columns),
+                "deaths_columns" : len(deaths_columns)
             },
             "phase": "7-beta-release-candidate",
         },
@@ -186,16 +190,19 @@ def write_generated_tables(
     """Write generated tables and manifest to disk."""
     participant_path = output_dir / config.participant_file
     questionnaire_path = output_dir / config.questionnaire_file
+    deaths_path = output_dir / config.deaths_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
     write_records_csv(tables.questionnaires, questionnaire_path, tables.questionnaire_columns)
+    write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
     write_metadata(
         {
             **tables.manifest,
             "output_files": {
                 "participant": str(participant_path),
                 "questionnaire": str(questionnaire_path),
+                "deaths" : str(deaths_path),
             },
         },
         manifest_path,
@@ -204,6 +211,7 @@ def write_generated_tables(
     return GeneratedTablePaths(
         participant=participant_path,
         questionnaire=questionnaire_path,
+        deaths=deaths_path,
         manifest=manifest_path,
     )
 
