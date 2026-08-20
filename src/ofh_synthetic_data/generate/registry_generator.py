@@ -136,7 +136,7 @@ def generate_tables(
 
         # 5% chance a given PID will have died and therefore have a death record
         if random.random() < 0.05:
-            death = _generate_death_record(pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths), rng=rng)
+            death = _generate_death_record(pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths), seed=generation_config.seed)
             deaths.append(death)
 
     return GeneratedTables(
@@ -310,12 +310,12 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
-def _generate_death_record(pid: str, path: Path, row_number:int, rng: Random) -> dict[str, object]:
+def _generate_death_record(pid: str, path: Path, row_number:int, seed:int) -> dict[str, object]:
     # load dictionaries and coding files
     df_dicts = get_dictionaries(path=path, df_name="deaths")
     
     fake=Faker()
-    Faker.seed(rng)
+    Faker.seed(seed)
 
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
@@ -331,13 +331,13 @@ def _generate_death_record(pid: str, path: Path, row_number:int, rng: Random) ->
 
     # adding ICD codes to first cause of death column and underlying cause of death column
     for colname in always_populated:
-            deaths_record[colname] = fake.random_element(elements=df_dicts["deaths"]["code"].unique())
+            deaths_record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
 
     # conditionally populating ICD cause of death columns to mimic missingness in real data
     for base_colname, ordered_col_list in ordered_columns_dict.items():
         for i in range(0, len(ordered_col_list)-1):
             if fake.random_int(min=0, max=10) < 8 and isinstance(deaths_record[ordered_col_list[i]], str):
-                deaths_record[ordered_col_list[i+1]] = fake.random_element(elements=df_dicts["deaths"]["code"].unique())
+                deaths_record[ordered_col_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
             else:
                 deaths_record[ordered_col_list[i+1]] = np.nan
 

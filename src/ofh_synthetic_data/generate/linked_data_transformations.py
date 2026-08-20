@@ -66,9 +66,10 @@ def generate_row_number(df:pd.DataFrame) -> pd.DataFrame:
     df['ROW_ID'] = df.reset_index().index
     return df
 
-# def pick_random_code(df_name: str, data_dictionary: dict[str, pd.DataFrame]):
-#     fake = Faker()
-#     return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
+def pick_random_code(df_name: str, data_dictionary: dict[str, pd.DataFrame], seed:int):
+    fake = Faker()
+    Faker.seed(seed)
+    return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
 
 def create_coded_pairs(data_dictionary: dict[str, pd.DataFrame]) -> dict:
     """
