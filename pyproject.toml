@@ -17,6 +17,7 @@ dependencies = [
 ofh-synthetic-data = "ofh_synthetic_data.cli:main"
 
 [tool.poetry]
+name = "product-experiments-nina"
 packages = [{ include = "ofh_synthetic_data", from = "src" }]
 
 [tool.poetry.group.dev.dependencies]
