@@ -66,9 +66,9 @@ def generate_row_number(df:pd.DataFrame) -> pd.DataFrame:
     df['ROW_ID'] = df.reset_index().index
     return df
 
-def pick_random_code(df_name: str, data_dictionary: dict[str, pd.DataFrame]):
-    fake = Faker()
-    return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
+# def pick_random_code(df_name: str, data_dictionary: dict[str, pd.DataFrame]):
+#     fake = Faker()
+#     return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
 
 def create_coded_pairs(data_dictionary: dict[str, pd.DataFrame]) -> dict:
     """
@@ -84,3 +84,24 @@ def create_coded_pairs(data_dictionary: dict[str, pd.DataFrame]) -> dict:
         )
     )
 
+def order_numbered_columns(coded_pairs_dict: dict) -> dict[str, list]:
+    """
+    Sorts coded fields into numeric order, specifically for columns like DIAG_nn, PROC_nn, COD_CODE_nn
+    Returns: dictionary with base column name as key (eg DIAG or DIAG_4) and list of all fields which fall into that category.
+    """
+
+    # getting list of all fields that are ordered
+    list_columns = [x for x in coded_pairs_dict.keys() if re.search('_[0-9]+$', x)]
+
+    # converting list into a pandas dataframe
+    list_df = pd.DataFrame(list_columns, columns=["name"])
+
+    # extracting base column name as new field
+    list_df["base_colname"] = list_df["name"].str.replace("_[0-9]+$", "", regex=True)
+    # creating new integer field to order the columns by
+    list_df["order_col"] = pd.to_numeric(list_df["name"].apply(lambda x: x.split("_")[-1]))
+    # sorting the df according to order
+    list_df = list_df.sort_values(["base_colname", "order_col"])
+
+    # returning dictionary of coded columns in correct numerical order
+    return {k : list_df.loc[list_df["base_colname"] == k, "name"].to_list() for k in list_df["base_colname"].unique()}
