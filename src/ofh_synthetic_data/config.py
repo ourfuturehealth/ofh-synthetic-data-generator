@@ -32,6 +32,7 @@ class GenerationConfig:
     participant_file: str = "participant.csv"
     questionnaire_file: str = "questionnaire.csv"
     deaths_file: str = "nhse_engwal_deaths.csv"
+    op_file: str = "nhse_eng_outpat.csv"
     manifest_file: str = "manifest.json"
     questionnaire_version: str = "v2"
 

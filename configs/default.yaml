@@ -16,10 +16,11 @@ registry:
     - questionnaire
 
 generation:
-  rows: 500
+  rows: 1000
   seed: 42
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv
   deaths_file: nhse_engwal_deaths.csv
+  op_file: nhse_eng_outpat.csv
   manifest_file: manifest.json
   questionnaire_version: "v2"
