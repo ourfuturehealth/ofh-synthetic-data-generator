@@ -47,7 +47,7 @@ def get_dictionaries(path: Path, df_name:str, ontology_dict:dict[str, str]=ONTOL
 
     # load dataset-specific coding files
     if len([x for x in coding_names if x not in ontologies_present]) > 0:
-        df_dict["codes"] = load_linked_codes(path=path+"load_linked_codes/", df_name=df_name)
+        df_dict["codes"] = load_linked_codes(path=path+"linked_data_codings/", df_name=df_name)
 
     return df_dict
 
