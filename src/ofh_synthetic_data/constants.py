@@ -14,3 +14,17 @@ ONTOLOGY_DICT = {
     'opcs4': ['apc', 'op'],
     'snomed': ['ecds', 'meds', 'drugs']
 }
+
+IMD_VALID_ENTRIES = [
+    "Most deprived 10%", 
+    "More deprived 10-20%", 
+    "More deprived 20-30%", 
+    "More deprived 30-40%", 
+    "More deprived 40-50%", 
+    "Less deprived 40-50%", 
+    "Less deprived 30-40%", 
+    "Less deprived 20-30%", 
+    "Less deprived 10-20%", 
+    "Least deprived 10%",
+    "Less deprived 10%",
+]
