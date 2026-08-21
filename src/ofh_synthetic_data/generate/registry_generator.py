@@ -145,12 +145,13 @@ def generate_tables(
 
         # 5% chance a given PID will have died and therefore have a death record
         if random.random() < 0.05:
-            death = _generate_death_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
-            deaths.append(death)
+            death_record = _generate_death_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
+            deaths.append(death_record)
 
+        # 90% chance a given PID will have an Outpatient record
         if random.random() < 0.9:
-            op = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
-            op.append(op)
+            op_record = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
+            op.append(op_record)
 
     return GeneratedTables(
         participants=participants,
@@ -398,14 +399,14 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     record["PID"] = pid
 
     for colname in always_populated:
-            record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+            record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
     
     for base_colname in ordered_columns_dict.keys():
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 80% chance that diagnosis or procedure code is populated
             if random.random() <= 0.8 and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
-                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
             # 20% chance that unknown or missing code value present
             elif random.random() > 0.8 and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
                 record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
@@ -420,7 +421,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     if record["APPTDATE"] >= datetime.date(2012,4,1):
         record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["op"]["end"])
         record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["op"]["end"])
-        record["RTTPERSTAT"] = pick_random_code(coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dicts)
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dicts)
     # enter as null for records prior to that FYEAR
     else:
         for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
@@ -436,7 +437,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
         record["SUSSPELLID"] = generate_numeric_id(n=19)
     # 0.01% chance it is missing
     if random.random() < 0.01:
-        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
