@@ -141,7 +141,8 @@ def generate(args: argparse.Namespace, config: AppConfig) -> int:
 
     print(f"Wrote {len(tables.participants)} participant rows to {paths.participant}")
     print(f"Wrote {len(tables.questionnaires)} questionnaire rows to {paths.questionnaire}")
-    print(f"Wrote {len(tables.deaths)} questionnaire rows to {paths.deaths}")
+    print(f"Wrote {len(tables.deaths)} rows to {paths.deaths}")
+    print(f"Wrote {len(tables.op)} rows to {paths.op}")
     print(f"Wrote manifest to {paths.manifest}")
     return 0
 
