@@ -341,7 +341,7 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
         for i in range(0, len(ordered_col_list)-1):
             if fake.random_int(min=0, max=10) < 8 and deaths_record[ordered_col_list[i]] != "":
                 deaths_record[ordered_col_list[i+1]] = fake.random_element(
-                    elements=df_dicts[coded_pairs_dict[colname]]["code"].unique()
+                    elements=df_dicts[coded_pairs_dict[ordered_col_list[i]]]["code"].unique()
                 )
             else:
                 deaths_record[ordered_col_list[i+1]] = ""
