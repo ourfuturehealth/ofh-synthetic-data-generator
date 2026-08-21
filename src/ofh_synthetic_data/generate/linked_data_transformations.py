@@ -1,6 +1,6 @@
 import pandas as pd
-# import random
-# import string
+import random
+import string
 # import datetime
 import re
 import numpy as np
@@ -106,3 +106,6 @@ def order_numbered_columns(coded_pairs_dict: dict) -> dict[str, list]:
 
     # returning dictionary of coded columns in correct numerical order
     return {k : list_df.loc[list_df["base_colname"] == k, "name"].to_list() for k in list_df["base_colname"].unique()}
+
+def generate_numeric_id(n: int) -> str:
+    return ''.join(random.choices(string.digits, k=n))
