@@ -339,12 +339,12 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
     # conditionally populating ICD cause of death columns to mimic missingness in real data
     for base_colname, ordered_col_list in ordered_columns_dict.items():
         for i in range(0, len(ordered_col_list)-1):
-            if fake.random_int(min=0, max=10) < 8 and isinstance(deaths_record[ordered_col_list[i]], str):
+            if fake.random_int(min=0, max=10) < 8 and deaths_record[ordered_col_list[i]] != "":
                 deaths_record[ordered_col_list[i+1]] = fake.random_element(
                     elements=df_dicts[coded_pairs_dict[colname]]["code"].unique()
                 )
             else:
-                deaths_record[ordered_col_list[i+1]] = np.nan
+                deaths_record[ordered_col_list[i+1]] = ""
 
     deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["deaths"]["start"], end_date=DATE_BOOKENDS["deaths"]["end"])
     deaths_record["REG_DATE"] = fake.date_between(
