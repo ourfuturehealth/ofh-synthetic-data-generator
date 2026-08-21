@@ -85,6 +85,13 @@ def create_coded_pairs(data_dictionary: dict[str, pd.DataFrame]) -> dict:
         )
     )
 
+def pick_random_code(fake: Faker, df_name: str, data_dictionary: dict[str, pd.DataFrame]):
+
+    if re.search("ICD|OPCS|SNOMED", df_name):
+        return fake.random_element(elements=data_dictionary[df_name]["code"].unique())
+    else:
+        return fake.random_element(elements=data_dictionary["codes"].loc[data_dictionary["codes"]["coding_name"] == df_name, "code"].unique())
+
 def order_numbered_columns(coded_pairs_dict: dict) -> dict[str, list]:
     """
     Sorts coded fields into numeric order, specifically for columns like DIAG_nn, PROC_nn, COD_CODE_nn
