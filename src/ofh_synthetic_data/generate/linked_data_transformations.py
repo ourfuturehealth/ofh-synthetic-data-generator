@@ -116,3 +116,9 @@ def order_numbered_columns(coded_pairs_dict: dict) -> dict[str, list]:
 
 def generate_numeric_id(n: int) -> str:
     return ''.join(random.choices(string.digits, k=n))
+
+def get_max_years(df_name: str, date_dict: dict=DATE_BOOKENDS) -> int:
+        """
+        Returns the number of years available within a given dataset based on the start and end dates defined in DATE_BOOKENDS.
+        """
+        return len([x for x in range(date_dict[df_name]["start"].year, date_dict[df_name]["end"].year+1)])
