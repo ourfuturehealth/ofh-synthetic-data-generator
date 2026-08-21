@@ -356,6 +356,82 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
 
     return deaths_record
 
+def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+    # load dictionaries and coding files
+    df_dicts = get_dictionaries(path=path, df_name="op")
+    
+    # creating dictionary of coded columns and code value
+    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
+
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["RTTPERSTAT", "SUSSPELLID"]
+
+    # defining fields which will always be populated with coded values
+    always_populated = [
+        x for x in coded_pairs_dict.keys() 
+        if not re.search("|".join(ordered_columns_dict.keys()), x) 
+        or re.search("_01$", x) 
+        and x not in conditional_columns
+    ]
+
+    record = {}
+    
+    record["PID"] = pid
+
+    for colname in always_populated:
+            record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+    
+    for base_colname in ordered_columns_dict.keys():
+        ordered_list = ordered_columns_dict[base_colname]
+        for i in range(0, len(ordered_list)-1):
+            # 80% chance that diagnosis or procedure code is populated
+            if random.random() <= 0.8 and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
+                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+            # 20% chance that unknown or missing code value present
+            elif random.random() > 0.8 and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
+                record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
+            else:
+                if re.search("OPERTN", base_colname):
+                    record[ordered_list[i+1]] = "-"
+                else:
+                    record[ordered_list[i+1]] = ""
+    
+    record["APPTDATE"] = fake.date_between(start_date=DATE_BOOKENDS["op"]["start"], end_date=DATE_BOOKENDS["op"]["end"])
+    # these fields only available from 2012/2013 financial year
+    if record["APPTDATE"] >= datetime.date(2012,4,1):
+        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["op"]["end"])
+        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["op"]["end"])
+        record["RTTPERSTAT"] = pick_random_code(coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dicts)
+    # enter as null for records prior to that FYEAR
+    else:
+        for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
+            record[c] = np.nan
+    
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    
+    # generating SUSSPELLID code
+    if record["APPTDATE"] < datetime.date(2016,4,1):
+        record["SUSSPELLID"] = generate_numeric_id(n=10)
+    else:
+        record["SUSSPELLID"] = generate_numeric_id(n=19)
+    # 0.01% chance it is missing
+    if random.random() < 0.01:
+        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+    # about 30% entries are uppercase
+    if random.random() < 0.3:
+        record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+    
+        # adding `ROW_ID` to dataset
+    
+    record["ROW_ID"] = row_number
+    return record
+
 def _generate_value(
     field: dict[str, object],
     coding_lookup: dict[str, dict[str, list[str]]],
