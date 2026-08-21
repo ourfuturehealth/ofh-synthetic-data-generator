@@ -36,9 +36,11 @@ class GeneratedTables:
     participants: list[dict[str, object]]
     questionnaires: list[dict[str, object]]
     deaths: list[dict[str, object]]
+    op: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
     deaths_columns: list[str]
+    op_columns: list[str]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -48,6 +50,7 @@ class GeneratedTablePaths:
     participant: Path
     questionnaire: Path
     deaths: Path
+    op: Path
     manifest: Path
 
 
@@ -89,6 +92,7 @@ def generate_tables(
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
     deaths_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="deaths")["name"].astype(str).tolist()
+    op_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="op")["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -103,6 +107,7 @@ def generate_tables(
     participants: list[dict[str, object]] = []
     questionnaires: list[dict[str, object]] = []
     deaths: list[dict[str, object]] = []
+    op: list[dict[str, object]] = []
     skipped_by_logic_count = 0
 
     # setting faker instance and providing seed
@@ -143,13 +148,19 @@ def generate_tables(
             death = _generate_death_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
             deaths.append(death)
 
+        if random.random() < 0.9:
+            op = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
+            op.append(op)
+
     return GeneratedTables(
         participants=participants,
         questionnaires=questionnaires,
         deaths=deaths,
+        op=op,
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
+        op_columns=op_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -160,6 +171,7 @@ def generate_tables(
                 "participant": generation_config.participant_file,
                 "questionnaire": generation_config.questionnaire_file,
                 "deaths" : generation_config.deaths_file,
+                "op" : generation_config.op_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -182,7 +194,8 @@ def generate_tables(
                 "source": "data_dictionary",
                 "participant_columns": len(participant_columns),
                 "questionnaire_columns": len(questionnaire_columns),
-                "deaths_columns" : len(deaths_columns)
+                "deaths_columns" : len(deaths_columns),
+                "op_columns" : len(op_columns)
             },
             "phase": "7-beta-release-candidate",
         },
@@ -199,11 +212,13 @@ def write_generated_tables(
     participant_path = output_dir / config.participant_file
     questionnaire_path = output_dir / config.questionnaire_file
     deaths_path = output_dir / config.deaths_file
+    op_path = output_dir / config.op_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
     write_records_csv(tables.questionnaires, questionnaire_path, tables.questionnaire_columns)
     write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
+    write_records_csv(tables.op, op_path, tables.op_columns)
     write_metadata(
         {
             **tables.manifest,
@@ -211,6 +226,7 @@ def write_generated_tables(
                 "participant": str(participant_path),
                 "questionnaire": str(questionnaire_path),
                 "deaths" : str(deaths_path),
+                "op" : str(op_path)
             },
         },
         manifest_path,
@@ -220,6 +236,7 @@ def write_generated_tables(
         participant=participant_path,
         questionnaire=questionnaire_path,
         deaths=deaths_path,
+        op=op_path,
         manifest=manifest_path,
     )
 
