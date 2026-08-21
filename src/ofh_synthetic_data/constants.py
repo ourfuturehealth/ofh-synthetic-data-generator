@@ -4,7 +4,8 @@ import datetime
 DATE_BOOKENDS = {
     "deaths" : {"start" : datetime.date(2022,6,1), "end" : datetime.date(2025,11,30)},
     "apc": {"start" : datetime.date(1997,4,1), "end" : datetime.date(2025,10,31)},
-    "op": {"start" : datetime.date(2003,4,1), "end" : datetime.date(2025,10,31)}
+    "op": {"start" : datetime.date(2003,4,1), "end" : datetime.date(2025,10,31)},
+    "ae": {"start" : datetime.date(2007,4,1), "end" : datetime.date(2019,3,31)},
 }
 
 ONTOLOGY_DICT = {
