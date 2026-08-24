@@ -95,15 +95,15 @@ def generate_tables(
     # loading linked data dictionaries
     # using DATE_BOOKENDS for df names because all datasets available should have defined dates
     linked_data_dicts = {
-        df_name : get_dictionaries(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name=df_name) 
+        df_name : get_dictionaries(path="dictionaries/processed/linked-data/", df_name=df_name) 
         for df_name in DATE_BOOKENDS.keys() 
     }
 
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
     deaths_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
-    op_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
-    ae_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
+    op_columns = linked_data_dicts["op"]["dictionary"]["name"].astype(str).tolist()
+    ae_columns = linked_data_dicts["ae"]["dictionary"]["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -432,14 +432,14 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     record["PID"] = pid
 
     for colname in always_populated:
-        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
     
     for base_colname in ordered_columns_dict.keys():
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 80% chance that diagnosis or procedure code is populated
             if fake.pybool(80) and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
-                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
             # 20% chance that unknown or missing code value present
             elif fake.pybool(20) and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
                 record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
@@ -520,14 +520,14 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     record["PID"] = pid
     
     for colname in always_populated:
-        record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
     
     for base_colname in ordered_columns_dict.keys():
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 10% chance that diagnosis or procedure code is populated
             if fake.pybool(10) and record[ordered_list[i]] != "":
-                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
             else:
                 record[ordered_list[i+1]] = ""
 
@@ -545,10 +545,8 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     
     # time columns 
     # time is 4 characters
-    record["ARRIVALTIME"] = str(fake.random_int(min=0, max=2399)).zfill(4)
-    record["CONCLTIME"] = str(fake.random_int(min=int(record["ARRIVALTIME"]), max=2399)).zfill(4)
-    for t in [x for x in coded_pairs_dict.keys() if "TIME" in x and x not in ["ARRIVALTIME", "CONCLTIME"]]:
-        record[t] = str(fake.random_int(min=int(record["ARRIVALTIME"]), max=int(record["CONCLTIME"]))).zfill(4)
+    for t in [x for x in coded_pairs_dict.keys() if "TIME" in x]:
+        record[t] = str(fake.time('%H:%M').replace(":", "")).zfill(4)
     
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = generate_numeric_id(n=6)
@@ -560,7 +558,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         record["SUSSPELLID"] = generate_numeric_id(n=19)
     # 1% chance it is missing
     if fake.pybool(1):
-        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
         record["AEKEY"] = generate_numeric_id(n=19)
