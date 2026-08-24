@@ -159,12 +159,12 @@ def generate_tables(
         questionnaires.append(questionnaire)
 
         # 5% chance a given PID will have died and therefore have a death record
-        if random.random() < 0.03:
+        if fake.pybool(5):
             death_record = _generate_death_record(fake, pid=pid, df_dict=linked_data_dicts["deaths"], row_number=len(deaths))
             deaths.append(death_record)
 
         # 75% chance a given PID will have an Outpatient record
-        if random.random() < 0.75:
+        if fake.pybool(75):
             # assuming a participant can appear up to 10x per year
             n_obs = fake.random_int(min=1, max=max_years["op"]*10)
             for i in range(0, n_obs):
@@ -172,7 +172,7 @@ def generate_tables(
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
-        if random.random() < 0.60:
+        if fake.pybool(60):
             # assuming a participant can appear up to 5x per year
             n_obs = fake.random_int(min=1, max=max_years["ae"]*5)
             ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
@@ -438,10 +438,10 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 80% chance that diagnosis or procedure code is populated
-            if random.random() <= 0.8 and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
+            if fake.pybool(80) and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
                 record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
             # 20% chance that unknown or missing code value present
-            elif random.random() > 0.8 and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
+            elif fake.pybool(20) and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
                 record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
             else:
                 if re.search("OPERTN", base_colname):
@@ -473,14 +473,14 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
         record["SUSSPELLID"] = generate_numeric_id(n=10)
     else:
         record["SUSSPELLID"] = generate_numeric_id(n=19)
-    # 0.01% chance it is missing
-    if random.random() < 0.01:
+    # 1% chance it is missing
+    if fake.pybool(1):
         record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
     # about 30% entries are uppercase
-    if random.random() < 0.3:
+    if fake.pybool(30):
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
     
     # adding `ROW_ID` to dataset
@@ -526,7 +526,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 10% chance that diagnosis or procedure code is populated
-            if random.random() <= 0.1 and record[ordered_list[i]] != "":
+            if fake.pybool(10) and record[ordered_list[i]] != "":
                 record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
             else:
                 record[ordered_list[i+1]] = ""
@@ -535,7 +535,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     treat_columns = [x for x in df_dict["dictionary"]["name"].to_list() if "TREAT_" in x]
     record["TREAT_01"] = generate_numeric_id(n=3)
     for t in range(0, len(treat_columns)-1):
-        if random.random() < 0.2 and record[treat_columns[t]] != "":
+        if fake.pybool(20) and record[treat_columns[t]] != "":
             treat_length = fake.random_int(min=1, max=6)
             record[treat_columns[t+1]] = generate_numeric_id(n=treat_length)
         else:
@@ -558,8 +558,8 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         record["SUSSPELLID"] = generate_numeric_id(n=10)
     else:
         record["SUSSPELLID"] = generate_numeric_id(n=19)
-    # 0.01% chance it is missing
-    if random.random() < 0.01:
+    # 1% chance it is missing
+    if fake.pybool(1):
         record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
@@ -569,7 +569,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
 
     # populating EPIKEY based on years available and character length
     if record["ARRIVALDATE"] >= datetime.date(2013,4,1):
-        if random.random() <= 0.1:
+        if fake.pybool(10):
             if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
                 record["EPIKEY"] = generate_numeric_id(n=19)
             else:
