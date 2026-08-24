@@ -13,7 +13,8 @@ import pandas as pd
 DF_NAMES = {
     "deaths" : "nhse_engwal_deaths",
     "apc"    : "nhse_eng_inpat",
-    "op" : "nhse_eng_outpat"
+    "op" : "nhse_eng_outpat",
+    "ae" : "nhse_eng_ed",
 }
 OUT_PATH = "dictionaries/processed/linked-data/"
 
