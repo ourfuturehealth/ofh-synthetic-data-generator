@@ -381,11 +381,13 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
     return deaths_record
 
 def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+    
     # load dictionaries and coding files
     df_dicts = get_dictionaries(path=path, df_name="op")
     
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
+
     # ordering the coded columns
     ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
 
@@ -405,7 +407,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     record["PID"] = pid
 
     for colname in always_populated:
-            record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
     
     for base_colname in ordered_columns_dict.keys():
         ordered_list = ordered_columns_dict[base_colname]
@@ -459,6 +461,105 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
 
+    return record
+
+def _generate_ae_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+    # load dictionaries and coding files
+    df_dicts = get_dictionaries(path=path, df_name="ae")
+    
+    # converting to dictionary of name and coding name value pairs
+    coded_pairs_dict = create_coded_pairs(df_dicts)
+    
+    # adding DIAG_nn and INVEST_nn to coded pairs dict
+    for c in [x for x in df_dicts["dictionary"]["name"].to_list() if re.search("DIAG_|INVEST_", x)]:
+        if "DIAG" in c:
+            coded_pairs_dict[c] = "DIAGA_ae_coding"
+        else:
+            coded_pairs_dict[c] = "INVEST2_ae_coding"
+    
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["SUSSPELLID"] + [x for x in coded_pairs_dict.keys() if "TIME" in x]
+    
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs_dict)
+    
+    # defining fields which will always be populated with coded values
+    always_populated = [
+        x for x in coded_pairs_dict.keys() 
+        if not re.search("|".join(ordered_columns_dict.keys()), x) 
+        or re.search("_01$", x) 
+        and x not in conditional_columns
+    ]
+    
+    record = {}
+    record["PID"] = pid
+    
+    for colname in always_populated:
+        record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+    
+    for base_colname in ordered_columns_dict.keys():
+        ordered_list = ordered_columns_dict[base_colname]
+        for i in range(0, len(ordered_list)-1):
+            # 10% chance that diagnosis or procedure code is populated
+            if random.random() <= 0.1 and record[ordered_list[i]] != "":
+                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+            else:
+                record[ordered_list[i+1]] = ""
+
+    # manually adding TREAT_nn fields because they do not have set codes but usually consist of 2-6 character codes
+    treat_columns = [x for x in df_dicts["dictionary"]["name"].to_list() if "TREAT_" in x]
+    record["TREAT_01"] = generate_numeric_id(n=3)
+    for t in range(0, len(treat_columns)-1):
+        if random.random() < 0.2 and record[treat_columns[t]] != "":
+            treat_length = fake.random_int(min=1, max=6)
+            record[treat_columns[t+1]] = generate_numeric_id(n=treat_length)
+        else:
+            record[treat_columns[t+1]] = ""
+    
+    record["ARRIVALDATE"] = fake.date_between(start_date=DATE_BOOKENDS["ae"]["start"], end_date=DATE_BOOKENDS["ae"]["end"])
+    
+    # time columns 
+    # time is 4 characters
+    record["ARRIVALTIME"] = str(fake.random_int(min=0, max=2399)).zfill(4)
+    record["CONCLTIME"] = str(fake.random_int(min=int(record["ARRIVALTIME"]), max=2399)).zfill(4)
+    for t in [x for x in coded_pairs_dict.keys() if "TIME" in x and x not in ["ARRIVALTIME", "CONCLTIME"]]:
+        record[t] = str(fake.random_int(min=int(record["ARRIVALTIME"]), max=int(record["CONCLTIME"]))).zfill(4)
+    
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    
+    # generating SUSSPELLID code
+    if record["ARRIVALDATE"] < datetime.date(2016,4,1):
+        record["SUSSPELLID"] = generate_numeric_id(n=10)
+    else:
+        record["SUSSPELLID"] = generate_numeric_id(n=19)
+    # 0.01% chance it is missing
+    if random.random() < 0.01:
+        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
+    
+    if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
+        record["AEKEY"] = generate_numeric_id(n=19)
+    else:
+        record["AEKEY"] = generate_numeric_id(n=12)
+
+    # populating EPIKEY based on years available and character length
+    if record["ARRIVALDATE"] >= datetime.date(2013,4,1):
+        if random.random() <= 0.1:
+            if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
+                record["EPIKEY"] = generate_numeric_id(n=19)
+            else:
+                record["EPIKEY"] = generate_numeric_id(n=12)
+        else:
+            record["EPIKEY"] = np.nan
+    else: 
+        record["EPIKEY"] = np.nan
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+        
+    # adding `ROW_ID` to dataset
+    record["ROW_ID"] = row_number
+    
     return record
 
 def _generate_value(
