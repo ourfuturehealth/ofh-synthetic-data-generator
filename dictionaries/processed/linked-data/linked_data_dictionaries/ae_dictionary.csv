@@ -1,0 +1,92 @@
+name,type,coding_name,is_sparse_coding,description
+AEARRIVALMODE,string,AEARRIVALMODE_ae_coding,,Arrival Mode
+AEATTENDCAT,string,AEATTENDCAT_ae_coding,,Attendance Category
+AEATTENDDISP,string,AEATTENDDISP_ae_coding,,Attendance Disposal
+AEDEPTTYPE,string,AEDEPTTYPE_ae_coding,,Department Type
+AEKEY,string,,,HES Record Identifier
+AEREFSOURCE,string,AEREFSOURCE_ae_coding,yes,Source of Referral For A&E
+ARRIVALDATE,date,,,Arrival Date
+ARRIVALTIME,string,,,Arrival Time
+CONCLTIME,string,CONCLTIME_ae_coding,yes,Conclusion Time
+DEPTIME,string,DEPTIME_ae_coding,yes,Departure Time
+DIAGA_01,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_02,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_03,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_04,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_05,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_06,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_07,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_08,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_09,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_10,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_11,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGA_12,string,DIAGA_ae_coding,yes,Diagnosis Code - Anatomical Area
+DIAGSCHEME,string,DIAGSCHEME_ae_coding,,Diagnosis Scheme in Use
+DIAGS_01,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_02,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_03,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_04,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_05,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_06,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_07,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_08,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_09,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_10,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_11,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAGS_12,string,DIAGS_ae_coding,yes,Diagnosis Code - Anatomical Side
+DIAG_01,string,,,Diagnosis Code
+DIAG_02,string,,,Diagnosis Code
+DIAG_03,string,,,Diagnosis Code
+DIAG_04,string,,,Diagnosis Code
+DIAG_05,string,,,Diagnosis Code
+DIAG_06,string,,,Diagnosis Code
+DIAG_07,string,,,Diagnosis Code
+DIAG_08,string,,,Diagnosis Code
+DIAG_09,string,,,Diagnosis Code
+DIAG_10,string,,,Diagnosis Code
+DIAG_11,string,,,Diagnosis Code
+DIAG_12,string,,,Diagnosis Code
+EPIKEY,string,,,APC Record Identifier
+IMD04_DECILE,string,,,IMD Decile Group
+INVEST2_01,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_02,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_03,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_04,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_05,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_06,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_07,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_08,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_09,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_10,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_11,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST2_12,string,INVEST2_ae_coding,yes,A&E Investigation - 2 Character
+INVEST_01,string,,,A&E Investigation
+INVEST_02,string,,,A&E Investigation
+INVEST_03,string,,,A&E Investigation
+INVEST_04,string,,,A&E Investigation
+INVEST_05,string,,,A&E Investigation
+INVEST_06,string,,,A&E Investigation
+INVEST_07,string,,,A&E Investigation
+INVEST_08,string,,,A&E Investigation
+INVEST_09,string,,,A&E Investigation
+INVEST_10,string,,,A&E Investigation
+INVEST_11,string,,,A&E Investigation
+INVEST_12,string,,,A&E Investigation
+PID,string,,,Participant ID
+PROCODE3_OFH,string,,,Provider Organisation Code (Pseudonymised by OFH)
+PROTYPE,string,PROTYPE_ae_coding,,Provider Type
+ROW_ID,string,,,OFH generated local key
+SUSSPELLID,string,SUSSPELLID_ae_coding,yes,SUS Generated Spell Identifier
+TREAT_01,string,,,A&E Treatment
+TREAT_02,string,,,A&E Treatment
+TREAT_03,string,,,A&E Treatment
+TREAT_04,string,,,A&E Treatment
+TREAT_05,string,,,A&E Treatment
+TREAT_06,string,,,A&E Treatment
+TREAT_07,string,,,A&E Treatment
+TREAT_08,string,,,A&E Treatment
+TREAT_09,string,,,A&E Treatment
+TREAT_10,string,,,A&E Treatment
+TREAT_11,string,,,A&E Treatment
+TREAT_12,string,,,A&E Treatment
+TRETTIME,string,TRETTIME_ae_coding,yes,Time Seen For Treatment

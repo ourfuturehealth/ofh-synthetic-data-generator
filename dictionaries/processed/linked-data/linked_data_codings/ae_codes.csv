@@ -1,0 +1,126 @@
+coding_name,code,meaning
+AEARRIVALMODE_ae_coding,1,Brought in by ambulance (including helicopter / Air Ambulance)
+AEARRIVALMODE_ae_coding,2,Other
+AEARRIVALMODE_ae_coding,9,Not known
+AEATTENDCAT_ae_coding,1,First A&E attendance
+AEATTENDCAT_ae_coding,2,Follow-up A&E attendance - planned
+AEATTENDCAT_ae_coding,3,Follow-up A&E attendance - unplanned
+AEATTENDCAT_ae_coding,9,Not known
+AEATTENDDISP_ae_coding,01,Admitted to hospital bed / became a lodged patient of the same health care provider
+AEATTENDDISP_ae_coding,02,Discharged – follow-up treatment to be provided by general practitioner
+AEATTENDDISP_ae_coding,03,Discharged – did not require any follow-up treatment
+AEATTENDDISP_ae_coding,04,Referred to A&E clinic
+AEATTENDDISP_ae_coding,05,Referred to fracture clinic
+AEATTENDDISP_ae_coding,06,Referred to other outpatient clinic
+AEATTENDDISP_ae_coding,07,Transferred to other healthcare provider
+AEATTENDDISP_ae_coding,10,Died in department
+AEATTENDDISP_ae_coding,11,Referred to other healthcare professional
+AEATTENDDISP_ae_coding,12,Left department before being treated
+AEATTENDDISP_ae_coding,13,Left department having refused treatment
+AEATTENDDISP_ae_coding,14,Other
+AEATTENDDISP_ae_coding,99,Not known
+AEDEPTTYPE_ae_coding,01,Emergency departments are a consultant led 24-hour service with full resuscitation facilities and designated accommodation for the reception of accident and emergency patients
+AEDEPTTYPE_ae_coding,02,Consultant-led mono specialty accident and emergency service (e.g. ophthalmology  dental) with designated accommodation for the reception of patients
+AEDEPTTYPE_ae_coding,03,Other type of A&E/minor injury activity with designated accommodation for the reception of accident and emergency patients. The department may be doctor led or nurse led and treats at least minor injuries and illnesses and can be routinely accessed without appointment. A service mainly or entirely appointment based (for example a GP practice or outpatient clinic) is excluded even though it may treat a number of patients with minor illness or injury. Excludes NHS walk-in centres
+AEDEPTTYPE_ae_coding,04,NHS walk-in centres
+AEDEPTTYPE_ae_coding,05,Same Day Emergency Care (SDEC)
+AEDEPTTYPE_ae_coding,99,Not known
+AEREFSOURCE_ae_coding,00,General medical practitioner
+AEREFSOURCE_ae_coding,01,Self referral
+AEREFSOURCE_ae_coding,02,Local authority social services
+AEREFSOURCE_ae_coding,03,Emergency services
+AEREFSOURCE_ae_coding,04,Work
+AEREFSOURCE_ae_coding,05,Educational establishment
+AEREFSOURCE_ae_coding,06,Police
+AEREFSOURCE_ae_coding,07,Health care provider: same or other
+AEREFSOURCE_ae_coding,08,Other
+AEREFSOURCE_ae_coding,92,General dental practitioner
+AEREFSOURCE_ae_coding,93,Community dental service
+AEREFSOURCE_ae_coding,99,Not known
+CONCLTIME_ae_coding,3000,Invalid time submitted
+CONCLTIME_ae_coding,4000,Null time submitted
+DEPTIME_ae_coding,3000,Invalid time submitted
+DEPTIME_ae_coding,4000,Null time submitted
+DIAGA_ae_coding,01,Brain
+DIAGA_ae_coding,02,Head
+DIAGA_ae_coding,03,Face
+DIAGA_ae_coding,04,Eye
+DIAGA_ae_coding,05,Ear
+DIAGA_ae_coding,06,Nose
+DIAGA_ae_coding,07,Mouth Jaw Teeth
+DIAGA_ae_coding,08,Throat
+DIAGA_ae_coding,09,Neck
+DIAGA_ae_coding,10,Shoulder
+DIAGA_ae_coding,11,Axilla
+DIAGA_ae_coding,12,Upper Arm
+DIAGA_ae_coding,13,Elbow
+DIAGA_ae_coding,14,Forearm
+DIAGA_ae_coding,15,Wrist
+DIAGA_ae_coding,16,Hand
+DIAGA_ae_coding,17,Digit
+DIAGA_ae_coding,18,Cervical spine
+DIAGA_ae_coding,19,Thoracic
+DIAGA_ae_coding,20,Lumbosacral spine
+DIAGA_ae_coding,21,Pelvis
+DIAGA_ae_coding,22,Chest
+DIAGA_ae_coding,23,Breast
+DIAGA_ae_coding,24,Abdomen
+DIAGA_ae_coding,25,Back/buttocks
+DIAGA_ae_coding,26,Ano/rectal
+DIAGA_ae_coding,27,Genitalia
+DIAGA_ae_coding,28,Hip
+DIAGA_ae_coding,29,Groin
+DIAGA_ae_coding,30,Thigh
+DIAGA_ae_coding,31,Knee
+DIAGA_ae_coding,32,Lower leg
+DIAGA_ae_coding,33,Ankle
+DIAGA_ae_coding,34,Foot
+DIAGA_ae_coding,35,Toe
+DIAGA_ae_coding,36,Multiple site
+DIAGSCHEME_ae_coding,01,Accident & Emergency diagnosis
+DIAGSCHEME_ae_coding,02,ICD-10
+DIAGSCHEME_ae_coding,04,Read coded clinical terms version 2
+DIAGSCHEME_ae_coding,Null,Not known / not applicable
+DIAGS_ae_coding,8,Not applicable
+DIAGS_ae_coding,B,Bilateral
+DIAGS_ae_coding,L,Left
+DIAGS_ae_coding,R,Right
+INVEST2_ae_coding,01,X-ray plain film
+INVEST2_ae_coding,02,Electrocardiogram
+INVEST2_ae_coding,03,Haematology
+INVEST2_ae_coding,04,Cross match blood/group & save serum for later cross match
+INVEST2_ae_coding,05,Biochemistry
+INVEST2_ae_coding,06,Urinalysis
+INVEST2_ae_coding,07,Bacteriology
+INVEST2_ae_coding,08,Histology
+INVEST2_ae_coding,09,Computerised tomography (retired 2006)
+INVEST2_ae_coding,10,Ultrasound
+INVEST2_ae_coding,11,Magnetic resonance imaging
+INVEST2_ae_coding,12,Computerised tomography (exc genito urinary contrast examination/tomography)
+INVEST2_ae_coding,13,Genito urinary contrast examination/tomography
+INVEST2_ae_coding,14,Clotting studies
+INVEST2_ae_coding,15,Immunology
+INVEST2_ae_coding,16,Cardiac enzymes
+INVEST2_ae_coding,17,Arterial/capillary blood gas
+INVEST2_ae_coding,18,Toxicology
+INVEST2_ae_coding,19,Blood culture
+INVEST2_ae_coding,20,Serology
+INVEST2_ae_coding,21,Pregnancy test
+INVEST2_ae_coding,22,Dental investigation
+INVEST2_ae_coding,23,Refraction  orthoptic tests and computerised visual fields
+INVEST2_ae_coding,24,
+INVEST2_ae_coding,99,Other
+PROTYPE_ae_coding,CARETRUST,Care trust
+PROTYPE_ae_coding,CCG,Clinical Commissioning Group
+PROTYPE_ae_coding,FOUNDATION,NHS foundation trust
+PROTYPE_ae_coding,IND,Independent sector provider
+PROTYPE_ae_coding,INDSITE,Independent sector provider site
+PROTYPE_ae_coding,INDSITETC,Treatment centre at independent sector provider site
+PROTYPE_ae_coding,OTHERPROV,Other provider organisation
+PROTYPE_ae_coding,PCT,Primary care trust
+PROTYPE_ae_coding,TRUST,NHS trust
+PROTYPE_ae_coding,TRUSTSITETC,Treatment centre at NHS trust site
+SUSSPELLID_ae_coding,-1,Unspellable episodes
+SUSSPELLID_ae_coding,Null,Records that have excluded from PbR in SUS as the activity is outside the scope of PbR
+TRETTIME_ae_coding,3000,Invalid time submitted
+TRETTIME_ae_coding,4000,Null time submitted
