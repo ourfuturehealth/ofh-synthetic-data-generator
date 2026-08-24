@@ -545,7 +545,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     
     # time columns 
     # time is 4 characters
-    for t in [x for x in coded_pairs_dict.keys() if "TIME" in x]:
+    for t in [x for x in df_dict["dictionary"]["name"].to_list() if "TIME" in x]:
         record[t] = str(fake.time('%H:%M').replace(":", "")).zfill(4)
     
     # generating pseudonymised provider code
