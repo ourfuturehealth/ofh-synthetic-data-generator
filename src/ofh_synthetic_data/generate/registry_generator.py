@@ -37,10 +37,12 @@ class GeneratedTables:
     questionnaires: list[dict[str, object]]
     deaths: list[dict[str, object]]
     op: list[dict[str, object]]
+    ae: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
     deaths_columns: list[str]
     op_columns: list[str]
+    ae_columns: list[str]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -51,6 +53,7 @@ class GeneratedTablePaths:
     questionnaire: Path
     deaths: Path
     op: Path
+    ae: Path
     manifest: Path
 
 
@@ -93,6 +96,7 @@ def generate_tables(
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
     deaths_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="deaths")["name"].astype(str).tolist()
     op_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="op")["name"].astype(str).tolist()
+    ae_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="ae")["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -108,6 +112,7 @@ def generate_tables(
     questionnaires: list[dict[str, object]] = []
     deaths: list[dict[str, object]] = []
     op: list[dict[str, object]] = []
+    ae: list[dict[str, object]] = []
     skipped_by_logic_count = 0
 
     # setting faker instance and providing seed
@@ -115,8 +120,8 @@ def generate_tables(
     Faker.seed(generation_config.seed)
 
     # max number of years a participant could appear in a linked dataset
-    max_years = get_max_years(df_name="op", date_dict=DATE_BOOKENDS)
-
+    max_years = {df_name : get_max_years(df_name=df_name, date_dict=DATE_BOOKENDS) for df_name in DATE_BOOKENDS.keys()}
+    
     for row_index in range(generation_config.rows):
         pid = _participant_id(row_index)
         timeline = _core_timeline(rng)
@@ -154,20 +159,29 @@ def generate_tables(
         # 75% chance a given PID will have an Outpatient record
         if random.random() < 0.75:
             # assuming a participant can appear up to 10x per year
-            n_obs = random.randint(a=1, b=max_years*10)
+            n_obs = fake.random_int(min=1, max=max_years["op"]*10)
             for i in range(0, n_obs):
                 op_record = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
                 op.append(op_record)
+
+        # 60% chance a given PID will have an A&E record
+        if random.random() < 0.60:
+            # assuming a participant can appear up to 5x per year
+            n_obs = fake.random_int(min=1, max=max_years["ae"]*5)
+            ae_record = _generate_ae_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(ae))
+            ae.append(ae_record)
 
     return GeneratedTables(
         participants=participants,
         questionnaires=questionnaires,
         deaths=deaths,
         op=op,
+        ae=ae,
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
         op_columns=op_columns,
+        ae_columns=ae_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
