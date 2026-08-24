@@ -432,7 +432,12 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     else:
         for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
             record[c] = np.nan
-    
+
+    if record["APPTDATE"] >= datetime.date(2021,4,1):
+        record["ATTENDKEY"] = generate_numeric_id(n=19)
+    else:
+        record["ATTENDKEY"] = generate_numeric_id(n=12)
+
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = generate_numeric_id(n=6)
     
