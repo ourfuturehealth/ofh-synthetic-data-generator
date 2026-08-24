@@ -22,5 +22,6 @@ generation:
   questionnaire_file: questionnaire.csv
   deaths_file: nhse_engwal_deaths.csv
   op_file: nhse_eng_outpat.csv
+  ae_file: nhse_eng_ed.csv
   manifest_file: manifest.json
   questionnaire_version: "v2"
