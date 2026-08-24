@@ -92,11 +92,18 @@ def generate_tables(
     coding_lookup = _build_coding_lookup(coding_registry)
     logic_rules, logic_order = _build_logic_rules(logic_registry)
 
+    # loading linked data dictionaries
+    # using DATE_BOOKENDS for df names because all datasets available should have defined dates
+    linked_data_dicts = {
+        df_name : get_dictionaries(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name=df_name) 
+        for df_name in DATE_BOOKENDS.keys() 
+    }
+
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
-    deaths_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="deaths")["name"].astype(str).tolist()
-    op_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="op")["name"].astype(str).tolist()
-    ae_columns = load_linked_dictionary(path="dictionaries/processed/linked-data/linked_data_dictionaries/", df_name="ae")["name"].astype(str).tolist()
+    deaths_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
+    op_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
+    ae_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -153,7 +160,7 @@ def generate_tables(
 
         # 5% chance a given PID will have died and therefore have a death record
         if random.random() < 0.03:
-            death_record = _generate_death_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
+            death_record = _generate_death_record(fake, pid=pid, df_dict=linked_data_dicts["deaths"], row_number=len(deaths))
             deaths.append(death_record)
 
         # 75% chance a given PID will have an Outpatient record
@@ -161,14 +168,14 @@ def generate_tables(
             # assuming a participant can appear up to 10x per year
             n_obs = fake.random_int(min=1, max=max_years["op"]*10)
             for i in range(0, n_obs):
-                op_record = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
+                op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["op"], row_number=len(op))
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
         if random.random() < 0.60:
             # assuming a participant can appear up to 5x per year
             n_obs = fake.random_int(min=1, max=max_years["ae"]*5)
-            ae_record = _generate_ae_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(ae))
+            ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
             ae.append(ae_record)
 
     return GeneratedTables(
@@ -356,12 +363,12 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
-def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
     # load dictionaries and coding files
-    df_dicts = get_dictionaries(path=path, df_name="deaths")
+    # df_dicts = get_dictionaries(path=path, df_name="deaths")
 
     # creating dictionary of coded columns and code value
-    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
+    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
     # ordering the coded columns
     ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
 
@@ -375,7 +382,7 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
     # adding ICD codes to first cause of death column and underlying cause of death column
     for colname in always_populated:
             deaths_record[colname] = fake.random_element(
-                    elements=df_dicts[coded_pairs_dict[colname]]["code"].unique()
+                    elements=df_dict[coded_pairs_dict[colname]]["code"].unique()
                 )
 
     # conditionally populating ICD cause of death columns to mimic missingness in real data
@@ -383,7 +390,7 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
         for i in range(0, len(ordered_col_list)-1):
             if fake.random_int(min=0, max=10) < 8 and deaths_record[ordered_col_list[i]] != "":
                 deaths_record[ordered_col_list[i+1]] = fake.random_element(
-                    elements=df_dicts[coded_pairs_dict[ordered_col_list[i]]]["code"].unique()
+                    elements=df_dict[coded_pairs_dict[ordered_col_list[i]]]["code"].unique()
                 )
             else:
                 deaths_record[ordered_col_list[i+1]] = ""
@@ -398,13 +405,13 @@ def _generate_death_record(fake: Faker, pid: str, path: Path, row_number:int) ->
 
     return deaths_record
 
-def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
     
     # load dictionaries and coding files
-    df_dicts = get_dictionaries(path=path, df_name="op")
+    # df_dicts = get_dictionaries(path=path, df_name="op")
     
     # creating dictionary of coded columns and code value
-    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dicts)
+    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
 
     # ordering the coded columns
     ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
@@ -447,7 +454,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     if record["APPTDATE"] >= datetime.date(2012,4,1):
         record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["op"]["end"])
         record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["op"]["end"])
-        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dicts)
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
     # enter as null for records prior to that FYEAR
     else:
         for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
@@ -468,7 +475,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
         record["SUSSPELLID"] = generate_numeric_id(n=19)
     # 0.01% chance it is missing
     if random.random() < 0.01:
-        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
@@ -481,15 +488,15 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
 
     return record
 
-def _generate_ae_record(fake: Faker, pid: str, path: Path, row_number:int) -> dict[str, object]:
+def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
     # load dictionaries and coding files
-    df_dicts = get_dictionaries(path=path, df_name="ae")
+    # df_dicts = get_dictionaries(path=path, df_name="ae")
     
     # converting to dictionary of name and coding name value pairs
-    coded_pairs_dict = create_coded_pairs(df_dicts)
+    coded_pairs_dict = create_coded_pairs(df_dict)
     
     # adding DIAG_nn and INVEST_nn to coded pairs dict
-    for c in [x for x in df_dicts["dictionary"]["name"].to_list() if re.search("DIAG_|INVEST_", x)]:
+    for c in [x for x in df_dict["dictionary"]["name"].to_list() if re.search("DIAG_|INVEST_", x)]:
         if "DIAG" in c:
             coded_pairs_dict[c] = "DIAGA_ae_coding"
         else:
@@ -513,19 +520,19 @@ def _generate_ae_record(fake: Faker, pid: str, path: Path, row_number:int) -> di
     record["PID"] = pid
     
     for colname in always_populated:
-        record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+        record[colname] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
     
     for base_colname in ordered_columns_dict.keys():
         ordered_list = ordered_columns_dict[base_colname]
         for i in range(0, len(ordered_list)-1):
             # 10% chance that diagnosis or procedure code is populated
             if random.random() <= 0.1 and record[ordered_list[i]] != "":
-                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dicts)
+                record[ordered_list[i+1]] = pick_random_code(df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
             else:
                 record[ordered_list[i+1]] = ""
 
     # manually adding TREAT_nn fields because they do not have set codes but usually consist of 2-6 character codes
-    treat_columns = [x for x in df_dicts["dictionary"]["name"].to_list() if "TREAT_" in x]
+    treat_columns = [x for x in df_dict["dictionary"]["name"].to_list() if "TREAT_" in x]
     record["TREAT_01"] = generate_numeric_id(n=3)
     for t in range(0, len(treat_columns)-1):
         if random.random() < 0.2 and record[treat_columns[t]] != "":
@@ -553,7 +560,7 @@ def _generate_ae_record(fake: Faker, pid: str, path: Path, row_number:int) -> di
         record["SUSSPELLID"] = generate_numeric_id(n=19)
     # 0.01% chance it is missing
     if random.random() < 0.01:
-        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dicts)
+        record["SUSSPELLID"] = pick_random_code(df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
         record["AEKEY"] = generate_numeric_id(n=19)
