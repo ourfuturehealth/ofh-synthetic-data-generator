@@ -114,6 +114,9 @@ def generate_tables(
     fake = Faker()
     Faker.seed(generation_config.seed)
 
+    # max number of years a participant could appear in a linked dataset
+    max_years = get_max_years(df_name="op", date_dict=DATE_BOOKENDS)
+
     for row_index in range(generation_config.rows):
         pid = _participant_id(row_index)
         timeline = _core_timeline(rng)
@@ -144,14 +147,17 @@ def generate_tables(
         questionnaires.append(questionnaire)
 
         # 5% chance a given PID will have died and therefore have a death record
-        if random.random() < 0.05:
+        if random.random() < 0.03:
             death_record = _generate_death_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(deaths))
             deaths.append(death_record)
 
-        # 90% chance a given PID will have an Outpatient record
-        if random.random() < 0.9:
-            op_record = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
-            op.append(op_record)
+        # 75% chance a given PID will have an Outpatient record
+        if random.random() < 0.75:
+            # assuming a participant can appear up to 10x per year
+            n_obs = random.randint(a=1, b=max_years*10)
+            for i in range(0, n_obs):
+                op_record = _generate_outpatient_record(fake, pid=pid, path="dictionaries/processed/linked-data/", row_number=len(op))
+                op.append(op_record)
 
     return GeneratedTables(
         participants=participants,
@@ -445,9 +451,9 @@ def _generate_outpatient_record(fake: Faker, pid: str, path: Path, row_number:in
     if random.random() < 0.3:
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
     
-        # adding `ROW_ID` to dataset
-    
+    # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
+
     return record
 
 def _generate_value(
