@@ -234,12 +234,14 @@ def write_generated_tables(
     questionnaire_path = output_dir / config.questionnaire_file
     deaths_path = output_dir / config.deaths_file
     op_path = output_dir / config.op_file
+    ae_path = output_dir / config.ae_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
     write_records_csv(tables.questionnaires, questionnaire_path, tables.questionnaire_columns)
     write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
     write_records_csv(tables.op, op_path, tables.op_columns)
+    write_records_csv(tables.ae, ae_path, tables.ae_columns)
     write_metadata(
         {
             **tables.manifest,
@@ -247,7 +249,8 @@ def write_generated_tables(
                 "participant": str(participant_path),
                 "questionnaire": str(questionnaire_path),
                 "deaths" : str(deaths_path),
-                "op" : str(op_path)
+                "op" : str(op_path),
+                "ae" : str(ae_path),
             },
         },
         manifest_path,
@@ -258,6 +261,7 @@ def write_generated_tables(
         questionnaire=questionnaire_path,
         deaths=deaths_path,
         op=op_path,
+        ae=ae_path,
         manifest=manifest_path,
     )
 
