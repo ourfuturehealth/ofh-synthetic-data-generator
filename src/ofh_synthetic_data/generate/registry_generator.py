@@ -182,8 +182,9 @@ def generate_tables(
         participants=participants,
         questionnaires=questionnaires,
         deaths=deaths,
-        op=op,
-        ae=ae,
+        # sorting datasets with multiple events per ID by date
+        op=sorted(op, key=lambda d: d["APPTDATE"]),
+        ae=sorted(ae, key=lambda d: d["ARRIVALDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
