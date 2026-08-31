@@ -112,9 +112,9 @@ def build_registry(_args: argparse.Namespace, config: AppConfig) -> int:
     print(f"Wrote source manifest to {result.source_manifest}")
     print(
         "Built registries: "
-        f"{result.counts['fields']} questionnaire & participant fields fields, "
-        f"{result.counts['codings']} questionnaire & participant fields coding rows, "
-        f"{result.counts['logic_rows']} questionnaire & participant fields logic rows, "
+        f"{result.counts['fields']} questionnaire & participant fields, "
+        f"{result.counts['codings']} questionnaire & participant coding rows, "
+        f"{result.counts['logic_rows']} questionnaire & participant logic rows, "
         f"{result.counts['entities']} entities",
     )
     return 0
