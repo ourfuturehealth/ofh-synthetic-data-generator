@@ -1,7 +1,7 @@
 """
     Script cleaning and processing the raw dictionary and coding files. 
-    Creates dictionaries and coding files for Admitted Patient Care (APC), Outpatient, and ONS Death Registration Records.
-    Cleaning coding files ICD-10 and OPCS-4 codes are also created.
+    Creates dictionaries and coding files for all linked datasets.
+    Cleaning coding files for ontologies (ICD-10, ICD-9, OPCS-4, SNOMED) also generated.
 
     Cleaned dictionaries and coding files are output to processed/linked-data
 """
@@ -11,21 +11,6 @@ import os
 import re
 
 from ofh_synthetic_data.generate.linked_data_transformations import check_n_files
-
-# def check_n_files(file_list:list[str]) -> str:
-#   """
-#   Checks correct number of file names appear in list.
-#   Raises exception error when more than 1 file is present or no files are present.
-  
-#   Returns: string with file name
-#   """
-#   # printing warning if more than one file is present in the folder
-#   if len(file_list) > 1:
-#       raise Exception("WARNING: Multiple files in folder")
-#   elif len(file_list) == 0:
-#       raise Exception("ERROR: No files found")
-#   else: 
-#       return file_list[0]
 
 # defining constants
 OUT_PATH = "dictionaries/processed/linked-data/"
