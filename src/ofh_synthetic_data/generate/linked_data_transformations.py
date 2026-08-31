@@ -22,7 +22,7 @@ def check_n_files(file_list:list[str]) -> str:
   """
   Checks correct number of file names appear in list.
   Raises exception error when more than 1 file is present or no files are present.
-  
+
   Returns: string with file name
   """
   # printing warning if more than one file is present in the folder
@@ -38,7 +38,7 @@ def load_linked_codes(path: Path, df_name: str) -> pd.DataFrame:
     Reading code fields. 
     Returns: Pandas dataframe with codes and meanings.
     """
-    return pd.read_csv(path+df_name+"_codes.csv")
+    return pd.read_csv(path+df_name+".csv")
 
 def get_dictionaries(path: Path, df_name:str, ontology_dict:dict[str, str]=ONTOLOGY_DICT) -> dict[str, pd.DataFrame]:
     """
@@ -53,12 +53,12 @@ def get_dictionaries(path: Path, df_name:str, ontology_dict:dict[str, str]=ONTOL
     # extracting the coded column names to determine if coding file is present 
     coding_names = [x for x in df_dict["dictionary"]["coding_name"].unique() if x is not np.nan]
     # separating out the onology coding names
-    ontologies_present = [x for x in coding_names if re.search("|".join([k.upper() for k in ONTOLOGY_DICT.keys()]), x)]
+    ontologies_present = [x for x in coding_names if re.search("ICD|OPCS|SNOMED", x)]
 
     # determine which ontology files to load, this could be multiple per dictionary
     if len(ontologies_present) > 0:
         for ontology in ontologies_present:
-                df_dict[ontology] = load_linked_codes(path=path+"linked_data_codings/", df_name=ontology.replace("_coding", "").lower())  
+                df_dict[ontology] = load_linked_codes(path=path+"linked_data_codings/", df_name=ontology)  
 
     # load dataset-specific coding files
     if len([x for x in coding_names if x not in ontologies_present]) > 0:

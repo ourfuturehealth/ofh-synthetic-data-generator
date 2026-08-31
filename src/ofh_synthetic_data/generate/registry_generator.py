@@ -6,12 +6,13 @@ import json
 from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
-import random
+# import random
 from random import Random
 from typing import Any
 from faker import Faker
 
 import pandas as pd
+import os
 
 from ofh_synthetic_data.config import AppConfig, GenerationConfig
 from ofh_synthetic_data.export.writers import write_metadata, write_records_csv
@@ -96,10 +97,10 @@ def generate_tables(
     logic_rules, logic_order = _build_logic_rules(logic_registry)
 
     # loading linked data dictionaries
-    # using DATE_BOOKENDS for df names because all datasets available should have defined dates
+    # loading dictionaries and coding files for all datasets
     linked_data_dicts = {
         df_name : get_dictionaries(path="dictionaries/processed/linked-data/", df_name=df_name) 
-        for df_name in DATE_BOOKENDS.keys() 
+        for df_name in os.listdir("dictionaries/processed/linked-data/linked_data_dictionaries/") 
     }
 
     participant_fields = _fields_for_entity(field_registry, "participant")
@@ -165,28 +166,28 @@ def generate_tables(
 
         # 5% chance a given PID will have died and therefore have a death record
         if fake.pybool(5):
-            death_record = _generate_death_record(fake, pid=pid, df_dict=linked_data_dicts["deaths"], row_number=len(deaths))
+            death_record = _generate_death_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_engwal_deaths"], row_number=len(deaths))
             deaths.append(death_record)
 
         # 75% chance a given PID will have an Outpatient record
         if fake.pybool(75):
             # assuming a participant can appear up to 7x per year
-            for _ in range(0, fake.random_int(min=1, max=max_years["op"]*7)):
-                op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["op"], row_number=len(op))
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_outpat"]*7)):
+                op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_outpat"], row_number=len(op))
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
         if fake.pybool(60):
             # assuming a participant can appear up to 2x per year
-            for _ in range(0, fake.random_int(min=1, max=max_years["ae"]*2)):
-                ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_ed"]*2)):
+                ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_ed"], row_number=len(ae))
                 ae.append(ae_record)
 
         # 70% chance a given PID will have an APC record
         if fake.pybool(70):
             # assuming a participant can appear up to 3x per year
-            for _ in range(0, fake.random_int(min=1, max=max_years["apc"]*3)):
-                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
+                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
                 apc.append(apc_record)
 
     return GeneratedTables(
@@ -415,7 +416,7 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
             else:
                 deaths_record[ordered_col_list[i+1]] = ""
 
-    deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["deaths"]["start"], end_date=DATE_BOOKENDS["deaths"]["end"])
+    deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_engwal_deaths"]["start"], end_date=DATE_BOOKENDS["nhse_engwal_deaths"]["end"])
     deaths_record["REG_DATE"] = fake.date_between(
         start_date=deaths_record["REG_DATE_OF_DEATH"], 
         end_date=deaths_record["REG_DATE_OF_DEATH"] + datetime.timedelta(days=10)
@@ -466,11 +467,11 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
                 else:
                     record[ordered_list[i+1]] = ""
     
-    record["APPTDATE"] = fake.date_between(start_date=DATE_BOOKENDS["op"]["start"], end_date=DATE_BOOKENDS["op"]["end"])
+    record["APPTDATE"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_outpat"]["start"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
     # these fields only available from 2012/2013 financial year
     if record["APPTDATE"] >= datetime.date(2012,4,1):
-        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["op"]["end"])
-        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["op"]["end"])
+        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
         record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
     # enter as null for records prior to that FYEAR
     else:
@@ -556,7 +557,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         else:
             record[treat_columns[t+1]] = ""
     
-    record["ARRIVALDATE"] = fake.date_between(start_date=DATE_BOOKENDS["ae"]["start"], end_date=DATE_BOOKENDS["ae"]["end"])
+    record["ARRIVALDATE"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_ed"]["start"], end_date=DATE_BOOKENDS["nhse_eng_ed"]["end"])
     
     # time columns 
     # time is 4 characters
