@@ -10,7 +10,22 @@ import pandas as pd
 import os
 import re
 
-from src.ofh_synthetic_data.generate.linked_data_transformations import check_n_files
+from ofh_synthetic_data.generate.linked_data_transformations import check_n_files
+
+# def check_n_files(file_list:list[str]) -> str:
+#   """
+#   Checks correct number of file names appear in list.
+#   Raises exception error when more than 1 file is present or no files are present.
+  
+#   Returns: string with file name
+#   """
+#   # printing warning if more than one file is present in the folder
+#   if len(file_list) > 1:
+#       raise Exception("WARNING: Multiple files in folder")
+#   elif len(file_list) == 0:
+#       raise Exception("ERROR: No files found")
+#   else: 
+#       return file_list[0]
 
 # defining constants
 OUT_PATH = "dictionaries/processed/linked-data/"
@@ -68,7 +83,7 @@ for key, value in df_dicts.items():
 
 # outputting clean coding files
 for key, value in coding_dict.items():
-    value.to_csv(OUT_PATH+"linked_data_codings/"+key+".csv", index=False)
+    value.to_csv(OUT_PATH+"linked_data_codings/"+key+"_codes.csv", index=False)
 
 for key, value in ontology_codings.items():
     value.to_csv(OUT_PATH+"linked_data_codings/"+key+".csv", index=False)
