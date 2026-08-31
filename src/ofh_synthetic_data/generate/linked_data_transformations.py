@@ -9,7 +9,7 @@ import numpy as np
 from pathlib import Path
 from faker import Faker
 # from faker.providers import DynamicProvider, BaseProvider
-from ofh_synthetic_data.constants import DATE_BOOKENDS, ONTOLOGY_DICT
+from ofh_synthetic_data.constants import DATE_BOOKENDS
 
 def load_linked_dictionary(path: Path, df_name:str) -> pd.DataFrame:
     """
@@ -40,7 +40,7 @@ def load_linked_codes(path: Path, df_name: str) -> pd.DataFrame:
     """
     return pd.read_csv(path+df_name+".csv")
 
-def get_dictionaries(path: Path, df_name:str, ontology_dict:dict[str, str]=ONTOLOGY_DICT) -> dict[str, pd.DataFrame]:
+def get_dictionaries(path: Path, df_name:str) -> dict[str, pd.DataFrame]:
     """
     Extracting data dictionary and any relevant codings files for a given dataset. 
     Returns: dictionary containing field dictionary, codings file, and ontologies fields, where relevant
