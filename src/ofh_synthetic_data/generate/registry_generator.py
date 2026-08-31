@@ -38,11 +38,13 @@ class GeneratedTables:
     deaths: list[dict[str, object]]
     op: list[dict[str, object]]
     ae: list[dict[str, object]]
+    apc: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
     deaths_columns: list[str]
     op_columns: list[str]
     ae_columns: list[str]
+    apc_columns: list[str]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -54,6 +56,7 @@ class GeneratedTablePaths:
     deaths: Path
     op: Path
     ae: Path
+    apc: Path
     manifest: Path
 
 
@@ -104,6 +107,7 @@ def generate_tables(
     deaths_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
     op_columns = linked_data_dicts["op"]["dictionary"]["name"].astype(str).tolist()
     ae_columns = linked_data_dicts["ae"]["dictionary"]["name"].astype(str).tolist()
+    apc_columns = linked_data_dicts["apc"]["dictionary"]["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -120,6 +124,7 @@ def generate_tables(
     deaths: list[dict[str, object]] = []
     op: list[dict[str, object]] = []
     ae: list[dict[str, object]] = []
+    apc: list[dict[str, object]] = []
     skipped_by_logic_count = 0
 
     # setting faker instance and providing seed
@@ -178,6 +183,13 @@ def generate_tables(
             ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
             ae.append(ae_record)
 
+        # 70% chance a given PID will have an APC record
+        if fake.pybool(70):
+            # assuming a participant can appear up to 3x per year
+            n_obs = fake.random_int(min=1, max=max_years["apc"]*3)
+            apc_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
+            apc.append(apc_record)
+
     return GeneratedTables(
         participants=participants,
         questionnaires=questionnaires,
@@ -185,11 +197,13 @@ def generate_tables(
         # sorting datasets with multiple events per ID by date
         op=sorted(op, key=lambda d: d["APPTDATE"]),
         ae=sorted(ae, key=lambda d: d["ARRIVALDATE"]),
+        apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
         op_columns=op_columns,
         ae_columns=ae_columns,
+        apc_columns=apc_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -201,6 +215,8 @@ def generate_tables(
                 "questionnaire": generation_config.questionnaire_file,
                 "deaths" : generation_config.deaths_file,
                 "op" : generation_config.op_file,
+                "ae" : generation_config.ae_file,
+                "apc": generation_config.apc_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -224,7 +240,9 @@ def generate_tables(
                 "participant_columns": len(participant_columns),
                 "questionnaire_columns": len(questionnaire_columns),
                 "deaths_columns" : len(deaths_columns),
-                "op_columns" : len(op_columns)
+                "op_columns" : len(op_columns),
+                "ae_columns" : len(ae_columns),
+                "apc_columns" : len(apc_columns),
             },
             "phase": "7-beta-release-candidate",
         },
@@ -243,6 +261,7 @@ def write_generated_tables(
     deaths_path = output_dir / config.deaths_file
     op_path = output_dir / config.op_file
     ae_path = output_dir / config.ae_file
+    apc_path = output_dir / config.apc_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
@@ -250,6 +269,7 @@ def write_generated_tables(
     write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
     write_records_csv(tables.op, op_path, tables.op_columns)
     write_records_csv(tables.ae, ae_path, tables.ae_columns)
+    write_records_csv(tables.apc, apc_path, tables.apc_columns)
     write_metadata(
         {
             **tables.manifest,
@@ -259,6 +279,7 @@ def write_generated_tables(
                 "deaths" : str(deaths_path),
                 "op" : str(op_path),
                 "ae" : str(ae_path),
+                "apc" : str(apc_path),
             },
         },
         manifest_path,
@@ -270,6 +291,7 @@ def write_generated_tables(
         deaths=deaths_path,
         op=op_path,
         ae=ae_path,
+        apc=apc_path,
         manifest=manifest_path,
     )
 
