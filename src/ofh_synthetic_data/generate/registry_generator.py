@@ -186,7 +186,7 @@ def generate_tables(
         if fake.pybool(70):
             # assuming a participant can appear up to 3x per year
             for _ in range(0, fake.random_int(min=1, max=max_years["apc"]*3)):
-                apc_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
+                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
                 apc.append(apc_record)
 
     return GeneratedTables(
@@ -386,8 +386,6 @@ def _generate_questionnaire_record(
     return record, skipped_by_logic_count
 
 def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
-    # load dictionaries and coding files
-    # df_dicts = get_dictionaries(path=path, df_name="deaths")
 
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
@@ -428,9 +426,6 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
     return deaths_record
 
 def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
-    
-    # load dictionaries and coding files
-    # df_dicts = get_dictionaries(path=path, df_name="op")
     
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
@@ -511,8 +506,6 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     return record
 
 def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
-    # load dictionaries and coding files
-    # df_dicts = get_dictionaries(path=path, df_name="ae")
     
     # converting to dictionary of name and coding name value pairs
     coded_pairs_dict = create_coded_pairs(df_dict)
