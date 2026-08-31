@@ -42,7 +42,7 @@ code_mapping = {
     df_name : 
     raw_dictionary.loc[
         (raw_dictionary["entity"] == df_name) & 
-        ~(raw_dictionary["coding_name"].str.contains("ICD|SNOMED|OPCS")) &
+        ~(raw_dictionary["coding_name"].str.contains("ICD|SNOMED|OPCS", na=False)) &
         ~(raw_dictionary["coding_name"].isna()), 
         "coding_name"].unique() 
     for df_name in DF_NAMES
@@ -56,7 +56,7 @@ coding_dict = {
 }
 
 # separating out ontology codes from raw coding file
-ontology_names = raw_dictionary.loc[raw_dictionary["coding_name"].str.contains("ICD|SNOMED|OPCS"), "coding_name"].unique()
+ontology_names = raw_dictionary.loc[raw_dictionary["coding_name"].str.contains("ICD|SNOMED|OPCS", na=False), "coding_name"].unique()
 ontology_codings = {
     ontology_name : raw_coding_file.loc[raw_coding_file["coding_name"] == ontology_name, ["coding_name", "code", "meaning"]] 
     for ontology_name in ontology_names
