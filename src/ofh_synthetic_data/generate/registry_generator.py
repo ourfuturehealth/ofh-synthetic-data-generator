@@ -165,16 +165,16 @@ def generate_tables(
 
         # 75% chance a given PID will have an Outpatient record
         if fake.pybool(75):
-            # assuming a participant can appear up to 10x per year
-            n_obs = fake.random_int(min=1, max=max_years["op"]*10)
+            # assuming a participant can appear up to 7x per year
+            n_obs = fake.random_int(min=1, max=max_years["op"]*7)
             for i in range(0, n_obs):
                 op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["op"], row_number=len(op))
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
         if fake.pybool(60):
-            # assuming a participant can appear up to 5x per year
-            n_obs = fake.random_int(min=1, max=max_years["ae"]*5)
+            # assuming a participant can appear up to 2x per year
+            n_obs = fake.random_int(min=1, max=max_years["ae"]*2)
             ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
             ae.append(ae_record)
 
@@ -439,7 +439,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
         for i in range(0, len(ordered_list)-1):
             # 80% chance that diagnosis or procedure code is populated
             if fake.pybool(80) and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
-                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[ordered_list[i+1]], data_dictionary=df_dict)
             # 20% chance that unknown or missing code value present
             elif fake.pybool(20) and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
                 record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
@@ -527,7 +527,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         for i in range(0, len(ordered_list)-1):
             # 10% chance that diagnosis or procedure code is populated
             if fake.pybool(10) and record[ordered_list[i]] != "":
-                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[ordered_list[i+1]], data_dictionary=df_dict)
             else:
                 record[ordered_list[i+1]] = ""
 
