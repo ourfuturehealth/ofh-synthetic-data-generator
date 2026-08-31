@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+import subprocess
 
 from ofh_synthetic_data.config import AppConfig
 from ofh_synthetic_data.synthetic_ranges import (
@@ -119,6 +120,13 @@ def build_registries(config: AppConfig) -> RegistryBuildResult:
     _write_registry(entity_registry, entity_path)
     coverage_path.write_text(coverage_summary, encoding="utf-8")
     write_source_manifest(config, source_manifest_path)
+
+    # running script that generates all linked data dictionaries and coding files
+    res = subprocess.run(["python", "src/ofh_synthetic_data/ingest/clean_linked_data_dictionaries.py"])
+    if res.returncode == 0:
+        print("Success: Cleaned linked data dictionaries")
+    else:
+        print("Failed: Linked data dictionaries")
 
     return RegistryBuildResult(
         field_registry=field_path,
