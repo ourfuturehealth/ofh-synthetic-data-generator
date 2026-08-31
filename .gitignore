@@ -25,7 +25,8 @@ inputs/
 data/processed/*
 !data/processed/README.md
 !data/processed/.gitkeep
-!data/processed/linked-data
+!data/processed/linked-data/linked_data_codings
+!data/processed/linked-data/linked_data_dictionaries
 !data/README.md
 
 # Generated output folders. Keep documentation/placeholders; ignore generated files.
