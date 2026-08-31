@@ -171,24 +171,23 @@ def generate_tables(
         # 75% chance a given PID will have an Outpatient record
         if fake.pybool(75):
             # assuming a participant can appear up to 7x per year
-            n_obs = fake.random_int(min=1, max=max_years["op"]*7)
-            for i in range(0, n_obs):
+            for _ in range(0, fake.random_int(min=1, max=max_years["op"]*7)):
                 op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["op"], row_number=len(op))
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
         if fake.pybool(60):
             # assuming a participant can appear up to 2x per year
-            n_obs = fake.random_int(min=1, max=max_years["ae"]*2)
-            ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
-            ae.append(ae_record)
+            for _ in range(0, fake.random_int(min=1, max=max_years["ae"]*2)):
+                ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["ae"], row_number=len(ae))
+                ae.append(ae_record)
 
         # 70% chance a given PID will have an APC record
         if fake.pybool(70):
             # assuming a participant can appear up to 3x per year
-            n_obs = fake.random_int(min=1, max=max_years["apc"]*3)
-            apc_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
-            apc.append(apc_record)
+            for _ in range(0, fake.random_int(min=1, max=max_years["apc"]*3)):
+                apc_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["apc"], row_number=len(apc))
+                apc.append(apc_record)
 
     return GeneratedTables(
         participants=participants,
