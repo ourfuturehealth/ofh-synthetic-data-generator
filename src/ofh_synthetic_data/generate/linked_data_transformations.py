@@ -18,6 +18,21 @@ def load_linked_dictionary(path: Path, df_name:str) -> pd.DataFrame:
     """
     return pd.read_csv(path+df_name+"_dictionary.csv")
 
+def check_n_files(file_list:list[str]) -> str:
+  """
+  Checks correct number of file names appear in list.
+  Raises exception error when more than 1 file is present or no files are present.
+  
+  Returns: string with file name
+  """
+  # printing warning if more than one file is present in the folder
+  if len(file_list) > 1:
+      raise Exception("WARNING: Multiple files in folder")
+  elif len(file_list) == 0:
+      raise Exception("ERROR: No files found")
+  else: 
+      return file_list[0]
+
 def load_linked_codes(path: Path, df_name: str) -> pd.DataFrame:
     """
     Reading code fields. 
