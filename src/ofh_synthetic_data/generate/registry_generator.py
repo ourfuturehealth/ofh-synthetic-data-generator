@@ -100,15 +100,15 @@ def generate_tables(
     # loading dictionaries and coding files for all datasets
     linked_data_dicts = {
         df_name : get_dictionaries(path="dictionaries/processed/linked-data/", df_name=df_name) 
-        for df_name in os.listdir("dictionaries/processed/linked-data/linked_data_dictionaries/") 
+        for df_name in [x.replace("_dictionary.csv", "") for x in os.listdir("dictionaries/processed/linked-data/linked_data_dictionaries/") if x != ".gitkeep"]
     }
 
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
-    deaths_columns = linked_data_dicts["deaths"]["dictionary"]["name"].astype(str).tolist()
-    op_columns = linked_data_dicts["op"]["dictionary"]["name"].astype(str).tolist()
-    ae_columns = linked_data_dicts["ae"]["dictionary"]["name"].astype(str).tolist()
-    apc_columns = linked_data_dicts["apc"]["dictionary"]["name"].astype(str).tolist()
+    deaths_columns = linked_data_dicts["nhse_engwal_deaths"]["dictionary"]["name"].astype(str).tolist()
+    op_columns = linked_data_dicts["nhse_eng_outpat"]["dictionary"]["name"].astype(str).tolist()
+    ae_columns = linked_data_dicts["nhse_eng_ed"]["dictionary"]["name"].astype(str).tolist()
+    apc_columns = linked_data_dicts["nhse_eng_inpat"]["dictionary"]["name"].astype(str).tolist()
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -183,12 +183,12 @@ def generate_tables(
                 ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_ed"], row_number=len(ae))
                 ae.append(ae_record)
 
-        # 70% chance a given PID will have an APC record
-        if fake.pybool(70):
-            # assuming a participant can appear up to 3x per year
-            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
-                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
-                apc.append(apc_record)
+        # # 70% chance a given PID will have an APC record
+        # if fake.pybool(70):
+        #     # assuming a participant can appear up to 3x per year
+        #     for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
+        #         apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
+        #         apc.append(apc_record)
 
     return GeneratedTables(
         participants=participants,
@@ -197,13 +197,13 @@ def generate_tables(
         # sorting datasets with multiple events per ID by date
         op=sorted(op, key=lambda d: d["APPTDATE"]),
         ae=sorted(ae, key=lambda d: d["ARRIVALDATE"]),
-        apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
+        # apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
         op_columns=op_columns,
         ae_columns=ae_columns,
-        apc_columns=apc_columns,
+        # apc_columns=apc_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -216,7 +216,7 @@ def generate_tables(
                 "deaths" : generation_config.deaths_file,
                 "op" : generation_config.op_file,
                 "ae" : generation_config.ae_file,
-                "apc": generation_config.apc_file,
+                # "apc": generation_config.apc_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -242,7 +242,7 @@ def generate_tables(
                 "deaths_columns" : len(deaths_columns),
                 "op_columns" : len(op_columns),
                 "ae_columns" : len(ae_columns),
-                "apc_columns" : len(apc_columns),
+                # "apc_columns" : len(apc_columns),
             },
             "phase": "7-beta-release-candidate",
         },
@@ -261,7 +261,7 @@ def write_generated_tables(
     deaths_path = output_dir / config.deaths_file
     op_path = output_dir / config.op_file
     ae_path = output_dir / config.ae_file
-    apc_path = output_dir / config.apc_file
+    # apc_path = output_dir / config.apc_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
@@ -269,7 +269,7 @@ def write_generated_tables(
     write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
     write_records_csv(tables.op, op_path, tables.op_columns)
     write_records_csv(tables.ae, ae_path, tables.ae_columns)
-    write_records_csv(tables.apc, apc_path, tables.apc_columns)
+    # write_records_csv(tables.apc, apc_path, tables.apc_columns)
     write_metadata(
         {
             **tables.manifest,
@@ -279,7 +279,7 @@ def write_generated_tables(
                 "deaths" : str(deaths_path),
                 "op" : str(op_path),
                 "ae" : str(ae_path),
-                "apc" : str(apc_path),
+                # "apc" : str(apc_path),
             },
         },
         manifest_path,
@@ -291,7 +291,7 @@ def write_generated_tables(
         deaths=deaths_path,
         op=op_path,
         ae=ae_path,
-        apc=apc_path,
+        # apc=apc_path,
         manifest=manifest_path,
     )
 

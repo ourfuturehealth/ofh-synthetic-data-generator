@@ -11,13 +11,6 @@ from faker import Faker
 # from faker.providers import DynamicProvider, BaseProvider
 from ofh_synthetic_data.constants import DATE_BOOKENDS
 
-def load_linked_dictionary(path: Path, df_name:str) -> pd.DataFrame:
-    """
-    Reading linked data dictionary.
-    Returns: Pandas dataframe with dictionary of field names, data types and descriptions
-    """
-    return pd.read_csv(path+df_name+"_dictionary.csv")
-
 def check_n_files(file_list:list[str]) -> str:
   """
   Checks correct number of file names appear in list.
@@ -33,13 +26,6 @@ def check_n_files(file_list:list[str]) -> str:
   else: 
       return file_list[0]
 
-def load_linked_codes(path: Path, df_name: str) -> pd.DataFrame:
-    """
-    Reading code fields. 
-    Returns: Pandas dataframe with codes and meanings.
-    """
-    return pd.read_csv(path+df_name+".csv")
-
 def get_dictionaries(path: Path, df_name:str) -> dict[str, pd.DataFrame]:
     """
     Extracting data dictionary and any relevant codings files for a given dataset. 
@@ -48,21 +34,23 @@ def get_dictionaries(path: Path, df_name:str) -> dict[str, pd.DataFrame]:
     # creating empty dictionary to populate with dictionary and coding information
     df_dict = {}
     # loading the data dictionary. All datasets must have this.
-    df_dict["dictionary"] = load_linked_dictionary(path=path+"linked_data_dictionaries/", df_name=df_name)
+    df_dict["dictionary"] = pd.read_csv(path+"linked_data_dictionaries/"+df_name+"_dictionary.csv")
 
     # extracting the coded column names to determine if coding file is present 
-    coding_names = [x for x in df_dict["dictionary"]["coding_name"].unique() if x is not np.nan]
-    # separating out the onology coding names
-    ontologies_present = [x for x in coding_names if re.search("ICD|OPCS|SNOMED", x)]
+    coding_names = [x for x in df_dict["dictionary"]["coding_name"].unique() if not pd.isnull(x)]
+    
+    if len(coding_names) > 0:
+        # separating out the onology coding names
+        ontologies_present = [x for x in coding_names if re.search("ICD|OPCS|SNOMED", x)]
 
-    # determine which ontology files to load, this could be multiple per dictionary
-    if len(ontologies_present) > 0:
-        for ontology in ontologies_present:
-                df_dict[ontology] = load_linked_codes(path=path+"linked_data_codings/", df_name=ontology)  
+        # determine which ontology files to load, this could be multiple per dictionary
+        if len(ontologies_present) > 0:
+            for ontology in ontologies_present:
+                    df_dict[ontology] = pd.read_csv(path+"linked_data_codings/"+ontology+".csv")  
 
-    # load dataset-specific coding files
-    if len([x for x in coding_names if x not in ontologies_present]) > 0:
-        df_dict["codes"] = load_linked_codes(path=path+"linked_data_codings/", df_name=df_name)
+        # load dataset-specific coding files
+        if len([x for x in coding_names if x not in ontologies_present]) > 0:
+            df_dict["codes"] = pd.read_csv(path+"linked_data_codings/"+df_name+"_codes.csv")
 
     return df_dict
 
