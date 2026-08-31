@@ -141,9 +141,9 @@ def build_registries(config: AppConfig) -> RegistryBuildResult:
         coverage_summary=coverage_path,
         source_manifest=source_manifest_path,
         counts={
-            "questionnaire & participant fields": len(field_registry),
-            "questionnaire & participant codings": len(coding_registry),
-            "questionnaire & participant logic_rows": len(logic_registry),
+            "fields": len(field_registry),
+            "codings": len(coding_registry),
+            "logic_rows": len(logic_registry),
             "entities": entities_count,
         },
     )
