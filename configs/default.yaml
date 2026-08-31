@@ -23,5 +23,6 @@ generation:
   deaths_file: nhse_engwal_deaths.csv
   op_file: nhse_eng_outpat.csv
   ae_file: nhse_eng_ed.csv
+  apc_file: nhse_eng_inpat.csv
   manifest_file: manifest.json
   questionnaire_version: "v2"

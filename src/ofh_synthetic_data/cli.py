@@ -144,6 +144,7 @@ def generate(args: argparse.Namespace, config: AppConfig) -> int:
     print(f"Wrote {len(tables.deaths)} rows to {paths.deaths}")
     print(f"Wrote {len(tables.op)} rows to {paths.op}")
     print(f"Wrote {len(tables.ae)} rows to {paths.ae}")
+    print(f"Wrote {len(tables.apc)} rows to {paths.apc}")
     print(f"Wrote manifest to {paths.manifest}")
     return 0
 
