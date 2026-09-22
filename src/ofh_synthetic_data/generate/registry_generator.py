@@ -593,7 +593,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # conditionally populating diagnosis fields
     for diag_number in range(2, len(DIAG_COLUMNS)+1):
-        diag_name = f"DIAG_4_{diag_number:.2}"
+        diag_name = f"DIAG_4_{diag_number:02}"
         record[diag_name] = np.nan
         # only 7 diagnosis fields available prior to 2002/2003 financial year
         if record["EPISTART"] < FYEAR_START_DATE_0203 and diag_number > 7:
@@ -601,7 +601,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
         if record["EPISTART"] < FYEAR_START_DATE_0708 and diag_number > 14:
             continue
-        if record[f"DIAG_4_{diag_number-1:.2}"] in ["R69X", "R69X6", "R69X8", "R69X3", np.nan]:
+        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", np.nan]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
@@ -612,12 +612,12 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # conditionally populating procedure fields
     for proc_number in range(2, len(PROC_COLUMNS)+1):
-        proc_name = f"OPERTN_{proc_number:.2}"
+        proc_name = f"OPERTN_{proc_number:02}"
         record[proc_name] = np.nan
         # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
         if record["EPISTART"] < FYEAR_START_DATE_0708 and proc_number > 12:
             continue
-        if record[f"OPERTN_{proc_number-1:.2}"] in ["-", np.nan]:
+        if record[f"OPERTN_{proc_number-1:02}"] in ["-", np.nan]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
