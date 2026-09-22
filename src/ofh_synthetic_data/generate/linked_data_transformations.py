@@ -148,7 +148,7 @@ def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_da
     # defining columns that are not available for all years of data
     CONDITIONAL_DATE_FIELDS = {"DISREADYDATE", "RTTPERSTART", "RTTPEREND"}
     # defining start date for conditional date fields as 07/08 financial year
-    FYEAR_START_DATE_0708 = datetime(2007, 4, 1)
+    FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
 
     # setting anchor date
     record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]-7)
