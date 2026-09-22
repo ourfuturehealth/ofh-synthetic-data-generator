@@ -515,8 +515,6 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
-    # ordering the coded columns
-    ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
 
     # defining columns that require specific conditions for coded values to be populated
     conditional_columns = ["RTTPERSTAT", "RTTPERSTART","ASCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "RTTPEREND", "DISREADYDATE"]
@@ -524,10 +522,14 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # defining fields which will always be populated with coded values
     always_populated = [
         x for x in coded_pairs_dict.keys() 
-        if not re.search("|".join(ordered_columns_dict.keys()), x) 
+        if not re.search("DIAG_4_|OPDATE|OPERTN_", x) 
         or re.search("_01$", x) 
         and x not in conditional_columns
     ]
+
+    # defining coded diagnosis and procedure columns
+    DIAG_COLUMNS = [x for x in coded_pairs_dict.keys() if "DIAG_4_" in x]
+    PROC_COLUMNS = [x for x in coded_pairs_dict.keys() if "OPERTN_" in x]
 
     # generating dates
     # date constants
@@ -545,7 +547,11 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
   
 
     for colname in always_populated:
-        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+        # 25% chance no procedure happened during admission
+        if colname == "OPERTN_01" and fake.pybool(25):
+            record[colname] = "-"
+        else:
+            record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
 
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
@@ -585,32 +591,40 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     else:
         record.update({d: np.nan for d in ["OPERSTAT", "FIRSTREG"]})
 
-    if record["EPISTART"] < datetime(2007, 4, 1):
-        opertn_list_len = 12
-
-    if record["EPISTART"] < datetime(2007, 4, 1) and record["EPISTART"] >= datetime(2002, 4, 1):
-        diag_list_len = 14
-
-    if record["EPISTART"] < datetime(2002, 4, 1):
-        diag_list_len
-    
-    
-    for base_colname in ordered_columns_dict.keys():
-        ordered_list = ordered_columns_dict[base_colname]
-        for i in range(0, len(ordered_list)-1):
-            # 80% chance that diagnosis or procedure code is populated
-            if fake.pybool(80) and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
-                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[ordered_list[i+1]], data_dictionary=df_dict)
-            # 20% chance that unknown or missing code value present
-            elif fake.pybool(20) and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
-                record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
+    # conditionally populating diagnosis fields
+    for diag_number in range(2, len(DIAG_COLUMNS)+1):
+        diag_name = f"DIAG_4_{diag_number:.2}"
+        record[diag_name] = np.nan
+        # only 7 diagnosis fields available prior to 2002/2003 financial year
+        if record["EPISTART"] < FYEAR_START_DATE_0203 and diag_number > 7:
+            continue
+        # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
+        if record["EPISTART"] < FYEAR_START_DATE_0708 and diag_number > 14:
+            continue
+        if record[f"DIAG_4_{diag_number-1:.2}"] in ["R69X", "R69X6", "R69X8", "R69X3", np.nan]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(20):
+                record[diag_name] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
             else:
-                if re.search("OPERTN", base_colname):
-                    record[ordered_list[i+1]] = "-"
-                else:
-                    record[ordered_list[i+1]] = ""
-    
-    
+                record[diag_name] = pick_random_code(fake, df_name=coded_pairs_dict[diag_name], data_dictionary=df_dict)
+
+    # conditionally populating procedure fields
+    for proc_number in range(2, len(PROC_COLUMNS)+1):
+        proc_name = f"OPERTN_{proc_number:.2}"
+        record[proc_name] = np.nan
+        # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
+        if record["EPISTART"] < FYEAR_START_DATE_0708 and proc_number > 12:
+            continue
+        if record[f"OPERTN_{proc_number-1:.2}"] in ["-", np.nan]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(20):
+                record[proc_name] = "-"
+            else:
+                record[proc_name] = pick_random_code(fake, df_name=coded_pairs_dict[proc_name], data_dictionary=df_dict)
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
