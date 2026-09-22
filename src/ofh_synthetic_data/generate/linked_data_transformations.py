@@ -119,8 +119,12 @@ def order_numbered_columns(coded_pairs_dict: dict) -> dict[str, list]:
     # returning dictionary of coded columns in correct numerical order
     return {k : list_df.loc[list_df["base_colname"] == k, "name"].to_list() for k in list_df["base_colname"].unique()}
 
-def generate_numeric_id(n: int) -> str:
-    return ''.join(random.choices(string.digits, k=n))
+def generate_numeric_id(fake: Faker, n: int) -> str:
+    """
+    Generates a random numeric code between 10^nth and (10^n)-1
+    n: number of digits required for the numeric ID
+    """
+    return fake.unique.random_int(min=10**(n-1), max=(10**n)-1)
 
 def get_max_years(df_name: str, date_dict: dict=DATE_BOOKENDS) -> int:
         """
