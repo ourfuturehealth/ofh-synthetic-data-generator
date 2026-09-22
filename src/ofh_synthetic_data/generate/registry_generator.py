@@ -183,12 +183,12 @@ def generate_tables(
                 ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_ed"], row_number=len(ae))
                 ae.append(ae_record)
 
-        # # 70% chance a given PID will have an APC record
-        # if fake.pybool(70):
-        #     # assuming a participant can appear up to 3x per year
-        #     for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
-        #         apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
-        #         apc.append(apc_record)
+        # 70% chance a given PID will have an APC record
+        if fake.pybool(70):
+            # assuming a participant can appear up to 3x per year
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
+                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
+                apc.append(apc_record)
 
     return GeneratedTables(
         participants=participants,
@@ -197,13 +197,13 @@ def generate_tables(
         # sorting datasets with multiple events per ID by date
         op=sorted(op, key=lambda d: d["APPTDATE"]),
         ae=sorted(ae, key=lambda d: d["ARRIVALDATE"]),
-        # apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
+        apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
         deaths_columns=deaths_columns,
         op_columns=op_columns,
         ae_columns=ae_columns,
-        # apc_columns=apc_columns,
+        apc_columns=apc_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -216,7 +216,7 @@ def generate_tables(
                 "deaths" : generation_config.deaths_file,
                 "op" : generation_config.op_file,
                 "ae" : generation_config.ae_file,
-                # "apc": generation_config.apc_file,
+                "apc": generation_config.apc_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -242,7 +242,7 @@ def generate_tables(
                 "deaths_columns" : len(deaths_columns),
                 "op_columns" : len(op_columns),
                 "ae_columns" : len(ae_columns),
-                # "apc_columns" : len(apc_columns),
+                "apc_columns" : len(apc_columns),
             },
             "phase": "7-beta-release-candidate",
         },
@@ -261,7 +261,7 @@ def write_generated_tables(
     deaths_path = output_dir / config.deaths_file
     op_path = output_dir / config.op_file
     ae_path = output_dir / config.ae_file
-    # apc_path = output_dir / config.apc_file
+    apc_path = output_dir / config.apc_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
@@ -269,7 +269,7 @@ def write_generated_tables(
     write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
     write_records_csv(tables.op, op_path, tables.op_columns)
     write_records_csv(tables.ae, ae_path, tables.ae_columns)
-    # write_records_csv(tables.apc, apc_path, tables.apc_columns)
+    write_records_csv(tables.apc, apc_path, tables.apc_columns)
     write_metadata(
         {
             **tables.manifest,
@@ -279,7 +279,7 @@ def write_generated_tables(
                 "deaths" : str(deaths_path),
                 "op" : str(op_path),
                 "ae" : str(ae_path),
-                # "apc" : str(apc_path),
+                "apc" : str(apc_path),
             },
         },
         manifest_path,
@@ -291,7 +291,7 @@ def write_generated_tables(
         deaths=deaths_path,
         op=op_path,
         ae=ae_path,
-        # apc=apc_path,
+        apc=apc_path,
         manifest=manifest_path,
     )
 
@@ -479,6 +479,109 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
             record[c] = np.nan
 
     if record["APPTDATE"] >= datetime.date(2021,4,1):
+        record["ATTENDKEY"] = generate_numeric_id(n=19)
+    else:
+        record["ATTENDKEY"] = generate_numeric_id(n=12)
+
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    
+    # generating SUSSPELLID code
+    if record["APPTDATE"] < datetime.date(2016,4,1):
+        record["SUSSPELLID"] = generate_numeric_id(n=10)
+    else:
+        record["SUSSPELLID"] = generate_numeric_id(n=19)
+    # 1% chance it is missing
+    if fake.pybool(1):
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+    # about 30% entries are uppercase
+    if fake.pybool(30):
+        record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+    
+    # adding `ROW_ID` to dataset
+    record["ROW_ID"] = row_number
+
+    return record
+
+def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
+    
+    # creating dictionary of coded columns and code value
+    coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
+
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
+
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["RTTPERSTAT", "RTTPERSTART","ASCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "RTTPEREND", "DISREADYDATE"]
+
+    # defining fields which will always be populated with coded values
+    always_populated = [
+        x for x in coded_pairs_dict.keys() 
+        if not re.search("|".join(ordered_columns_dict.keys()), x) 
+        or re.search("_01$", x) 
+        and x not in conditional_columns
+    ]
+
+    record = {}
+    
+    record["PID"] = pid
+
+    # getting all date fields from dictionary
+    date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
+
+    # creating set of date fields which will be generated using generate_apc_dates function
+    DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
+
+    # defining EPISTART, all other dates will be based off this value
+    record["EPISTART"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]-7)
+
+    # generating APC date fields for a given record
+    record = generate_apc_dates(fake=fake, record_dict=record, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
+  
+
+    for colname in always_populated:
+        record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+
+    if record["ADMIDATE"] < datetime(2007, 4, 1):
+        opertn_list_len = 12
+
+    if record["ADMIDATE"] < datetime(2007, 4, 1) and record["ADMIDATE"] >= datetime(2002, 4, 1):
+        diag_list_len = 14
+
+    if record["ADMIDATE"] < datetime(2002, 4, 1):
+        diag_list_len
+    
+    
+    for base_colname in ordered_columns_dict.keys():
+        ordered_list = ordered_columns_dict[base_colname]
+        for i in range(0, len(ordered_list)-1):
+            # 80% chance that diagnosis or procedure code is populated
+            if fake.pybool(80) and record[ordered_list[i]] not in ["", "-", "R69X", "R69X6", "R69X8", "R69X3"]:
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs_dict[ordered_list[i+1]], data_dictionary=df_dict)
+            # 20% chance that unknown or missing code value present
+            elif fake.pybool(20) and record[ordered_list[i]] not in ["", "-"] and re.search("DIAG", base_colname):
+                record[ordered_list[i+1]] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
+            else:
+                if re.search("OPERTN", base_colname):
+                    record[ordered_list[i+1]] = "-"
+                else:
+                    record[ordered_list[i+1]] = ""
+    
+    
+    # these fields only available from 2012/2013 financial year
+    if record["APPTDATE"] >= datetime.date(2012,4,1):
+        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
+    # enter as null for records prior to that FYEAR
+    else:
+        for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
+            record[c] = np.nan
+
+    if record["ADMIDATE"] >= datetime.date(2021,4,1):
         record["ATTENDKEY"] = generate_numeric_id(n=19)
     else:
         record["ATTENDKEY"] = generate_numeric_id(n=12)
