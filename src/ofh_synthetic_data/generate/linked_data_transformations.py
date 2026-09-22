@@ -151,7 +151,7 @@ def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_da
     FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
 
     # setting anchor date
-    record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]-7)
+    record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"]["start"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]["end"]-7)
 
     # 95% chance that EPIEND is the same as anchor date column
     if fake.pybool(5):
