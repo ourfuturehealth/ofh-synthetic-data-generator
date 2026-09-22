@@ -128,7 +128,7 @@ def get_max_years(df_name: str, date_dict: dict=DATE_BOOKENDS) -> int:
         """
         return len([x for x in range(date_dict[df_name]["start"].year, date_dict[df_name]["end"].year+1)])
 
-def generate_apc_dates(fake: Faker, record_dict: dict[str, object], date_set: Iterable[str], anchor_date_col: str) -> dict[str, object]:
+def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_date_col: str) -> dict[str, object]:
     """
     Populates date fields within APC. 
 
@@ -137,10 +137,17 @@ def generate_apc_dates(fake: Faker, record_dict: dict[str, object], date_set: It
     anchor_date_col: date column that bounds the logic for other date columns. For example, EPISTART in APC.
     """
 
+    # generating dictionary
+    record_dict = {}
+    record_dict["PID"] = pid
+
     # defining columns that are not available for all years of data
     CONDITIONAL_DATE_FIELDS = {"DISREADYDATE", "RTTPERSTART", "RTTPEREND"}
     # defining start date for conditional date fields as 07/08 financial year
     FYEAR_START_DATE_0708 = datetime(2007, 4, 1)
+
+    # setting anchor date
+    record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]-7)
 
     # 95% chance that EPIEND is the same as anchor date column
     if fake.pybool(5):
