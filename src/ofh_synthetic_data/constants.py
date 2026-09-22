@@ -32,23 +32,23 @@ IMD_VALID_ENTRIES = [
 # defining set of ID columms
 APC_ID_COLUMNS_DICT = {
     "EPIKEY" : {
-        "start_available" : datetime(1989, 4, 1), 
+        "start_available" : datetime.date(1989, 4, 1), 
         "n_characters": 12,
-        "n_characters_update" : datetime(2021, 4, 1)
+        "n_characters_update" : datetime.date(2021, 4, 1)
     }, 
     "AEKEY" : {
-        "start_available" : datetime(2013, 4, 1), 
+        "start_available" : datetime.date(2013, 4, 1), 
         "n_characters": 12,
-        "n_characters_update" : datetime(2021, 4, 1)
+        "n_characters_update" : datetime.date(2021, 4, 1)
     }, 
     "SUSRECID" : {
-        "start_available" : datetime(2007, 4, 1), 
+        "start_available" : datetime.date(2007, 4, 1), 
         "n_characters": 14,
-        "n_characters_update" : datetime(2021, 4, 1)
+        "n_characters_update" : datetime.date(2021, 4, 1)
     }, 
     "SUSSPELLID" : {
-        "start_available" : datetime(2009, 4, 1), 
+        "start_available" : datetime.date(2009, 4, 1), 
         "n_characters": 10,
-        "n_characters_update" : datetime(2016, 4, 1)
+        "n_characters_update" : datetime.date(2016, 4, 1)
     }
 }
