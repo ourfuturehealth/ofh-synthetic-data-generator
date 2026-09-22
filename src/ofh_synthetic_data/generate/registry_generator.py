@@ -533,9 +533,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # generating dates
     # date constants
-    FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
-    FYEAR_START_DATE_0203 = datetime.date(2002, 4, 1)
-    FYEAR_START_DATE_2324 = datetime.date(2023, 4, 1)
+    FYEAR_START_DATE_0708 = "2007-04-01"
+    FYEAR_START_DATE_0203 = "2002-04-01"
+    FYEAR_START_DATE_2324 = "2023-04-01"
     
     # getting all date fields from dictionary
     date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
