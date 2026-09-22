@@ -5,6 +5,8 @@ import datetime
 import re
 import numpy as np
 
+from typing import Iterable
+
 # from typing import Any
 from pathlib import Path
 from faker import Faker
@@ -126,7 +128,7 @@ def get_max_years(df_name: str, date_dict: dict=DATE_BOOKENDS) -> int:
         """
         return len([x for x in range(date_dict[df_name]["start"].year, date_dict[df_name]["end"].year+1)])
 
-def generate_apc_dates(fake: Faker, record_dict: dict[str, object], date_list: list[str], anchor_date_col: str) -> dict[str, object]:
+def generate_apc_dates(fake: Faker, record_dict: dict[str, object], date_set: Iterable[str], anchor_date_col: str) -> dict[str, object]:
     """
     Populates date fields within APC. 
 
@@ -135,35 +137,34 @@ def generate_apc_dates(fake: Faker, record_dict: dict[str, object], date_list: l
     anchor_date_col: date column that bounds the logic for other date columns. For example, EPISTART in APC.
     """
 
-    # defining dates excluding OPDATE and anchor date col
-    date_list = [x for x in date_list if "OPDATE" not in x and x != anchor_date_col]
     # defining columns that are not available for all years of data
-    conditional_date_fields = ["DISREADYDATE", "RTTPERSTART", "RTTPEREND"]
+    CONDITIONAL_DATE_FIELDS = {"DISREADYDATE", "RTTPERSTART", "RTTPEREND"}
+    # defining start date for conditional date fields as 07/08 financial year
+    FYEAR_START_DATE_0708 = datetime(2007, 4, 1)
 
-    # 90% chance that DISDATE is the same as ADMIDATE
-    if fake.pybool(1):
+    # 95% chance that EPIEND is the same as anchor date column
+    if fake.pybool(5):
         record_dict["EPIEND"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict[anchor_date_col]+7)
 
-        for d in date_list:
-            if d not in conditional_date_fields:
-                record_dict[d] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
+        for d in date_set - CONDITIONAL_DATE_FIELDS:
+            record_dict[d] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
 
         # conditionally filling date fields because not available until 07/08 financial years
-        if record_dict[anchor_date_col] >= datetime(2007, 4, 1):
+        if record_dict[anchor_date_col] >= FYEAR_START_DATE_0708:
             record_dict["RTTPERSTART"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
             record_dict["RTTPEREND"] = fake.date_between(start_date=record_dict["RTTPERSTART"], end_date=record_dict["EPIEND"])
             record_dict["DISREADYDATE"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
         else:
-            for d in conditional_date_fields:
-                record_dict[d] = np.nan
+            record_dict.update({d: np.nan for d in CONDITIONAL_DATE_FIELDS})
     else:
-        for d in date_list:
-            if d not in conditional_date_fields:
+        # if anchor start date is the same as end date, then all date fields equal to anchor start date
+        for d in date_set:
+            if d not in CONDITIONAL_DATE_FIELDS:
                 record_dict[d] = record_dict[anchor_date_col]
-            else:
-                if record_dict[anchor_date_col] >= datetime(2007, 4, 1):
-                    record_dict[d] = record_dict[anchor_date_col]
-                else: 
-                    record_dict[d] = np.nan
+            # conditional date fields are only populated from 07/08 financial year
+            elif record_dict[anchor_date_col] >= FYEAR_START_DATE_0708:
+                record_dict[d] = record_dict[anchor_date_col]
+            else: 
+                record_dict[d] = np.nan
 
     return record_dict
