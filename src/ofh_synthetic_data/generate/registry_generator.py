@@ -164,6 +164,11 @@ def generate_tables(
         participants.append(participant)
         questionnaires.append(questionnaire)
 
+        # generating list of random provider code values
+        PROVIDER_CODE_LIST = []
+        for _ in range(0, 10000):
+            PROVIDER_CODE_LIST.append(generate_numeric_id(fake, n=6))
+
         # 5% chance a given PID will have died and therefore have a death record
         if fake.pybool(5):
             death_record = _generate_death_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_engwal_deaths"], row_number=len(deaths))
@@ -173,21 +178,21 @@ def generate_tables(
         if fake.pybool(75):
             # assuming a participant can appear up to 7x per year
             for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_outpat"]*7)):
-                op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_outpat"], row_number=len(op))
+                op_record = _generate_outpatient_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_outpat"], row_number=len(op), provider_codes=PROVIDER_CODE_LIST)
                 op.append(op_record)
 
         # 60% chance a given PID will have an A&E record
         if fake.pybool(60):
             # assuming a participant can appear up to 2x per year
             for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_ed"]*2)):
-                ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_ed"], row_number=len(ae))
+                ae_record = _generate_ae_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_ed"], row_number=len(ae), provider_codes=PROVIDER_CODE_LIST)
                 ae.append(ae_record)
 
         # 70% chance a given PID will have an APC record
         if fake.pybool(70):
             # assuming a participant can appear up to 3x per year
             for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
-                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc))
+                apc_record = _generate_apc_record(fake, pid=pid, df_dict=linked_data_dicts["nhse_eng_inpat"], row_number=len(apc), provider_codes=PROVIDER_CODE_LIST)
                 apc.append(apc_record)
 
     return GeneratedTables(
@@ -426,7 +431,7 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
 
     return deaths_record
 
-def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
+def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, provider_codes: list[int]) -> dict[str, object]:
     
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
@@ -484,7 +489,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
         record["ATTENDKEY"] = generate_numeric_id(n=12)
 
     # generating pseudonymised provider code
-    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
     
     # generating SUSSPELLID code
     if record["APPTDATE"] < datetime.date(2016,4,1):
@@ -506,11 +511,10 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
 
     return record
 
-def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
+def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, provider_codes: list[int]) -> dict[str, object]:
     
     # creating dictionary of coded columns and code value
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
-
     # ordering the coded columns
     ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs_dict)
 
@@ -526,11 +530,16 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     ]
 
     # generating dates
+    # date constants
+    FYEAR_START_DATE_0708 = datetime(2007, 4, 1)
+    FYEAR_START_DATE_0203 = datetime(2002, 4, 1)
+    FYEAR_START_DATE_2324 = datetime(2023, 4, 1)
     
     # getting all date fields from dictionary
     date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
     # creating set of date fields which will be generated using generate_apc_dates function
     DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
+
     # generating APC date fields for a given record
     record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
   
@@ -539,7 +548,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
 
     # generating pseudonymised provider code
-    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
 
     # populating ID columns using information in APC_ID_COLUMNS_DICT
     for id_column in APC_ID_COLUMNS_DICT.keys():
@@ -561,18 +570,20 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
 
     # populating all fields available from 2007/2008 financial year
-    if record["EPISTART"] >= datetime(2007, 4,1):
+    if record["EPISTART"] >= FYEAR_START_DATE_0708:
         record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
         record["ASCFLAG"] = pick_random_code(fake, coded_pairs_dict["ASCFLAG"], data_dictionary=df_dict)
     else:
         record.update({d: np.nan for d in ["RTTPERSTAT", "ASCFLAG"]})
 
 
-    if record["EPISTART"] >= datetime(2002, 4, 1) and record["EPISTART"] < datetime(2023, 4, 1):
-        record["OPERSTAT"] = pick_random_code(fake, coded_pairs_dict["OPERSTAT"], data_dictionary=df_dict)
-
-    if record["EPISTART"] >= datetime(2002, 4, 1):
-        record["FIRSTREG"] = pick_random_code(fake, coded_pairs_dict["OPERSTAT"], data_dictionary=df_dict)
+    if record["EPISTART"] >= FYEAR_START_DATE_0203:
+        for c in ["OPERSTAT", "FIRSTREG"]:
+            record[c] = pick_random_code(fake, coded_pairs_dict[c], data_dictionary=df_dict)
+    elif record["EPISTART"] < FYEAR_START_DATE_2324:
+        record["OPERSTAT"] = np.nan
+    else:
+        record.update({d: np.nan for d in ["OPERSTAT", "FIRSTREG"]})
 
     if record["EPISTART"] < datetime(2007, 4, 1):
         opertn_list_len = 12
@@ -612,7 +623,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     return record
 
-def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int) -> dict[str, object]:
+def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, provider_codes: list[int]) -> dict[str, object]:
     
     # converting to dictionary of name and coding name value pairs
     coded_pairs_dict = create_coded_pairs(df_dict)
@@ -671,7 +682,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
         record[t] = str(fake.time('%H:%M').replace(":", "")).zfill(4)
     
     # generating pseudonymised provider code
-    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
     
     # generating SUSSPELLID code
     if record["ARRIVALDATE"] < datetime.date(2016,4,1):
