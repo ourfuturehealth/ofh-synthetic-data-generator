@@ -680,11 +680,11 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
 
     # manually adding TREAT_nn fields because they do not have set codes but usually consist of 2-6 character codes
     treat_columns = [x for x in df_dict["dictionary"]["name"].to_list() if "TREAT_" in x]
-    record["TREAT_01"] = fake.password(length=3, special_chars=False, digits=True, upper_case=True, lower_case=True)
+    record["TREAT_01"] = str(fake.random_int(min=1, max=99)) + fake.random_letter()
     for t in range(0, len(treat_columns)-1):
         if fake.pybool(20) and record[treat_columns[t]] != "":
             treat_length = fake.random_int(min=2, max=6)
-            record[treat_columns[t+1]] = fake.password(length=treat_length, special_chars=False, digits=True, upper_case=True, lower_case=True)
+            record[treat_columns[t+1]] = str(fake.random_number(digits=treat_length)) + fake.random_letter()
         else:
             record[treat_columns[t+1]] = ""
     
