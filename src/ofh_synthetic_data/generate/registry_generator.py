@@ -525,21 +525,14 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         and x not in conditional_columns
     ]
 
-    record = {}
+    # generating dates
     
-    record["PID"] = pid
-
     # getting all date fields from dictionary
     date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
-
     # creating set of date fields which will be generated using generate_apc_dates function
     DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
-
-    # defining EPISTART, all other dates will be based off this value
-    record["EPISTART"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]-7)
-
     # generating APC date fields for a given record
-    record = generate_apc_dates(fake=fake, record_dict=record, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
+    record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
   
 
     for colname in always_populated:
