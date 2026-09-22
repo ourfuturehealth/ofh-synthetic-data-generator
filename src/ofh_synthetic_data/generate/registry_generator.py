@@ -576,7 +576,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     else:
         record.update({d: np.nan for d in ["RTTPERSTAT", "ASCFLAG"]})
 
-
+    # populating fields available from 2002/2003 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0203:
         for c in ["OPERSTAT", "FIRSTREG"]:
             record[c] = pick_random_code(fake, coded_pairs_dict[c], data_dictionary=df_dict)
