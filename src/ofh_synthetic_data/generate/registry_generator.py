@@ -407,9 +407,9 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
                 )
 
     # conditionally populating ICD cause of death columns to mimic missingness in real data
-    for base_colname, ordered_col_list in ordered_columns_dict.items():
+    for _, ordered_col_list in ordered_columns_dict.items():
         for i in range(0, len(ordered_col_list)-1):
-            if fake.random_int(min=0, max=10) < 8 and deaths_record[ordered_col_list[i]] != "":
+            if fake.pybool(80) and deaths_record[ordered_col_list[i]] != "":
                 deaths_record[ordered_col_list[i+1]] = fake.random_element(
                     elements=df_dict[coded_pairs_dict[ordered_col_list[i]]]["code"].unique()
                 )
@@ -538,13 +538,49 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     for colname in always_populated:
         record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
 
-    if record["ADMIDATE"] < datetime(2007, 4, 1):
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
+
+    # populating ID columns using information in APC_ID_COLUMNS_DICT
+    for id_column in APC_ID_COLUMNS_DICT.keys():
+        # only populate fields from when dictionary indicates data becomes available
+        if record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["start_available"] and record["EPISTART"] < APC_ID_COLUMNS_DICT[id_column]["n_characters_update"]:
+            record[id_column] = generate_numeric_id(fake, n=APC_ID_COLUMNS_DICT[id_column]["n_characters"])
+        # after financial year defined in dictionary, all ID fields become 19 characters
+        elif record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["n_characters_update"] and id_column != "SUSRECID":
+            record[id_column] = generate_numeric_id(fake, n=19)
+        # defining SUSRECID separately because after a specified date, it becomes the same as EPIKEY
+        elif record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["n_characters_update"] and id_column == "SUSRECID":
+            record[id_column] = record["EPIKEY"]
+        else:
+            record[id_column] = np.nan
+
+    # adding missing codes to SUSSPELLID
+    if record["EPISTART"] >= APC_ID_COLUMNS_DICT["SUSSPELLID"]["start_available"] and fake.pybool(1):
+        # 1% chance it is missing
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
+
+    # populating all fields available from 2007/2008 financial year
+    if record["EPISTART"] >= datetime(2007, 4,1):
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
+        record["ASCFLAG"] = pick_random_code(fake, coded_pairs_dict["ASCFLAG"], data_dictionary=df_dict)
+    else:
+        record.update({d: np.nan for d in ["RTTPERSTAT", "ASCFLAG"]})
+
+
+    if record["EPISTART"] >= datetime(2002, 4, 1) and record["EPISTART"] < datetime(2023, 4, 1):
+        record["OPERSTAT"] = pick_random_code(fake, coded_pairs_dict["OPERSTAT"], data_dictionary=df_dict)
+
+    if record["EPISTART"] >= datetime(2002, 4, 1):
+        record["FIRSTREG"] = pick_random_code(fake, coded_pairs_dict["OPERSTAT"], data_dictionary=df_dict)
+
+    if record["EPISTART"] < datetime(2007, 4, 1):
         opertn_list_len = 12
 
-    if record["ADMIDATE"] < datetime(2007, 4, 1) and record["ADMIDATE"] >= datetime(2002, 4, 1):
+    if record["EPISTART"] < datetime(2007, 4, 1) and record["EPISTART"] >= datetime(2002, 4, 1):
         diag_list_len = 14
 
-    if record["ADMIDATE"] < datetime(2002, 4, 1):
+    if record["EPISTART"] < datetime(2002, 4, 1):
         diag_list_len
     
     
@@ -564,32 +600,6 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
                     record[ordered_list[i+1]] = ""
     
     
-    # these fields only available from 2012/2013 financial year
-    if record["APPTDATE"] >= datetime.date(2012,4,1):
-        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
-        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
-        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
-    # enter as null for records prior to that FYEAR
-    else:
-        for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
-            record[c] = np.nan
-
-    if record["ADMIDATE"] >= datetime.date(2021,4,1):
-        record["ATTENDKEY"] = generate_numeric_id(n=19)
-    else:
-        record["ATTENDKEY"] = generate_numeric_id(n=12)
-
-    # generating pseudonymised provider code
-    record["PROCODE3_OFH"] = generate_numeric_id(n=6)
-    
-    # generating SUSSPELLID code
-    if record["APPTDATE"] < datetime.date(2016,4,1):
-        record["SUSSPELLID"] = generate_numeric_id(n=10)
-    else:
-        record["SUSSPELLID"] = generate_numeric_id(n=19)
-    # 1% chance it is missing
-    if fake.pybool(1):
-        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
