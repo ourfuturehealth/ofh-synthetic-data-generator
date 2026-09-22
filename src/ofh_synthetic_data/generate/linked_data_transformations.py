@@ -10,6 +10,7 @@ from typing import Iterable
 # from typing import Any
 from pathlib import Path
 from faker import Faker
+from datetime import timedelta
 # from faker.providers import DynamicProvider, BaseProvider
 from ofh_synthetic_data.constants import DATE_BOOKENDS
 
@@ -151,11 +152,11 @@ def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_da
     FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
 
     # setting anchor date
-    record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"]["start"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]["end"]-7)
+    record_dict[anchor_date_col] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_inpat"]["start"], end_date=DATE_BOOKENDS["nhse_eng_inpat"]["end"]-timedelta(days=7))
 
     # 95% chance that EPIEND is the same as anchor date column
     if fake.pybool(5):
-        record_dict["EPIEND"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict[anchor_date_col]+7)
+        record_dict["EPIEND"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict[anchor_date_col]+timedelta(days=7))
 
         for d in date_set - CONDITIONAL_DATE_FIELDS:
             record_dict[d] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
