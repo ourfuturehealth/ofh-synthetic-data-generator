@@ -484,18 +484,18 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
             record[c] = np.nan
 
     if record["APPTDATE"] >= datetime.date(2021,4,1):
-        record["ATTENDKEY"] = generate_numeric_id(n=19)
+        record["ATTENDKEY"] = generate_numeric_id(fake, n=19)
     else:
-        record["ATTENDKEY"] = generate_numeric_id(n=12)
+        record["ATTENDKEY"] = generate_numeric_id(fake, n=12)
 
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
     
     # generating SUSSPELLID code
     if record["APPTDATE"] < datetime.date(2016,4,1):
-        record["SUSSPELLID"] = generate_numeric_id(n=10)
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=10)
     else:
-        record["SUSSPELLID"] = generate_numeric_id(n=19)
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=19)
     # 1% chance it is missing
     if fake.pybool(1):
         record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
@@ -680,11 +680,11 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
 
     # manually adding TREAT_nn fields because they do not have set codes but usually consist of 2-6 character codes
     treat_columns = [x for x in df_dict["dictionary"]["name"].to_list() if "TREAT_" in x]
-    record["TREAT_01"] = generate_numeric_id(n=3)
+    record["TREAT_01"] = generate_numeric_id(fake, n=3)
     for t in range(0, len(treat_columns)-1):
         if fake.pybool(20) and record[treat_columns[t]] != "":
             treat_length = fake.random_int(min=1, max=6)
-            record[treat_columns[t+1]] = generate_numeric_id(n=treat_length)
+            record[treat_columns[t+1]] = generate_numeric_id(fake, n=treat_length)
         else:
             record[treat_columns[t+1]] = ""
     
@@ -700,25 +700,25 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     
     # generating SUSSPELLID code
     if record["ARRIVALDATE"] < datetime.date(2016,4,1):
-        record["SUSSPELLID"] = generate_numeric_id(n=10)
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=10)
     else:
-        record["SUSSPELLID"] = generate_numeric_id(n=19)
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=19)
     # 1% chance it is missing
     if fake.pybool(1):
         record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
     
     if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
-        record["AEKEY"] = generate_numeric_id(n=19)
+        record["AEKEY"] = generate_numeric_id(fake, n=19)
     else:
-        record["AEKEY"] = generate_numeric_id(n=12)
+        record["AEKEY"] = generate_numeric_id(fake, n=12)
 
     # populating EPIKEY based on years available and character length
     if record["ARRIVALDATE"] >= datetime.date(2013,4,1):
         if fake.pybool(10):
             if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
-                record["EPIKEY"] = generate_numeric_id(n=19)
+                record["EPIKEY"] = generate_numeric_id(fake, n=19)
             else:
-                record["EPIKEY"] = generate_numeric_id(n=12)
+                record["EPIKEY"] = generate_numeric_id(fake, n=12)
         else:
             record["EPIKEY"] = np.nan
     else: 
