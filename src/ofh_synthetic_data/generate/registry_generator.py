@@ -165,9 +165,7 @@ def generate_tables(
         questionnaires.append(questionnaire)
 
         # generating list of random provider code values
-        PROVIDER_CODE_LIST = []
-        for _ in range(0, 10000):
-            PROVIDER_CODE_LIST.append(generate_numeric_id(fake, n=6))
+        PROVIDER_CODE_LIST = list(fake.random_elements(elements=range(100000, 1000000), length=10000, unique=True))
 
         # 5% chance a given PID will have died and therefore have a death record
         if fake.pybool(5):
@@ -517,7 +515,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
 
     # defining columns that require specific conditions for coded values to be populated
-    conditional_columns = ["RTTPERSTAT", "RTTPERSTART","ASCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "RTTPEREND", "DISREADYDATE"]
+    conditional_columns = ["RTTPERSTAT", "RTTPERSTART","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "RTTPEREND", "DISREADYDATE"]
 
     # defining fields which will always be populated with coded values
     always_populated = [
@@ -578,9 +576,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # populating all fields available from 2007/2008 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0708:
         record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs_dict["RTTPERSTAT"], data_dictionary=df_dict)
-        record["ASCFLAG"] = pick_random_code(fake, coded_pairs_dict["ASCFLAG"], data_dictionary=df_dict)
+        record["ACSCFLAG"] = pick_random_code(fake, coded_pairs_dict["ACSCFLAG"], data_dictionary=df_dict)
     else:
-        record.update({d: np.nan for d in ["RTTPERSTAT", "ASCFLAG"]})
+        record.update({d: np.nan for d in ["RTTPERSTAT", "ACSCFLAG"]})
 
     # populating fields available from 2002/2003 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0203:
