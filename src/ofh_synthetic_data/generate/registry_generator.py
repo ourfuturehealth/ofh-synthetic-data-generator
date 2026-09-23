@@ -638,9 +638,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
 
     # seeding missing values
-        for c in date_fields+["BEDYEAR", "EPIORDER", "SUSSPELLID"]:
-            if fake.pybool(1):
-                record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
+    for c in date_fields+["BEDYEAR", "EPIORDER", "SUSSPELLID"]:
+        if fake.pybool(1):
+            record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
