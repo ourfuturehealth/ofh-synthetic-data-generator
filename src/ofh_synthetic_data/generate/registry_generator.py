@@ -515,14 +515,18 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     coded_pairs_dict = create_coded_pairs(data_dictionary=df_dict)
 
     # defining columns that require specific conditions for coded values to be populated
-    conditional_columns = ["RTTPERSTAT", "RTTPERSTART","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "RTTPEREND", "DISREADYDATE"]
+    conditional_columns = ["RTTPERSTAT","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "BEDYEAR", "EPIORDER"]
+    # getting all date fields from dictionary
+    date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
 
     # defining fields which will always be populated with coded values
     always_populated = [
         x for x in coded_pairs_dict.keys() 
-        if not re.search("DIAG_4_|OPDATE|OPERTN_", x) 
-        or re.search("_01$", x) 
-        and x not in conditional_columns
+        # excluding ontology columns
+        if not re.search("DIAG_4_|OPERTN_", x) 
+        or re.search("_01$", x)
+        # excluding conditionally populated columns and date columns 
+        and x not in conditional_columns+date_fields
     ]
 
     # defining coded diagnosis and procedure columns
@@ -535,8 +539,6 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     FYEAR_START_DATE_0203 = "2002-04-01"
     FYEAR_START_DATE_2324 = "2023-04-01"
     
-    # getting all date fields from dictionary
-    date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
     # creating set of date fields which will be generated using generate_apc_dates function
     DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
 
@@ -603,7 +605,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
-            if fake.pybool(20):
+            if fake.pybool(5):
                 record[diag_name] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
             else:
                 record[diag_name] = pick_random_code(fake, df_name=coded_pairs_dict[diag_name], data_dictionary=df_dict)
