@@ -545,7 +545,6 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # generating APC date fields for a given record
     record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
   
-
     for colname in always_populated:
         # 25% chance no procedure happened during admission
         if colname == "OPERTN_01" and fake.pybool(25):
@@ -554,6 +553,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         else:
             record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
             record["OPDATE_01"] = fake.date_between(start_date=record["EPISTART"], end_date=record["EPIEND"])
+
+    # random integer between 1 and 366
+    record["BEDYEAR"] = fake.random_element(elements=range(1, 376))
 
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
@@ -571,11 +573,6 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
             record[id_column] = record["EPIKEY"]
         else:
             record[id_column] = np.nan
-
-    # adding missing codes to SUSSPELLID
-    if record["EPISTART"] >= APC_ID_COLUMNS_DICT["SUSSPELLID"]["start_available"] and fake.pybool(1):
-        # 1% chance it is missing
-        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs_dict["SUSSPELLID"], data_dictionary=df_dict)
 
     # populating all fields available from 2007/2008 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0708:
@@ -637,6 +634,11 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # about 30% entries are uppercase
     if fake.pybool(30):
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+
+    # seeding missing values
+        for c in date_fields+["BEDYEAR", "EPIORDER", "SUSSPELLID"]:
+            if fake.pybool(1):
+                record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
