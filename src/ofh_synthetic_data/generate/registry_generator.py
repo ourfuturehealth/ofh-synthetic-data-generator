@@ -544,6 +544,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
     # generating only 1 episode per spell for first iteration
     record["EPIORDER"] = 1
+    # defining ELECDUR and EPIDUR
+    record["ELECDUR"] = record["ELECDATE"] - record["ADMIDATE"]
+    record["EPIDUR"] = record["EPIEND"] - record["EPISTART"]
   
     for colname in always_populated:
         # 25% chance no procedure happened during admission
