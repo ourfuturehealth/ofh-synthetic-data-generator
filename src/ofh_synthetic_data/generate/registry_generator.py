@@ -550,8 +550,10 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         # 25% chance no procedure happened during admission
         if colname == "OPERTN_01" and fake.pybool(25):
             record[colname] = "-"
+            record["OPDATE_01"] = np.nan
         else:
             record[colname] = pick_random_code(fake, df_name=coded_pairs_dict[colname], data_dictionary=df_dict)
+            record["OPDATE_01"] = fake.date_between(start_date=record["EPISTART"], end_date=record["EPIEND"])
 
     # generating pseudonymised provider code
     record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
@@ -613,7 +615,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # conditionally populating procedure fields
     for proc_number in range(2, len(PROC_COLUMNS)+1):
         proc_name = f"OPERTN_{proc_number:02}"
+        proc_date_name = f"OPDATE_{proc_number:02}"
         record[proc_name] = np.nan
+        record[proc_date_name] = np.nan
         # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
         if record["EPISTART"] < FYEAR_START_DATE_0708 and proc_number > 12:
             continue
@@ -623,8 +627,10 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         if fake.pybool(80):
             if fake.pybool(20):
                 record[proc_name] = "-"
+                record[proc_date_name] = np.nan
             else:
                 record[proc_name] = pick_random_code(fake, df_name=coded_pairs_dict[proc_name], data_dictionary=df_dict)
+                record[proc_date_name] = fake.date_between(start_date=f"OPDATE_{proc_number-1:02}", end_date=record["EPIEND"])
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
