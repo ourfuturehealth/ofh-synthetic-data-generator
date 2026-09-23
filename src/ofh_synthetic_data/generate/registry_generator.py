@@ -544,6 +544,8 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # generating APC date fields for a given record
     record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
+    # generating only 1 episode per spell for first iteration
+    record["EPIORDER"] = 1
   
     for colname in always_populated:
         # 25% chance no procedure happened during admission
