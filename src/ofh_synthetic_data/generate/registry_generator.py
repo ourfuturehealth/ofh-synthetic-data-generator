@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 # import random
 from random import Random
@@ -520,14 +520,12 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
 
     # defining fields which will always be populated with coded values
+    # excluding ontology columns and conditionally populated column + date fields
     always_populated = [
         x for x in coded_pairs_dict.keys() 
-        # excluding ontology columns
-        if not re.search("DIAG_4_|OPERTN_", x) 
-        or re.search("_01$", x)
-        # excluding conditionally populated columns and date columns 
-        and x not in conditional_columns+date_fields
-    ]
+        if x not in conditional_columns+date_fields
+        and not re.search("DIAG_4_|OPERTN_", x)
+    ] + ["DIAG_4_01", "OPERTN_01"]
 
     # defining coded diagnosis and procedure columns
     DIAG_COLUMNS = [x for x in coded_pairs_dict.keys() if "DIAG_4_" in x]
@@ -535,9 +533,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # generating dates
     # date constants
-    FYEAR_START_DATE_0708 = "2007-04-01"
-    FYEAR_START_DATE_0203 = "2002-04-01"
-    FYEAR_START_DATE_2324 = "2023-04-01"
+    FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
+    FYEAR_START_DATE_0203 = datetime.date(2002, 4, 1)
+    FYEAR_START_DATE_2324 = datetime.date(2023, 4, 1)
     
     # creating set of date fields which will be generated using generate_apc_dates function
     DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
@@ -629,7 +627,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
                 record[proc_date_name] = np.nan
             else:
                 record[proc_name] = pick_random_code(fake, df_name=coded_pairs_dict[proc_name], data_dictionary=df_dict)
-                record[proc_date_name] = fake.date_between(start_date=f"OPDATE_{proc_number-1:02}", end_date=record["EPIEND"])
+                record[proc_date_name] = fake.date_between(start_date=record[f"OPDATE_{proc_number-1:02}"], end_date=record["EPIEND"])
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
@@ -637,10 +635,15 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     if fake.pybool(30):
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
 
-    # seeding missing values
-    for c in date_fields+["BEDYEAR", "EPIORDER", "SUSSPELLID"]:
+    # seeding missing values where missing codes are available
+    # excluding OPDATE_nn fields
+    for c in list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs_dict.keys())):
         if fake.pybool(1):
-            record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
+            if c in date_fields:
+                new_code = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
+                record[c] = datetime.datetime.strptime(new_code, "%Y-%m-%d").date()
+            else:
+                record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
