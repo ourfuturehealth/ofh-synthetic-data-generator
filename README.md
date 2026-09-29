@@ -3,8 +3,8 @@
 Python tooling for generating reproducible synthetic Our Future Health-style data from public
 source documentation.
 
-This Beta generator creates linked, release-shaped `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables for local development, onboarding and workflow
+This Beta generator creates release-shaped `participant.csv`, baseline health
+questionnaire V2 `questionnaire.csv`, and 4 of the linked datasets `nhse_engwal_deaths.csv` (ONS Deaths), `nhse_eng_inpat.csv` (HES Admitted Patient Care), `nhse_eng_outpat.csv` (HES Outpatient), `nhse_eng_ed.csv` (HES Accident & Emergency) for local development, onboarding and workflow
 prototyping.
 
 It is intended to help users understand table structure, identifiers, codings, joins and
