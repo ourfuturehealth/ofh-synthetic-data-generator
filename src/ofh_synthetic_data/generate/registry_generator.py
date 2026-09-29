@@ -647,6 +647,9 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
                 record[c] = datetime.datetime.strptime(new_code, "%Y-%m-%d").date()
             else:
                 record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
+
+    # standardising date format
+    record.update({d : datetime.datetime.strftime(d, "%Y-%m-%d") for d in date_fields})
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
