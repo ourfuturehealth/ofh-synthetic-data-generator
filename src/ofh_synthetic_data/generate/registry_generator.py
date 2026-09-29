@@ -134,9 +134,14 @@ def generate_tables(
 
     # max number of years a participant could appear in a linked dataset
     max_years = {df_name : get_max_years(df_name=df_name, date_dict=DATE_BOOKENDS) for df_name in DATE_BOOKENDS.keys()}
+
+    # generating list of random provider code values
+    PROVIDER_CODE_LIST = list(fake.random_elements(elements=range(100000, 1000000), length=10000, unique=True))
     
     for row_index in range(generation_config.rows):
+        print(f"\ngenerating participant {row_index} of {generation_config.rows}")
         pid = _participant_id(row_index)
+
         timeline = _core_timeline(rng)
         participant = _generate_record(
             fields=participant_fields,
@@ -147,6 +152,7 @@ def generate_tables(
             generation_config=generation_config,
             timeline=timeline,
         )
+        print("generated participant")
         questionnaire, skipped_for_row = _generate_questionnaire_record(
             fields=questionnaire_fields,
             logic_rules=logic_rules,
@@ -159,13 +165,11 @@ def generate_tables(
             participant=participant,
             timeline=timeline,
         )
+        print("generated questionnaire")
 
         skipped_by_logic_count += skipped_for_row
         participants.append(participant)
         questionnaires.append(questionnaire)
-
-        # generating list of random provider code values
-        PROVIDER_CODE_LIST = list(fake.random_elements(elements=range(100000, 1000000), length=10000, unique=True))
 
         # 5% chance a given PID will have died and therefore have a death record
         if fake.pybool(5):
@@ -640,16 +644,13 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # seeding missing values where missing codes are available
     # excluding OPDATE_nn fields
-    for c in list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs_dict.keys())):
+    for c in sorted(list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs_dict.keys()))):
         if fake.pybool(1):
             if c in date_fields:
                 new_code = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
                 record[c] = datetime.datetime.strptime(new_code, "%Y-%m-%d").date()
             else:
                 record[c] = pick_random_code(fake, df_name=coded_pairs_dict[c], data_dictionary=df_dict)
-
-    # standardising date format
-    record.update({d : datetime.datetime.strftime(d, "%Y-%m-%d") for d in date_fields})
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
