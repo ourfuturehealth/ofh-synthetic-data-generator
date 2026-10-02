@@ -14,7 +14,7 @@ import pandas as pd
 from ofh_synthetic_data.config import AppConfig
 from ofh_synthetic_data.generate.show_if import evaluate_show_if
 
-SYNTHETIC_YEAR_MINIMUM = 3000
+SYNTHETIC_YEAR_MINIMUM = 2021
 
 
 @dataclass(frozen=True)

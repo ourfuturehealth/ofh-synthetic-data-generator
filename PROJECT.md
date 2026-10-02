@@ -20,7 +20,7 @@ In scope:
 - source-driven schema, coding and release-schema questionnaire logic.
 - deterministic generation from a fixed seed.
 - visible synthetic markers, including `SYN`-prefixed identifiers, generated
-  `CONSENT_VERSION` values beginning with `SYNTHETIC_` and dates or years using `3000+`.
+  `CONSENT_VERSION` values beginning with `SYNTHETIC_`.
 - temporal consistency for dates used to generate age only (i.e. core timeline).
 - unit tests and QA checks for schema, types, codings and linkage.
 

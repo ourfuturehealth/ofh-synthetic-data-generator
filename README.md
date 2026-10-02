@@ -18,8 +18,7 @@ genetic, clinic measurement and linked NHSE data. Those are outside the current 
 For the full in-scope and out-of-scope list, see [PROJECT.md](PROJECT.md#scope).
 
 Generated outputs are deterministic with a fixed seed and visibly synthetic, including
-`SYN`-prefixed identifiers, `CONSENT_VERSION` values beginning with `SYNTHETIC_` and
-future-dated years using `3000+`.
+`SYN`-prefixed identifiers, `CONSENT_VERSION` values beginning with `SYNTHETIC_`.
 
 ## Beta Status
 
@@ -117,7 +116,7 @@ values as codes. Decoded QA outputs replace coded values with Our Future Health 
 meanings where available.
 
 Synthetic markers include IDs with a visible `SYN` prefix, `CONSENT_VERSION` values beginning
-with `SYNTHETIC_` and dates or years using `3000+`.
+with `SYNTHETIC_`.
 
 ## Download Synthetic Example Data 
 
