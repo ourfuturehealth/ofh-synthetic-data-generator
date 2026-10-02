@@ -14,6 +14,7 @@ from ofh_synthetic_data.generate.registry_generator import (
 )
 from ofh_synthetic_data.ingest.registries import build_registries
 from ofh_synthetic_data.validate.outputs import validate_synthetic_outputs
+from ofh_synthetic_data.synthetic_ranges import *
 
 pytestmark = pytest.mark.qa
 
@@ -239,8 +240,8 @@ def _assert_core_timeline_supports_adult_age(
     submission_years = joined["SUBMISSION_DATE"].str.slice(0, 4).astype(int)
     submission_months = joined["SUBMISSION_DATE"].str.slice(5, 7).astype(int)
 
-    assert registration_years.between(3095, 3100).all()
-    assert birth_years.between(3000, 3075).all()
+    assert registration_years.between(SYNTHETIC_YEAR_MIN, SYNTHETIC_YEAR_MAX).all()
+    assert birth_years.between(BIRTH_YEAR_MIN, BIRTH_YEAR_MAX).all()
     assert registration_years.tolist() == consent_years.tolist()
     assert registration_months.tolist() == consent_months.tolist()
     assert registration_years.tolist() == submission_years.tolist()

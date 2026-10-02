@@ -5,6 +5,7 @@ import pandas as pd
 from ofh_synthetic_data.config import AppConfig, GenerationConfig, PathsConfig
 from ofh_synthetic_data.generate.registry_generator import generate_tables, write_generated_tables
 from ofh_synthetic_data.validate.outputs import validate_synthetic_outputs
+from ofh_synthetic_data.synthetic_ranges import *
 
 
 def test_validate_synthetic_outputs_passes_for_generated_tables(tmp_path: Path) -> None:
@@ -109,8 +110,8 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
                 "BIRTH_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3000,
-                generation_max=3075,
+                generation_min=BIRTH_YEAR_MIN,
+                generation_max=BIRTH_YEAR_MAX,
                 numeric_range_rule="birth_year",
                 dictionary_order=2,
             ),
