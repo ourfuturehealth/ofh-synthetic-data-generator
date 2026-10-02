@@ -1,6 +1,9 @@
 from pathlib import Path
 
 import pandas as pd
+import datetime
+
+from dateutil import relativedelta
 
 from ofh_synthetic_data.config import GenerationConfig
 from ofh_synthetic_data.generate.registry_generator import generate_tables, write_generated_tables
@@ -16,8 +19,8 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
                 "REGISTRATION_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3095,
-                generation_max=3100,
+                generation_min=2021,
+                generation_max=datetime.now().year,
             ),
             _field(
                 "participant",
@@ -33,8 +36,8 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
                 "CONSENT_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3095,
-                generation_max=3100,
+                generation_min=2021,
+                generation_max=datetime.now().year,
             ),
             _field(
                 "participant",
@@ -49,8 +52,8 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
                 "BIRTH_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3000,
-                generation_max=3075,
+                generation_min=(datetime.now() - relativedelta(years=18)).year,
+                generation_max=(datetime.now() - relativedelta(years=110)).year,
             ),
             _field(
                 "participant",
@@ -132,8 +135,10 @@ def test_generate_tables_from_enriched_registry(tmp_path: Path) -> None:
     birth_years = participants["BIRTH_YEAR"].astype(int)
     birth_months = participants["BIRTH_MONTH"].astype(int)
 
-    assert registration_years.between(3095, 3100).all()
-    assert birth_years.between(3000, 3075).all()
+    assert registration_years.between(2021, datetime.now().year).all()
+    assert birth_years.between(
+        (datetime.now() - relativedelta(years=18)).year, 
+        (datetime.now() - relativedelta(years=110)).year).all()
     assert registration_years.tolist() == consent_years.tolist()
     assert registration_months.tolist() == consent_months.tolist()
     assert registration_years.tolist() == submission_years.tolist()
@@ -162,8 +167,8 @@ def test_generate_tables_orders_columns_by_dictionary_order() -> None:
                 "REGISTRATION_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3000,
-                generation_max=3000,
+                generation_min=2021,
+                generation_max=datetime.now().year,
                 dictionary_order=2,
             ),
             _field(
