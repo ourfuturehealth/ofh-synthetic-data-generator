@@ -8,13 +8,6 @@ DATE_BOOKENDS = {
     "nhse_eng_ed": {"start" : datetime.date(2007,4,1), "end" : datetime.date(2019,3,31)},
 }
 
-# ONTOLOGY_DICT = {
-#     'icd10' : ['apc', 'op', 'mort', 'histcanreg'],
-#     'icd9' : ['histcanreg'],
-#     'opcs4': ['apc', 'op'],
-#     'snomed': ['ecds', 'meds', 'drugs']
-# }
-
 IMD_VALID_ENTRIES = [
     "Most deprived 10%", 
     "More deprived 10-20%", 
