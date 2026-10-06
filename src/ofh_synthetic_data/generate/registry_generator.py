@@ -104,6 +104,8 @@ def generate_tables(
     }
     # generating coded pairs dictionary with coded columns and coding name across all dictionaries
     linked_data_coded_pairs = {df_name : create_coded_pairs(data_dictionary=value) for df_name, value in linked_data_dicts.items()}
+    # dictionary with date fields for each linked dataset
+    linked_data_date_fields = {df_name : value["dictionary"].loc[value["dictionary"]["type"] == "date", "name"].to_list() for df_name, value in linked_data_dicts.items()}
 
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
@@ -180,7 +182,8 @@ def generate_tables(
                 pid=pid, 
                 df_dict=linked_data_dicts["nhse_engwal_deaths"], 
                 row_number=len(deaths),
-                coded_pairs=linked_data_coded_pairs["nhse_engwal_deaths"]
+                coded_pairs=linked_data_coded_pairs["nhse_engwal_deaths"],
+                date_fields=linked_data_date_fields["nhse_enwal_deaths"]
             )
             deaths.append(death_record)
 
@@ -194,6 +197,7 @@ def generate_tables(
                     df_dict=linked_data_dicts["nhse_eng_outpat"],
                     row_number=len(op),
                     coded_pairs=linked_data_coded_pairs["nhse_eng_outpat"],
+                    date_fields=linked_data_date_fields["nhse_eng_outpat"],
                     provider_codes=PROVIDER_CODE_LIST,
                 )
                 op.append(op_record)
@@ -208,6 +212,7 @@ def generate_tables(
                     df_dict=linked_data_dicts["nhse_eng_ed"], 
                     row_number=len(ae),
                     coded_pairs=linked_data_coded_pairs["nhse_eng_ed"],
+                    date_fields=linked_data_date_fields["nhse_eng_ed"],
                     provider_codes=PROVIDER_CODE_LIST
                 )
                 ae.append(ae_record)
@@ -221,7 +226,8 @@ def generate_tables(
                     pid=pid, 
                     df_dict=linked_data_dicts["nhse_eng_inpat"], 
                     row_number=len(apc),
-                    coded_pairs=linked_data_coded_pairs["nhse_eng_outpat"],
+                    coded_pairs=linked_data_coded_pairs["nhse_eng_inpat"],
+                    date_fields=linked_data_date_fields["nhse_eng_inpat"],
                     provider_codes=PROVIDER_CODE_LIST
                 )
                 apc.append(apc_record)
@@ -422,7 +428,7 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
-def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object]) -> dict[str, object]:
+def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str]) -> dict[str, object]:
 
     # ordering the coded columns
     ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs)
@@ -456,11 +462,15 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
         end_date=deaths_record["REG_DATE_OF_DEATH"] + datetime.timedelta(days=10)
     )
 
+    # updating formatting for date fields
+    for d in date_fields:
+        deaths_record[d] = str(deaths_record[d])
+
     deaths_record["ROW_ID"] = row_number
 
     return deaths_record
 
-def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], provider_codes: list[int]) -> dict[str, object]:
+def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
 
     FYEAR_START_DATE_0809 = datetime.date(2008, 4, 1)
 
@@ -553,18 +563,19 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     # about 30% entries are uppercase
     if fake.pybool(30):
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+
+    for d in date_fields:
+        record[d] = str(record[d])
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
 
     return record
 
-def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], provider_codes: list[int]) -> dict[str, object]:
+def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
     
     # defining columns that require specific conditions for coded values to be populated
     conditional_columns = ["RTTPERSTAT","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "BEDYEAR", "EPIORDER"]
-    # getting all date fields from dictionary
-    date_fields = df_dict["dictionary"].loc[df_dict["dictionary"]["type"] == "date", "name"].to_list()
 
     # defining fields which will always be populated with coded values
     # excluding ontology columns and conditionally populated column + date fields
@@ -695,12 +706,15 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
             else:
                 record[c] = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
     
+    for d in date_fields:
+        record[d] = str(record[d])
+    
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
 
     return record
 
-def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], provider_codes: list[int]) -> dict[str, object]:
+def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
     
     # adding DIAG_nn and INVEST_nn to coded pairs dict
     for c in [x for x in df_dict["dictionary"]["name"].to_list() if re.search("DIAG_|INVEST_", x)]:
@@ -786,6 +800,9 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+
+    for d in date_fields:
+        record[d] = str(record[d])
         
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
