@@ -464,7 +464,7 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
 
     # standardising date format
     deaths_record.update(
-        {d : str(deaths_record[d]) for d in date_fields if not np.isnan(deaths_record[d])}
+        {d : str(deaths_record[d]) for d in date_fields}
     )
 
     deaths_record["ROW_ID"] = row_number
@@ -567,7 +567,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
 
     # standardising date format
     record.update(
-        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+        {d : str(record[d]) for d in date_fields}
     )
     
     # adding `ROW_ID` to dataset
@@ -710,7 +710,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     
     # standardising date format
     record.update(
-        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+        {d : str(record[d]) for d in date_fields}
     )
     
     # adding `ROW_ID` to dataset
@@ -807,7 +807,7 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
 
     # standardising date format
     record.update(
-        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+        {d : str(record[d]) for d in date_fields}
     )
         
     # adding `ROW_ID` to dataset
