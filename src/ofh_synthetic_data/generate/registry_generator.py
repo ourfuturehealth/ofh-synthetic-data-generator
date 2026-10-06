@@ -462,9 +462,10 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
         end_date=deaths_record["REG_DATE_OF_DEATH"] + datetime.timedelta(days=10)
     )
 
-    # updating formatting for date fields
-    for d in date_fields:
-        deaths_record[d] = str(deaths_record[d])
+    # standardising date format
+    deaths_record.update(
+        {d : str(deaths_record[d]) for d in date_fields if not np.isnan(deaths_record[d])}
+    )
 
     deaths_record["ROW_ID"] = row_number
 
@@ -564,8 +565,10 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     if fake.pybool(30):
         record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
 
-    for d in date_fields:
-        record[d] = str(record[d])
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+    )
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
@@ -698,16 +701,17 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
 
     # seeding missing values where missing codes are available
     # excluding OPDATE_nn fields
-    for c in sorted(list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs_dict.keys()))):
+    for c in sorted(list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs.keys()))):
         if fake.pybool(1):
             if c in date_fields:
-                new_code = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
-                record[c] = datetime.datetime.strptime(new_code, "%Y-%m-%d").date()
+                record[c] = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
             else:
                 record[c] = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
     
-    for d in date_fields:
-        record[d] = str(record[d])
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+    )
     
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
@@ -801,8 +805,10 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
 
-    for d in date_fields:
-        record[d] = str(record[d])
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields if not np.isnan(record[d])}
+    )
         
     # adding `ROW_ID` to dataset
     record["ROW_ID"] = row_number
