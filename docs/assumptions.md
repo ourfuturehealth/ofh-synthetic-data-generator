@@ -1,21 +1,21 @@
 # Assumptions
 
 This document records project-level assumptions for the Beta synthetic data generator and its
-linked `participant` and `questionnaire` outputs. Generated outputs should also include
+`linked`, `participant` and `questionnaire` outputs. Generated outputs should also include
 machine-readable metadata describing the exact config, seed and source files used for a run.
 
 ## Scope
 
 For full details on scope, see [PROJECT.md](../PROJECT.md).
 
-- Generate linked Beta synthetic `participant` and `questionnaire` tables from Our Future Health
+- Generate linked Beta synthetic `participant`, `questionnaire`, and selected `linked` NHS tables from Our Future Health
   documentation plus explicit assumptions.
 - Target release is P14.
 - Target questionnaire version is v2.
-- Target entities are `participant` and `questionnaire`.
+- Target entities are `participant`, `questionnaire`, and the following linked datasets: `Hospital Episode Statistics (HES) Admitted Patient Care`, `HES Outpatient`, `HES Accident & Emergency`, and `Office of National Statistics Death Registration Records`.
 - The number of synthetic participants is configurable through `generation.rows`.
-- Generate one questionnaire row per synthetic participant for Beta.
-- Clinic measurements, lipid profile, geographies, linked NHS records and genetic data are out
+- Generate one questionnaire row per synthetic participant for Beta, generate one death registration record per synthetic participant, and probabilitistically generate multiple health outcome records per synthetic participants. 
+- Clinic measurements, lipid profile, geographies, and genetic data are out
   of scope for Beta.
 - Reduced temporal consistency is applied only to the core birth, registration, consent and
   questionnaire submission fields. Broader temporal consistency across other date, year and
@@ -38,6 +38,7 @@ For full details on scope, see [PROJECT.md](../PROJECT.md).
   real-world timing relationships. See "Core Timeline Dates" for more info.
 - Default generation can use simple or uniform distributions where the documentation does not
   define distributions.
+- For the linked datasets, availability of certain fields and changes in schema are reflected in the synthetic data. For example, only 7 diagnoses are available in HES Admitted Patient Care prior to the 2002/2003 financial year. The synthetic data reflects these schema changes. 
 
 ## Field Generation Metadata
 
