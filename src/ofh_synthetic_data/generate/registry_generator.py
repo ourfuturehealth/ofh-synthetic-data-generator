@@ -6,7 +6,6 @@ import json
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from pathlib import Path
-# import random
 from random import Random
 from typing import Any
 from faker import Faker
@@ -183,7 +182,7 @@ def generate_tables(
                 df_dict=linked_data_dicts["nhse_engwal_deaths"], 
                 row_number=len(deaths),
                 coded_pairs=linked_data_coded_pairs["nhse_engwal_deaths"],
-                date_fields=linked_data_date_fields["nhse_enwal_deaths"]
+                date_fields=linked_data_date_fields["nhse_engwal_deaths"]
             )
             deaths.append(death_record)
 
@@ -437,7 +436,6 @@ def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], ro
     always_populated = [x for x in coded_pairs.keys() if not re.search("|".join(ordered_columns_dict.keys()), x) or re.search("_1$", x)]
 
     deaths_record = {}
-
     deaths_record["PID"] = pid
 
     # adding ICD codes to first cause of death column and underlying cause of death column
@@ -503,11 +501,11 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     # conditionally populating diagnosis fields
     for diag_number in range(2, len(DIAG_COLUMNS)+1):
         diag_name = f"DIAG_4_{diag_number:02}"
-        record[diag_name] = np.nan
+        record[diag_name] = ""
         # only 2 diagnosis fields available before April 2008
         if record["APPTDATE"] < FYEAR_START_DATE_0809 and diag_number > 2:
             continue
-        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", np.nan]:
+        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", ""]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
@@ -519,11 +517,11 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     # conditionally populating procedure fields
     for proc_number in range(2, len(PROC_COLUMNS)+1):
         proc_name = f"OPERTN_{proc_number:02}"
-        record[proc_name] = np.nan
+        record[proc_name] = ""
         # only 12 procedure fields available before April 2008
         if record["APPTDATE"] < FYEAR_START_DATE_0809 and proc_number > 12:
             continue
-        if record[f"OPERTN_{proc_number-1:02}"] in ["-", np.nan]:
+        if record[f"OPERTN_{proc_number-1:02}"] in ["-", ""]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
@@ -540,7 +538,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
     # enter as null for records prior to that FYEAR
     else:
         for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
-            record[c] = np.nan
+            record[c] = ""
 
     if record["APPTDATE"] >= datetime.date(2021,4,1):
         record["ATTENDKEY"] = generate_numeric_id(fake, n=19)
@@ -636,14 +634,14 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         elif record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["n_characters_update"] and id_column == "SUSRECID":
             record[id_column] = record["EPIKEY"]
         else:
-            record[id_column] = np.nan
+            record[id_column] = ""
 
     # populating all fields available from 2007/2008 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0708:
         record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs["RTTPERSTAT"], data_dictionary=df_dict)
         record["ACSCFLAG"] = pick_random_code(fake, coded_pairs["ACSCFLAG"], data_dictionary=df_dict)
     else:
-        record.update({d: np.nan for d in ["RTTPERSTAT", "ACSCFLAG"]})
+        record.update({d: "" for d in ["RTTPERSTAT", "ACSCFLAG"]})
 
     # populating fields available from 2002/2003 financial year
     if record["EPISTART"] >= FYEAR_START_DATE_0203:
@@ -652,19 +650,19 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     elif record["EPISTART"] < FYEAR_START_DATE_2324:
         record["OPERSTAT"] = np.nan
     else:
-        record.update({d: np.nan for d in ["OPERSTAT", "FIRSTREG"]})
+        record.update({d: "" for d in ["OPERSTAT", "FIRSTREG"]})
 
     # conditionally populating diagnosis fields
     for diag_number in range(2, len(DIAG_COLUMNS)+1):
         diag_name = f"DIAG_4_{diag_number:02}"
-        record[diag_name] = np.nan
+        record[diag_name] = ""
         # only 7 diagnosis fields available prior to 2002/2003 financial year
         if record["EPISTART"] < FYEAR_START_DATE_0203 and diag_number > 7:
             continue
         # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
         if record["EPISTART"] < FYEAR_START_DATE_0708 and diag_number > 14:
             continue
-        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", np.nan]:
+        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", ""]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
@@ -677,18 +675,18 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     for proc_number in range(2, len(PROC_COLUMNS)+1):
         proc_name = f"OPERTN_{proc_number:02}"
         proc_date_name = f"OPDATE_{proc_number:02}"
-        record[proc_name] = np.nan
-        record[proc_date_name] = np.nan
+        record[proc_name] = ""
+        record[proc_date_name] = ""
         # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
         if record["EPISTART"] < FYEAR_START_DATE_0708 and proc_number > 12:
             continue
-        if record[f"OPERTN_{proc_number-1:02}"] in ["-", np.nan]:
+        if record[f"OPERTN_{proc_number-1:02}"] in ["-", ""]:
             continue
         # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
         if fake.pybool(80):
             if fake.pybool(20):
                 record[proc_name] = "-"
-                record[proc_date_name] = np.nan
+                record[proc_date_name] = ""
             else:
                 record[proc_name] = pick_random_code(fake, df_name=coded_pairs[proc_name], data_dictionary=df_dict)
                 record[proc_date_name] = fake.date_between(start_date=record[f"OPDATE_{proc_number-1:02}"], end_date=record["EPIEND"])
@@ -798,9 +796,9 @@ def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_n
             else:
                 record["EPIKEY"] = generate_numeric_id(fake, n=12)
         else:
-            record["EPIKEY"] = np.nan
+            record["EPIKEY"] = ""
     else: 
-        record["EPIKEY"] = np.nan
+        record["EPIKEY"] = ""
     
     # generating random IMD decile
     record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)

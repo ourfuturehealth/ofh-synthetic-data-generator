@@ -1,6 +1,4 @@
 import pandas as pd
-import random
-import string
 import datetime
 import re
 import numpy as np
