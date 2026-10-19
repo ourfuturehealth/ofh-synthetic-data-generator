@@ -151,9 +151,9 @@ def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_da
     if fake.pybool(5):
         record_dict["EPIEND"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict[anchor_date_col]+timedelta(days=7))
 
-        for d in date_set - CONDITIONAL_DATE_FIELDS:
+        for d in date_set - CONDITIONAL_DATE_FIELDS|{"ELECDATE"}:
             record_dict[d] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
-
+        
         # conditionally filling date fields because not available until 07/08 financial years
         if record_dict[anchor_date_col] >= FYEAR_START_DATE_0708:
             record_dict["RTTPERSTART"] = fake.date_between(start_date=record_dict[anchor_date_col], end_date=record_dict["EPIEND"])
@@ -171,5 +171,10 @@ def generate_apc_dates(fake: Faker, pid: str, date_set: Iterable[str], anchor_da
                 record_dict[d] = record_dict[anchor_date_col]
             else: 
                 record_dict[d] = np.nan
+
+    record_dict["ELECDATE"] = fake.date_between(
+        start_date=record_dict["ADMIDATE"]-timedelta(days=10),
+        end_date=record_dict["ADMIDATE"]
+    )
 
     return record_dict

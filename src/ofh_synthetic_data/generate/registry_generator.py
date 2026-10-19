@@ -155,7 +155,6 @@ def generate_tables(
             generation_config=generation_config,
             timeline=timeline,
         )
-        print("generated participant")
         questionnaire, skipped_for_row = _generate_questionnaire_record(
             fields=questionnaire_fields,
             logic_rules=logic_rules,
@@ -168,7 +167,6 @@ def generate_tables(
             participant=participant,
             timeline=timeline,
         )
-        print("generated questionnaire")
 
         skipped_by_logic_count += skipped_for_row
         participants.append(participant)
@@ -576,7 +574,7 @@ def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object
 def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
     
     # defining columns that require specific conditions for coded values to be populated
-    conditional_columns = ["RTTPERSTAT","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "BEDYEAR", "EPIORDER"]
+    conditional_columns = ["RTTPERSTAT","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "BEDYEAR", "EPIORDER", "EPIDUR", "ELECDUR"]
 
     # defining fields which will always be populated with coded values
     # excluding ontology columns and conditionally populated column + date fields
