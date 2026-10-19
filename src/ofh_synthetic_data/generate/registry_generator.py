@@ -615,6 +615,8 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         else:
             record[colname] = pick_random_code(fake, df_name=coded_pairs[colname], data_dictionary=df_dict)
             record["OPDATE_01"] = fake.date_between(start_date=record["EPISTART"], end_date=record["EPIEND"])
+            record["PREOPDUR"] = record["OPDATE_01"] - record["EPISTART"]
+            record["POSOPDUR"] = record["EPIEND"] - record["OPDATE_01"]
 
     # random integer between 1 and 366
     record["BEDYEAR"] = fake.random_element(elements=range(1, 376))
