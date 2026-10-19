@@ -604,8 +604,8 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # generating only 1 episode per spell for first iteration
     record["EPIORDER"] = 1
     # defining ELECDUR and EPIDUR
-    record["ELECDUR"] = record["ELECDATE"] - record["ADMIDATE"]
-    record["EPIDUR"] = record["EPIEND"] - record["EPISTART"]
+    record["ELECDUR"] = (record["ELECDATE"] - record["ADMIDATE"]).days
+    record["EPIDUR"] = (record["EPIEND"] - record["EPISTART"]).days
   
     for colname in always_populated:
         # 25% chance no procedure happened during admission
@@ -615,8 +615,8 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
         else:
             record[colname] = pick_random_code(fake, df_name=coded_pairs[colname], data_dictionary=df_dict)
             record["OPDATE_01"] = fake.date_between(start_date=record["EPISTART"], end_date=record["EPIEND"])
-            record["PREOPDUR"] = record["OPDATE_01"] - record["EPISTART"]
-            record["POSOPDUR"] = record["EPIEND"] - record["OPDATE_01"]
+            record["PREOPDUR"] = (record["OPDATE_01"] - record["EPISTART"]).days
+            record["POSOPDUR"] = (record["EPIEND"] - record["OPDATE_01"]).days
 
     # random integer between 1 and 366
     record["BEDYEAR"] = fake.random_element(elements=range(1, 376))
