@@ -602,7 +602,7 @@ def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_
     # generating only 1 episode per spell for first iteration
     record["EPIORDER"] = 1
     # defining ELECDUR and EPIDUR
-    record["ELECDUR"] = (record["ELECDATE"] - record["ADMIDATE"]).days
+    record["ELECDUR"] = (record["ADMIDATE"] - record["ELECDATE"]).days
     record["EPIDUR"] = (record["EPIEND"] - record["EPISTART"]).days
   
     for colname in always_populated:
