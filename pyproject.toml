@@ -20,7 +20,7 @@ ofh-synthetic-data = "ofh_synthetic_data.cli:main"
 packages = [{ include = "ofh_synthetic_data", from = "src" }]
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=9.0.1,<10.0"
+pytest = ">=9.1.1,<10.0"
 ruff = ">=0.6,<1.0"
 types-pyyaml = ">=6.0,<7.0"
 
