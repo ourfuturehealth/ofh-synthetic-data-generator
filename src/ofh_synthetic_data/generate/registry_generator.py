@@ -41,10 +41,7 @@ class GeneratedTables:
     apc: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
-    deaths_columns: list[str]
-    op_columns: list[str]
-    ae_columns: list[str]
-    apc_columns: list[str]
+    linked_data_columns: dict[str, list]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -108,10 +105,10 @@ def generate_tables(
 
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
-    deaths_columns = linked_data_dicts["nhse_engwal_deaths"]["dictionary"]["name"].astype(str).tolist()
-    op_columns = linked_data_dicts["nhse_eng_outpat"]["dictionary"]["name"].astype(str).tolist()
-    ae_columns = linked_data_dicts["nhse_eng_ed"]["dictionary"]["name"].astype(str).tolist()
-    apc_columns = linked_data_dicts["nhse_eng_inpat"]["dictionary"]["name"].astype(str).tolist()
+    linked_data_columns = {
+        df_name : df_dict["dictionary"]["name"].astype(str).tolist() 
+        for df_name, df_dict in linked_data_dicts.items()
+    }
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -239,10 +236,7 @@ def generate_tables(
         apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
-        deaths_columns=deaths_columns,
-        op_columns=op_columns,
-        ae_columns=ae_columns,
-        apc_columns=apc_columns,
+        linked_data_columns=linked_data_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -278,10 +272,10 @@ def generate_tables(
                 "source": "data_dictionary",
                 "participant_columns": len(participant_columns),
                 "questionnaire_columns": len(questionnaire_columns),
-                "deaths_columns" : len(deaths_columns),
-                "op_columns" : len(op_columns),
-                "ae_columns" : len(ae_columns),
-                "apc_columns" : len(apc_columns),
+                "deaths_columns" : len(linked_data_columns["nhse_engwal_deaths"]),
+                "op_columns" : len(linked_data_columns["nhse_eng_outpat"]),
+                "ae_columns" : len(linked_data_columns["nhse_eng_ed"]),
+                "apc_columns" : len(linked_data_columns["nhse_eng_inpat"]),
             },
             "phase": "7-beta-release-candidate",
         },
@@ -305,10 +299,10 @@ def write_generated_tables(
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
     write_records_csv(tables.questionnaires, questionnaire_path, tables.questionnaire_columns)
-    write_records_csv(tables.deaths, deaths_path, tables.deaths_columns)
-    write_records_csv(tables.op, op_path, tables.op_columns)
-    write_records_csv(tables.ae, ae_path, tables.ae_columns)
-    write_records_csv(tables.apc, apc_path, tables.apc_columns)
+    write_records_csv(tables.deaths, deaths_path, tables.linked_data_columns["nhse_engwal_deaths"])
+    write_records_csv(tables.op, op_path, tables.linked_data_columns["nhse_eng_outpat"])
+    write_records_csv(tables.ae, ae_path, tables.linked_data_columns["nhse_eng_ed"])
+    write_records_csv(tables.apc, apc_path, tables.linked_data_columns["nhse_eng_inpat"])
     write_metadata(
         {
             **tables.manifest,
