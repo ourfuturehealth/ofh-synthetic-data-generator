@@ -169,7 +169,15 @@ class LinkedDataTransformationsTests(unittest.TestCase):
         fake.pybool.return_value = True
         date_fields = {"ADMIDATE", "EPIEND", "OTHER", "DISREADYDATE", "RTTPERSTART", "RTTPEREND"}
 
-        record = ldt.generate_apc_dates(fake, "pid-1", date_fields, "ADMIDATE")
+        bookends = {
+            "nhse_eng_inpat": {
+                "start": dt.date(2000, 1, 1),
+                "end": dt.date(2020, 12, 31),
+            },
+        }
+
+        with unittest.mock.patch.object(ldt, "DATE_BOOKENDS", bookends):
+            record = ldt.generate_apc_dates(fake, "pid-1", date_fields, "ADMIDATE")
 
         self.assertEqual(record["PID"], "pid-1")
         self.assertEqual(record["ADMIDATE"], dt.date(2000, 1, 1))
