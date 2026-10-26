@@ -6,10 +6,10 @@ from ofh_synthetic_data.config import AppConfig, load_config
 def test_default_config_values() -> None:
     config = AppConfig()
 
-    assert config.paths.raw_data_dir == Path("data/raw")
+    assert config.paths.raw_data_dir == Path("dictionaries/raw")
     assert config.paths.synthetic_data_dir == Path("outputs/synthetic")
     assert config.paths.qa_dir == Path("outputs/qa")
-    assert config.generation.rows == 200
+    assert config.generation.rows == 1000
 
 
 def test_load_config(tmp_path: Path) -> None:
