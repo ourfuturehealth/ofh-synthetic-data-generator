@@ -76,6 +76,7 @@ def generate_tables_from_processed_registries(config: AppConfig) -> GeneratedTab
         generation_config=config.generation,
         config_snapshot=config.to_dict(),
         source_manifest=source_manifest,
+        linked_data_dir=config.paths.linked_data_dir,
     )
 
 
@@ -86,6 +87,7 @@ def generate_tables(
     logic_registry: pd.DataFrame | None = None,
     config_snapshot: dict[str, Any] | None = None,
     source_manifest: dict[str, Any] | None = None,
+    linked_data_dir: Path = Path("dictionaries/processed/linked-data"),
 ) -> GeneratedTables:
     """Generate linked participant and questionnaire records from registry metadata."""
     rng = Random(generation_config.seed)
@@ -94,10 +96,16 @@ def generate_tables(
 
     # loading linked data dictionaries
     # loading dictionaries and coding files for all datasets
+    dictionary_dir = Path(linked_data_dir) / "linked_data_dictionaries"
+
     linked_data_dicts = {
-        df_name : get_dictionaries(path="dictionaries/processed/linked-data/", df_name=df_name) 
-        for df_name in [x.replace("_dictionary.csv", "") for x in os.listdir("dictionaries/processed/linked-data/linked_data_dictionaries/") if x != ".gitkeep"]
+        path.name.removesuffix("_dictionary.csv"): get_dictionaries(
+            path=str(linked_data_dir) + "/",
+            df_name=path.name.removesuffix("_dictionary.csv"),
+        )
+        for path in sorted(dictionary_dir.glob("*_dictionary.csv"))
     }
+    
     # generating coded pairs dictionary with coded columns and coding name across all dictionaries
     linked_data_coded_pairs = {df_name : create_coded_pairs(data_dictionary=value) for df_name, value in linked_data_dicts.items()}
     # dictionary with date fields for each linked dataset

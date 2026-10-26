@@ -199,6 +199,7 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
         coding_registry=coding_registry,
         logic_registry=logic_registry,
         generation_config=generation_config,
+        linked_data_dir=config.paths.linked_data_dir,
     )
     write_generated_tables(tables, synthetic_dir, generation_config)
 
