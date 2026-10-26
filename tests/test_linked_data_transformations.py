@@ -48,7 +48,13 @@ def _install_optional_import_stubs() -> None:
 
 
 _install_optional_import_stubs()
-_MODULE_PATH = Path(__file__).with_name("linked_data_transformations.py")
+_MODULE_PATH = _MODULE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "src"
+    / "ofh_synthetic_data"
+    / "generate"
+    / "linked_data_transformations.py"
+)
 _SPEC = importlib.util.spec_from_file_location("linked_data_transformations", _MODULE_PATH)
 assert _SPEC is not None and _SPEC.loader is not None
 ldt = importlib.util.module_from_spec(_SPEC)
