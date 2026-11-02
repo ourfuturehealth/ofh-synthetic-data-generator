@@ -19,10 +19,10 @@ Source locations:
 
 Source context:
 
-- Release target: P14.
+- Release target: P15.
 - Questionnaire target: baseline health questionnaire V2.
 - Download/access date: 11 June 2026.
 
 These source artefacts are included to support reproducible registry builds. Generated
-registries remain under `data/processed/`, and generated synthetic outputs are written under
+registries remain under `dictionaries/processed/`, and generated synthetic outputs are written under
 `outputs/synthetic/`. Generated artefacts are ignored by git by default.
