@@ -3,7 +3,7 @@
 ## Purpose
 
 Create a Python tool that generates Beta synthetic `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables from public Our Future Health P14 documentation.
+questionnaire V2 `questionnaire.csv` tables from public Our Future Health P15 documentation.
 
 The aim is to help researchers understand table shape, identifiers, codings, joins and common
 branching patterns before working with non-synthetic data in the TRE. The project prioritises
@@ -14,21 +14,23 @@ fidelity is not required for Beta.
 
 In scope:
 
-- P14 `participant` fields included by the configured registry build.
-- P14 baseline health questionnaire V2 `questionnaire` fields.
+- P15 `participant` fields included by the configured registry build.
+- P15 baseline health questionnaire V2 `questionnaire` fields.
 - one questionnaire row per synthetic participant.
 - source-driven schema, coding and release-schema questionnaire logic.
 - deterministic generation from a fixed seed.
 - visible synthetic markers, including `SYN`-prefixed identifiers, generated
   `CONSENT_VERSION` values beginning with `SYNTHETIC_`.
 - temporal consistency for dates used to generate age only (i.e. core timeline).
+- curated subset of linked datasets (HES Admitted Patient Care, HES Outpatient, HES Accident & Emergency, ONS Death Registration)
 - unit tests and QA checks for schema, types, codings and linkage.
 
 Out of scope:
 
 - V1 questionnaire data.
-- geography, genetic, clinic measurement and linked NHSE data.
+- geography, genetic, and clinic measurement.
 - de-identification suppressions.
+- the full linked data offering on the Trusted Research Environment
 - statistical fidelity to observed Our Future Health distributions.
 - temporal consistency across other date, year and age fields outside the reduced core
   timeline.
@@ -38,13 +40,13 @@ Out of scope:
 
 ## Source Artefacts
 
-Source artefacts are included in `data/raw/` to support reproducible registry builds. They
+Source artefacts are included in `dictionaries/raw/` to support reproducible registry builds. They
 should be copied exactly as received. Expected source files and source links are documented in
-[data/raw/README.md](data/raw/README.md).
+[dictionaries/raw/README.md](dictionaries/raw/README.md).
 
 ## Generated Artefacts
 
-Processed registries are generated under `data/processed/`:
+Processed registries are generated under `dictionaries/processed/`:
 
 ```text
 field_registry.csv
@@ -54,25 +56,30 @@ entity_registry.csv
 coverage_summary.md
 source_manifest.json
 ```
+Processed linked data dictionaries and coding files are generated under `dictionaries/processed/linked-data/`. Dictionaries and coding files for all linked datasets within the p15 release are processed, including those that are not within scope for synthetic data generation.
 
 Synthetic and QA outputs are generated under `outputs/`:
 
 ```text
 outputs/synthetic/participant.csv
 outputs/synthetic/questionnaire.csv
+outputs/synthetic/nhse_eng_inpat.csv
+outputs/synthetic/nhse_eng_outpat.csv
+outputs/synthetic/nhse_eng_ed.csv
+outputs/synthetic/nhse_engwal_deaths.csv
 outputs/synthetic/manifest.json
 outputs/qa/participant_decoded.csv
 outputs/qa/questionnaire_decoded.csv
 outputs/qa/decoded_manifest.json
 ```
 
-Generated artefacts are ignored by git by default.
+Decoded outputs are only available for questionnaire and participant outputs. Generated artefacts are ignored by git by default.
 
 ## Current Status
 
 Current verified behaviour:
 
-- linked `participant.csv` and `questionnaire.csv` are generated.
+- synthetic linked data, `participant.csv` and `questionnaire.csv` are generated.
 - output columns follow source data dictionary order.
 - generated coded values come from the Our Future Health codings file.
 - supported release-schema questionnaire logic is applied.
@@ -81,12 +88,13 @@ Current verified behaviour:
 - generated outputs are deterministic with a fixed seed.
 - unit tests, QA tests, linting and dependency consistency checks pass.
 
-Current registry build result from the P14 source files:
+Current registry build result from the P15 source files:
 
 - 373 in-scope dictionary fields.
 - 2,482 coding rows.
 - 288 questionnaire logic rows.
 - 2 in-scope entities: `participant` and `questionnaire`.
+- 4 linked datasets
 - 299 fields marked for generation.
 - 74 fields marked blank.
 - 73 fields with inferred numeric ranges.
