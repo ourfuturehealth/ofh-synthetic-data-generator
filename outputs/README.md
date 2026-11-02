@@ -37,9 +37,13 @@ The `generate` command writes canonical outputs to `outputs/synthetic/`:
 
 - `participant.csv`
 - `questionnaire.csv`
+- `nhse_eng_inpat.csv` (HES Admitted Patient Care)
+- `nhse_eng_outpat.csv` (HES Outpatient)
+- `nhse_eng_ed.csv` (HES Accident & Emergency)
+- `nhse_engwal_deaths.csv` (ONS Death Registration)
 - `manifest.json`
 
-`participant.csv` and `questionnaire.csv` link by `PID`.
+All synthetic outputs are linked by `PID`.
 
 The canonical files keep Our Future Health coding values as codes. Single-select coded fields
 contain one code. Multi-select coded fields are stored as bracketed code lists, for example
