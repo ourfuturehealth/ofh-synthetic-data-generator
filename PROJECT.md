@@ -3,7 +3,7 @@
 ## Purpose
 
 Create a Python tool that generates Beta synthetic `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables from public Our Future Health P15 documentation.
+questionnaire V2 `questionnaire.csv` tables from public Our Future Health P14 documentation.
 
 The aim is to help researchers understand table shape, identifiers, codings, joins and common
 branching patterns before working with non-synthetic data in the TRE. The project prioritises
@@ -14,8 +14,8 @@ fidelity is not required for Beta.
 
 In scope:
 
-- P15 `participant` fields included by the configured registry build.
-- P15 baseline health questionnaire V2 `questionnaire` fields.
+- P14 `participant` fields included by the configured registry build.
+- P14 baseline health questionnaire V2 `questionnaire` fields.
 - one questionnaire row per synthetic participant.
 - source-driven schema, coding and release-schema questionnaire logic.
 - deterministic generation from a fixed seed.
@@ -88,7 +88,7 @@ Current verified behaviour:
 - generated outputs are deterministic with a fixed seed.
 - unit tests, QA tests, linting and dependency consistency checks pass.
 
-Current registry build result from the P15 source files:
+Current registry build result from the P14 source files:
 
 - 373 in-scope dictionary fields.
 - 2,482 coding rows.

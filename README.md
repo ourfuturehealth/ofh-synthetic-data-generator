@@ -11,9 +11,9 @@ It is intended to help users understand table structure, identifiers, codings, j
 questionnaire branching before working with non-synthetic data. It is not intended to provide
 statistical fidelity, preserve real-world distributions, enforce temporal consistency across
 all date, year and age fields, enforce broader plausibility rules between related answers,
-replace TRE data access, or model the full Our Future Health P15 release.
+replace TRE data access, or model the full Our Future Health P14 release.
 
-The wider Our Future Health P15 release includes other data areas, including geography,
+The wider Our Future Health P14 release includes other data areas, including geography,
 genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
 For the full in-scope and out-of-scope list, see [PROJECT.md](PROJECT.md#scope).
 
