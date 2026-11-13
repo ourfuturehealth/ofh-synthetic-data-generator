@@ -105,8 +105,7 @@ Default generated outputs are written under `outputs/`:
 - `outputs/synthetic/manifest.json`
 
 Generated files are ignored by git by default. The canonical synthetic outputs keep coded
-values as codes. Decoded QA outputs replace coded values with Our Future Health coding
-meanings where available.
+values as codes.
 
 Synthetic markers include IDs with a visible `SYN` prefix, `CONSENT_VERSION` values beginning
 with `SYNTHETIC_`.
@@ -154,7 +153,7 @@ dictionaries/raw/       public source artefacts
 dictionaries/processed/ generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
 docs/                   methodology, assumptions and testing
-tests/                  unit and QA tests
+tests/                  unit tests
 ```
 
 ## AI Assistance
