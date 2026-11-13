@@ -32,9 +32,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = [
-  "qa: full-output validation checks against included source artefacts",
-]
 
 [tool.ruff]
 line-length = 100
