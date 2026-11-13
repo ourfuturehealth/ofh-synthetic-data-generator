@@ -14,12 +14,6 @@ Run only the unit tests with:
 poetry run pytest tests/test_*.py
 ```
 
-Run only the QA tests with:
-
-```bash
-poetry run pytest tests/qa
-```
-
 The unit tests use small local fixtures and temporary directories. They are intended to check
 core pipeline behaviour without depending on generated output files being committed to the
 repo.
@@ -29,11 +23,9 @@ repo.
 | Test module | Tests | Scope |
 | --- | ---: | --- |
 | `tests/test_config.py` | 3 | Default configuration values, YAML config overrides and legacy config compatibility for the QA output directory. |
-| `tests/test_decoded_export.py` | 2 | Decoded manual QA export behaviour, including single coded values, multi-select values, special codes and output file writing. |
 | `tests/test_registries.py` | 1 | Registry building from source-style workbook fixtures, including entity filtering, V2 field handling, coding metadata, source manifest output and coverage notes. |
 | `tests/test_generator.py` | 6 | Synthetic table generation, linked `PID` values, synthetic identifiers, future dates, blank fields, coded values, multi-select values, suppression-code exclusion, numeric input fields with coded choices, column ordering and supported `show_if` logic. |
 | `tests/test_validation.py` | 4 | Output validation checks for valid generated tables, blank root logic fields, invalid coded values, type errors, broken `PID` links and populated fields that should be blanked by supported skip logic. |
-| `tests/qa/test_output_schema.py` | 5 | QA checks that generated full outputs match source-derived column names, data dictionary order and broad data dictionary types, that literal `None` coding meanings are preserved from the source workbook, that coded questionnaire fields absent from V2 logic are blanked, that numeric-range fields with special codes only produce values allowed by their configured ranges or codings, that suppression codes are not generated, that the core timeline supports adult age calculation, and that the medication reasons logic row maps to `MEDICAT_1_M`. |
 
 ## What The Tests Check
 

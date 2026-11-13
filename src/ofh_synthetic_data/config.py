@@ -15,7 +15,6 @@ class PathsConfig:
     processed_data_dir: Path = Path("dictionaries/processed")
     linked_data_dir: Path=Path("dictionaries/processed/linked-data")
     synthetic_data_dir: Path = Path("outputs/synthetic")
-    qa_dir: Path = Path("outputs/qa")
 
 
 @dataclass(frozen=True)
@@ -72,11 +71,6 @@ class AppConfig:
                     paths,
                     "synthetic_data_dir",
                     PathsConfig.synthetic_data_dir,
-                ),
-                qa_dir=_path_value(
-                    paths,
-                    "qa_dir",
-                    _path_value(paths, "reports_dir", PathsConfig.qa_dir),
                 ),
             ),
             source_files=SourceFilesConfig(**source_files),

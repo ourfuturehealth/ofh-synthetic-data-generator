@@ -83,14 +83,6 @@ This checks the generated tables for expected structure, linkage and coded value
 poetry run ofh-synthetic-data --config configs/default.yaml validate
 ```
 
-**Create decoded manual QA copies:**
-
-This writes optional review files where coded values are replaced with meanings where possible.
-
-```bash
-poetry run ofh-synthetic-data --config configs/default.yaml export-qa
-```
-
 **Run tests and linting:**
 
 This runs the automated checks for code behaviour and style.
@@ -111,9 +103,6 @@ Default generated outputs are written under `outputs/`:
 - `outputs/synthetic/nhse_eng_outpat.csv`
 - `outputs/synthetic/nhse_engwal_deaths.csv`
 - `outputs/synthetic/manifest.json`
-- `outputs/qa/participant_decoded.csv`
-- `outputs/qa/questionnaire_decoded.csv`
-- `outputs/qa/decoded_manifest.json`
 
 Generated files are ignored by git by default. The canonical synthetic outputs keep coded
 values as codes. Decoded QA outputs replace coded values with Our Future Health coding
@@ -130,9 +119,7 @@ shape without running the generator:
 These files correspond to the current Beta synthetic participant and questionnaire outputs.
 
 - [Participant synthetic data](https://a.storyblok.com/f/228028/x/0b65f5a1fe/participant_synthetic_ourfuturehealth.csv)
-- [Participant synthetic data - decoded](https://a.storyblok.com/f/228028/x/bc2abca18a/participant_synthetic_coding_ourfuturehealth.csv)
 - [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/b82860f150/questionnaire_synthetic_ourfuturehealth.csv)
-- [Questionnaire synthetic data - decoded](https://a.storyblok.com/f/228028/x/4e1b3af0de/questionnaire_synthetic_coding_ourfuturehealth.csv)
 
 Before using these files, see [Reading The Outputs](outputs/README.md#reading-the-outputs)
 for notes on synthetic markers, blank values, coded values and date handling.
@@ -142,11 +129,11 @@ See [License](#license) for the data licence and usage terms.
 
 ## Source Artefacts
 
-The repository includes public source artefacts under `data/raw/` so the registries and
+The repository includes public source artefacts under `dictionaries/raw/` so the registries and
 synthetic outputs can be regenerated from a fresh checkout.
 
 Source details and expected filenames are documented in
-[data/raw/README.md](data/raw/README.md).
+[dictionaries/raw/README.md](dictionaries/raw/README.md).
 
 ## Documentation
 
@@ -166,7 +153,6 @@ configs/                reproducible generation settings
 dictionaries/raw/       public source artefacts
 dictionaries/processed/ generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
-outputs/qa/             decoded manual QA outputs, ignored by git
 docs/                   methodology, assumptions and testing
 tests/                  unit and QA tests
 ```

@@ -3,7 +3,6 @@ paths:
   processed_data_dir: dictionaries/processed
   linked_data_dir: dictionaries/processed/linked-data
   synthetic_data_dir: outputs/synthetic
-  qa_dir: outputs/qa
 
 source_files:
   questionnaire_logic: Our Future Health Baseline Questionnaire Logic v2.2.xlsx
@@ -16,7 +15,7 @@ registry:
     - questionnaire
 
 generation:
-  rows: 1000
+  rows: 200
   seed: 42
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv

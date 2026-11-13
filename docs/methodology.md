@@ -55,24 +55,6 @@ questionnaire version, output paths, config snapshot, source file fingerprints f
 `source_manifest.json`, synthetic marker rules, column counts and supported skip-logic
 summary.
 
-## Manual QA Exports
-
-This step creates optional decoded copies of synthetic data for only `participant` and `questionnaire` data.
-
-The `export-qa` command reads the generated synthetic outputs and writes decoded QA copies to
-`outputs/qa/` by default:
-
-- `participant_decoded.csv`
-- `questionnaire_decoded.csv`
-- `decoded_manifest.json`
-
-These files replace coded values with Our Future Health coding meanings where a coding is
-available.
-Multi-select values are decoded from bracketed code lists into semicolon-separated meanings.
-If a coding row exists but its meaning is blank, the decoded output uses an explicit
-`Code <value> (meaning unavailable)` label. Uncoded values and values without a matching
-coding are preserved. The canonical synthetic outputs in `outputs/synthetic/` remain coded.
-
 ## Validation
 
 This step checks that generated outputs match the expected structure and supported rules.

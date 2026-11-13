@@ -8,7 +8,6 @@ def test_default_config_values() -> None:
 
     assert config.paths.raw_data_dir == Path("dictionaries/raw")
     assert config.paths.synthetic_data_dir == Path("outputs/synthetic")
-    assert config.paths.qa_dir == Path("outputs/qa")
     assert config.generation.rows == 1000
 
 
@@ -38,17 +37,3 @@ generation:
     assert config.generation.seed == 123
     assert not hasattr(config.generation, "reference_year")
 
-
-def test_load_config_accepts_legacy_reports_dir_as_qa_dir(tmp_path: Path) -> None:
-    config_path = tmp_path / "config.yaml"
-    config_path.write_text(
-        """
-paths:
-  reports_dir: old-reports
-""",
-        encoding="utf-8",
-    )
-
-    config = load_config(config_path)
-
-    assert config.paths.qa_dir == Path("old-reports")

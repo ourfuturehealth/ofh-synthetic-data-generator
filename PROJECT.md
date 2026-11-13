@@ -68,9 +68,6 @@ outputs/synthetic/nhse_eng_outpat.csv
 outputs/synthetic/nhse_eng_ed.csv
 outputs/synthetic/nhse_engwal_deaths.csv
 outputs/synthetic/manifest.json
-outputs/qa/participant_decoded.csv
-outputs/qa/questionnaire_decoded.csv
-outputs/qa/decoded_manifest.json
 ```
 
 Decoded outputs are only available for questionnaire and participant outputs. Generated artefacts are ignored by git by default.
@@ -118,7 +115,6 @@ poetry run ofh-synthetic-data --config configs/default.yaml inspect-inputs
 poetry run ofh-synthetic-data --config configs/default.yaml build-registry
 poetry run ofh-synthetic-data --config configs/default.yaml generate
 poetry run ofh-synthetic-data --config configs/default.yaml validate
-poetry run ofh-synthetic-data --config configs/default.yaml export-qa
 poetry run pytest
 poetry run ruff check .
 ```
