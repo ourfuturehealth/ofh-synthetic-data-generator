@@ -14,7 +14,7 @@ all date, year and age fields, enforce broader plausibility rules between relate
 replace TRE data access, or model the full Our Future Health P14 release.
 
 The wider Our Future Health P14 release includes other data areas, including geography,
-genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
+genetic, clinic measurement and additional linked NHSE data. Those are outside the current Beta scope.
 For the full in-scope and out-of-scope list, see [PROJECT.md](PROJECT.md#scope).
 
 Generated outputs are deterministic with a fixed seed and visibly synthetic, including
@@ -106,6 +106,10 @@ Default generated outputs are written under `outputs/`:
 
 - `outputs/synthetic/participant.csv`
 - `outputs/synthetic/questionnaire.csv`
+- `outputs/synthetic/nhse_eng_ed.csv`
+- `outputs/synthetic/nhse_eng_inpat.csv`
+- `outputs/synthetic/nhse_eng_outpat.csv`
+- `outputs/synthetic/nhse_engwal_deaths.csv`
 - `outputs/synthetic/manifest.json`
 - `outputs/qa/participant_decoded.csv`
 - `outputs/qa/questionnaire_decoded.csv`
@@ -159,8 +163,8 @@ Source details and expected filenames are documented in
 ```text
 src/ofh_synthetic_data/  package source code
 configs/                reproducible generation settings
-data/raw/               public source artefacts
-data/processed/         generated registries, ignored by git
+dictionaries/raw/       public source artefacts
+dictionaries/processed/ generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
 outputs/qa/             decoded manual QA outputs, ignored by git
 docs/                   methodology, assumptions and testing
@@ -186,7 +190,7 @@ support it.
 
 Generated synthetic outputs are not committed to this repository by default.
 
-Source artefacts in `data/raw/` remain subject to their original source terms.
+Source artefacts in `dictionaries/raw/` remain subject to their original source terms.
 
 ## Feedback
 

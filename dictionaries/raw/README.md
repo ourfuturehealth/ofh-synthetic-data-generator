@@ -2,7 +2,7 @@
 
 Store public source artefacts here, copied exactly as received. Do not edit files in this
 directory; if a file needs cleaning, parsing or normalization, write the result to
-`data/processed/`.
+`dictionaries/processed/`.
 
 Expected filenames:
 
