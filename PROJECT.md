@@ -2,8 +2,8 @@
 
 ## Purpose
 
-Create a Python tool that generates Beta synthetic `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables from public Our Future Health P14 documentation.
+Create a Python tool that generates Beta synthetic `participant.csv`, baseline health
+questionnaire V2 `questionnaire.csv`, and 4 selected linked data tables from public Our Future Health P14 documentation.
 
 The aim is to help researchers understand table shape, identifiers, codings, joins and common
 branching patterns before working with non-synthetic data in the TRE. The project prioritises
@@ -70,7 +70,7 @@ outputs/synthetic/nhse_engwal_deaths.csv
 outputs/synthetic/manifest.json
 ```
 
-Decoded outputs are only available for questionnaire and participant outputs. Generated artefacts are ignored by git by default.
+Generated artefacts are ignored by git by default.
 
 ## Current Status
 

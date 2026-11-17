@@ -5,9 +5,9 @@ demonstration without representing observed participants.
 
 The intended workflow is:
 
-1. Store source artefacts in `data/raw/` without editing them.
+1. Store source artefacts in `dictionaries/raw/` without editing them.
 2. Discover and validate the expected source artefacts.
-3. Build canonical schema, allowed-value and dependency files in `data/processed/`.
+3. Build canonical schema, allowed-value and dependency files in `dictionaries/processed/`.
 4. Generate `participant.csv`, `questionnaire.csv`, and 4 synthetic linked datasets (inpatient, outpatient, accident & emergency, and death registrations) using explicit distributions and deterministic seeds.
 5. Validate the generated records against the schema and release-schema questionnaire logic.
 6. Export synthetic datasets to `outputs/synthetic/` with metadata describing the config,
