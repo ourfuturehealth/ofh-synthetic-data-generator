@@ -44,29 +44,6 @@ repo.
 - supported release-schema questionnaire logic blanks skipped fields.
 - validation reports key structural and data-quality issues.
 
-## QA Checks
-
-The QA tests build registries from the included public source artefacts, generate synthetic
-outputs in a temporary directory and checks the full `participant.csv` and `questionnaire.csv`
-schema.
-
-It checks that:
-
-- output column names exactly match the source-derived field registry.
-- output columns appear in data dictionary order.
-- every generated column uses a supported dictionary type.
-- populated integer, float, date and multi-select values conform to the broad dictionary
-  type expected for that column.
-- string columns contain string values when populated.
-- literal `None` coding meanings in the source workbook remain `None` in processed codings.
-- coded questionnaire fields absent from V2 logic are blanked unless explicitly retained by
-  the registry policy.
-- fields generated with the `numeric_range_with_special_codes` strategy only contain blank
-  values, values inside the configured numeric range or field-specific special codes.
-- default generated outputs do not contain suppression encodings such as `-999`.
-- registration, consent and questionnaire submission year-month values align, and birth years
-  support adult age calculation against that core timeline.
-
 ## Current Limits
 
 The unit tests do not replace manual validation of the generated Beta outputs.
