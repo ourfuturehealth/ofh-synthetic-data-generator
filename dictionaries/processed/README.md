@@ -2,7 +2,7 @@
 
 Store generation-ready derived artefacts here, such as canonical field registries,
 allowed-value lookups, skip-logic registries and generation metadata. These files should be
-reproducible from `data/raw/` plus the project code and configuration.
+reproducible from `dictionaries/raw/` plus the project code and configuration.
 
 The `build-registry` command writes:
 
@@ -12,6 +12,8 @@ The `build-registry` command writes:
 - `entity_registry.csv`: field counts and key metadata by entity
 - `coverage_summary.md`: generated coverage checks and source-specific notes
 - `source_manifest.json`: local raw file fingerprints, including filenames, sizes and hashes
+
+The `build_registry` command also splits the raw dictionary into cleaned dictionaries and coding files for each dataset present in the raw dictionary. Medical ontologies, such as ICD-10 and OPCS-4, are also split into separate files.
 
 In `logic_registry.csv`, rows with a blank `show_if` are treated as top-of-tree/root logic
 fields. Generated root fields that are in scope are expected to be populated; dependent fields

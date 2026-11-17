@@ -3,8 +3,8 @@
 Python tooling for generating reproducible synthetic Our Future Health-style data from public
 source documentation.
 
-This Beta generator creates linked, release-shaped `participant.csv` and baseline health
-questionnaire V2 `questionnaire.csv` tables for local development, onboarding and workflow
+This Beta generator creates release-shaped `participant.csv`, baseline health
+questionnaire V2 `questionnaire.csv`, and 4 of the linked datasets `nhse_engwal_deaths.csv` (ONS Deaths), `nhse_eng_inpat.csv` (HES Admitted Patient Care), `nhse_eng_outpat.csv` (HES Outpatient), `nhse_eng_ed.csv` (HES Accident & Emergency) for local development, onboarding and workflow
 prototyping.
 
 It is intended to help users understand table structure, identifiers, codings, joins and
@@ -14,12 +14,11 @@ all date, year and age fields, enforce broader plausibility rules between relate
 replace TRE data access, or model the full Our Future Health P14 release.
 
 The wider Our Future Health P14 release includes other data areas, including geography,
-genetic, clinic measurement and linked NHSE data. Those are outside the current Beta scope.
+genetic, clinic measurement and additional linked NHSE data. Those are outside the current Beta scope.
 For the full in-scope and out-of-scope list, see [PROJECT.md](PROJECT.md#scope).
 
 Generated outputs are deterministic with a fixed seed and visibly synthetic, including
-`SYN`-prefixed identifiers, `CONSENT_VERSION` values beginning with `SYNTHETIC_` and
-future-dated years using `3000+`.
+`SYN`-prefixed identifiers, `CONSENT_VERSION` values beginning with `SYNTHETIC_`.
 
 ## Beta Status
 
@@ -84,14 +83,6 @@ This checks the generated tables for expected structure, linkage and coded value
 poetry run ofh-synthetic-data --config configs/default.yaml validate
 ```
 
-**Create decoded manual QA copies:**
-
-This writes optional review files where coded values are replaced with meanings where possible.
-
-```bash
-poetry run ofh-synthetic-data --config configs/default.yaml export-qa
-```
-
 **Run tests and linting:**
 
 This runs the automated checks for code behaviour and style.
@@ -107,17 +98,17 @@ Default generated outputs are written under `outputs/`:
 
 - `outputs/synthetic/participant.csv`
 - `outputs/synthetic/questionnaire.csv`
+- `outputs/synthetic/nhse_eng_ed.csv`
+- `outputs/synthetic/nhse_eng_inpat.csv`
+- `outputs/synthetic/nhse_eng_outpat.csv`
+- `outputs/synthetic/nhse_engwal_deaths.csv`
 - `outputs/synthetic/manifest.json`
-- `outputs/qa/participant_decoded.csv`
-- `outputs/qa/questionnaire_decoded.csv`
-- `outputs/qa/decoded_manifest.json`
 
 Generated files are ignored by git by default. The canonical synthetic outputs keep coded
-values as codes. Decoded QA outputs replace coded values with Our Future Health coding
-meanings where available.
+values as codes.
 
 Synthetic markers include IDs with a visible `SYN` prefix, `CONSENT_VERSION` values beginning
-with `SYNTHETIC_` and dates or years using `3000+`.
+with `SYNTHETIC_`.
 
 ## Download Synthetic Example Data 
 
@@ -127,9 +118,7 @@ shape without running the generator:
 These files correspond to the current Beta synthetic participant and questionnaire outputs.
 
 - [Participant synthetic data](https://a.storyblok.com/f/228028/x/0b65f5a1fe/participant_synthetic_ourfuturehealth.csv)
-- [Participant synthetic data - decoded](https://a.storyblok.com/f/228028/x/bc2abca18a/participant_synthetic_coding_ourfuturehealth.csv)
 - [Questionnaire synthetic data](https://a.storyblok.com/f/228028/x/b82860f150/questionnaire_synthetic_ourfuturehealth.csv)
-- [Questionnaire synthetic data - decoded](https://a.storyblok.com/f/228028/x/4e1b3af0de/questionnaire_synthetic_coding_ourfuturehealth.csv)
 
 Before using these files, see [Reading The Outputs](outputs/README.md#reading-the-outputs)
 for notes on synthetic markers, blank values, coded values and date handling.
@@ -139,11 +128,11 @@ See [License](#license) for the data licence and usage terms.
 
 ## Source Artefacts
 
-The repository includes public source artefacts under `data/raw/` so the registries and
+The repository includes public source artefacts under `dictionaries/raw/` so the registries and
 synthetic outputs can be regenerated from a fresh checkout.
 
 Source details and expected filenames are documented in
-[data/raw/README.md](data/raw/README.md).
+[dictionaries/raw/README.md](dictionaries/raw/README.md).
 
 ## Documentation
 
@@ -160,12 +149,11 @@ Source details and expected filenames are documented in
 ```text
 src/ofh_synthetic_data/  package source code
 configs/                reproducible generation settings
-data/raw/               public source artefacts
-data/processed/         generated registries, ignored by git
+dictionaries/raw/       public source artefacts
+dictionaries/processed/ generated registries, ignored by git
 outputs/synthetic/      generated synthetic datasets, ignored by git
-outputs/qa/             decoded manual QA outputs, ignored by git
 docs/                   methodology, assumptions and testing
-tests/                  unit and QA tests
+tests/                  unit tests
 ```
 
 ## AI Assistance
@@ -187,7 +175,7 @@ support it.
 
 Generated synthetic outputs are not committed to this repository by default.
 
-Source artefacts in `data/raw/` remain subject to their original source terms.
+Source artefacts in `dictionaries/raw/` remain subject to their original source terms.
 
 ## Feedback
 

@@ -1,8 +1,8 @@
 paths:
-  raw_data_dir: data/raw
-  processed_data_dir: data/processed
+  raw_data_dir: dictionaries/raw
+  processed_data_dir: dictionaries/processed
+  linked_data_dir: dictionaries/processed/linked-data
   synthetic_data_dir: outputs/synthetic
-  qa_dir: outputs/qa
 
 source_files:
   questionnaire_logic: Our Future Health Baseline Questionnaire Logic v2.2.xlsx
@@ -19,5 +19,9 @@ generation:
   seed: 42
   participant_file: participant.csv
   questionnaire_file: questionnaire.csv
+  deaths_file: nhse_engwal_deaths.csv
+  op_file: nhse_eng_outpat.csv
+  ae_file: nhse_eng_ed.csv
+  apc_file: nhse_eng_inpat.csv
   manifest_file: manifest.json
   questionnaire_version: "v2"

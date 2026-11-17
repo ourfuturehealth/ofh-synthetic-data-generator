@@ -2,7 +2,7 @@
 
 Store public source artefacts here, copied exactly as received. Do not edit files in this
 directory; if a file needs cleaning, parsing or normalization, write the result to
-`data/processed/`.
+`dictionaries/processed/`.
 
 Expected filenames:
 
@@ -24,5 +24,5 @@ Source context:
 - Download/access date: 11 June 2026.
 
 These source artefacts are included to support reproducible registry builds. Generated
-registries remain under `data/processed/`, and generated synthetic outputs are written under
+registries remain under `dictionaries/processed/`, and generated synthetic outputs are written under
 `outputs/synthetic/`. Generated artefacts are ignored by git by default.

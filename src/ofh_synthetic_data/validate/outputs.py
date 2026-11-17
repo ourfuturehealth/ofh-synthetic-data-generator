@@ -14,7 +14,7 @@ import pandas as pd
 from ofh_synthetic_data.config import AppConfig
 from ofh_synthetic_data.generate.show_if import evaluate_show_if
 
-SYNTHETIC_YEAR_MINIMUM = 3000
+SYNTHETIC_YEAR_MINIMUM = 2021
 
 
 @dataclass(frozen=True)
@@ -47,6 +47,21 @@ def validate_synthetic_outputs(
     coding_registry_path = config.paths.processed_data_dir / "coding_registry.csv"
     logic_registry_path = config.paths.processed_data_dir / "logic_registry.csv"
 
+    linked_paths = {
+        "nhse_engwal_deaths": synthetic_dir / config.generation.deaths_file,
+        "nhse_eng_inpat": synthetic_dir / config.generation.apc_file,
+        "nhse_eng_ed": synthetic_dir / config.generation.ae_file,
+        "nhse_eng_outpat": synthetic_dir / config.generation.op_file,
+    }
+
+    linked_dictionary_dir = (
+        config.paths.linked_data_dir / "linked_data_dictionaries"
+    )
+    linked_dictionary_paths = {
+        dataset: linked_dictionary_dir / f"{dataset}_dictionary.csv"
+        for dataset in linked_paths
+    }
+
     errors: list[ValidationIssue] = []
     checks_run = 0
 
@@ -57,6 +72,14 @@ def validate_synthetic_outputs(
         "field registry": field_registry_path,
         "coding registry": coding_registry_path,
         "logic registry": logic_registry_path,
+        **{
+            f"{dataset} output": path
+            for dataset, path in linked_paths.items()
+        },
+        **{
+            f"{dataset} dictionary": path
+            for dataset, path in linked_dictionary_paths.items()
+        },
     }
     for label, path in required_paths.items():
         checks_run += 1
@@ -126,6 +149,59 @@ def validate_synthetic_outputs(
         logic_registry=logic_registry,
         errors=errors,
     )
+
+    for dataset, path in linked_paths.items():
+        records = _read_csv(path)
+        dictionary = _read_csv(linked_dictionary_paths[dataset])
+
+        checks_run += 1
+        if "name" not in dictionary.columns:
+            errors.append(ValidationIssue(
+                "linked_dictionary",
+                f"{dataset}: dictionary is missing its name column",
+            ))
+            continue
+
+        checks_run += 1
+        expected_columns = dictionary["name"].astype(str).tolist()
+        if records.columns.tolist() != expected_columns:
+            errors.append(ValidationIssue(
+                "linked_columns",
+                f"{dataset}: columns do not match dictionary order; "
+                f"expected {expected_columns}, got {records.columns.tolist()}",
+            ))
+
+        checks_run += 1
+        if "PID" not in records.columns:
+            errors.append(ValidationIssue(
+                "linked_pid_links",
+                f"{dataset}: missing PID column",
+            ))
+        elif "PID" in participants.columns:
+            invalid_pids = ~records["PID"].isin(participants["PID"])
+            if invalid_pids.any():
+                errors.append(ValidationIssue(
+                    "linked_pid_links",
+                    f"{dataset}: {int(invalid_pids.sum())} records have "
+                    "a PID absent from the participant output",
+                ))
+
+        checks_run += 1
+        if "ROW_ID" not in records.columns:
+            errors.append(ValidationIssue(
+                "linked_row_ids",
+                f"{dataset}: missing ROW_ID column",
+            ))
+        else:
+            blank_ids = (
+                records["ROW_ID"].isna()
+                | records["ROW_ID"].astype(str).str.strip().eq("")
+            )
+            if blank_ids.any() or records["ROW_ID"].duplicated().any():
+                errors.append(ValidationIssue(
+                    "linked_row_ids",
+                    f"{dataset}: ROW_ID values must be populated and unique",
+                ))
 
     return ValidationResult(errors=errors, checks_run=checks_run)
 
