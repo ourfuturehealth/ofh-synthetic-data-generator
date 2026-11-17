@@ -64,7 +64,7 @@ the generator.
 poetry run ofh-synthetic-data --config configs/default.yaml build-registry
 ```
 
-**Generate synthetic participant and questionnaire tables:**
+**Generate synthetic participant, questionnaire, and selected linked data tables:**
 
 This writes the linked synthetic outputs using the settings in `configs/default.yaml`.
 
