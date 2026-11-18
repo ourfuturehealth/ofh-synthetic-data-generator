@@ -25,13 +25,12 @@ inputs/
 data/processed/*
 !data/processed/README.md
 !data/processed/.gitkeep
+!data/processed/linked-data/linked_data_codings
+!data/processed/linked-data/linked_data_dictionaries
 !data/README.md
 
 # Generated output folders. Keep documentation/placeholders; ignore generated files.
 outputs/synthetic/*
-outputs/qa/*
 !outputs/README.md
 !outputs/synthetic/README.md
 !outputs/synthetic/.gitkeep
-!outputs/qa/README.md
-!outputs/qa/.gitkeep

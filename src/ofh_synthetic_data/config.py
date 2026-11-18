@@ -11,10 +11,10 @@ import yaml
 
 @dataclass(frozen=True)
 class PathsConfig:
-    raw_data_dir: Path = Path("data/raw")
-    processed_data_dir: Path = Path("data/processed")
+    raw_data_dir: Path = Path("dictionaries/raw")
+    processed_data_dir: Path = Path("dictionaries/processed")
+    linked_data_dir: Path=Path("dictionaries/processed/linked-data")
     synthetic_data_dir: Path = Path("outputs/synthetic")
-    qa_dir: Path = Path("outputs/qa")
 
 
 @dataclass(frozen=True)
@@ -26,10 +26,14 @@ class SourceFilesConfig:
 
 @dataclass(frozen=True)
 class GenerationConfig:
-    rows: int = 200
+    rows: int = 1000
     seed: int = 42
     participant_file: str = "participant.csv"
     questionnaire_file: str = "questionnaire.csv"
+    deaths_file: str = "nhse_engwal_deaths.csv"
+    op_file: str = "nhse_eng_outpat.csv"
+    ae_file: str = "nhse_eng_ed.csv"
+    apc_file: str = "nhse_eng_inpat.csv"
     manifest_file: str = "manifest.json"
     questionnaire_version: str = "v2"
 
@@ -67,11 +71,6 @@ class AppConfig:
                     paths,
                     "synthetic_data_dir",
                     PathsConfig.synthetic_data_dir,
-                ),
-                qa_dir=_path_value(
-                    paths,
-                    "qa_dir",
-                    _path_value(paths, "reports_dir", PathsConfig.qa_dir),
                 ),
             ),
             source_files=SourceFilesConfig(**source_files),

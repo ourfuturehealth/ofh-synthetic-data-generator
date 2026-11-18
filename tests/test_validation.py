@@ -2,9 +2,14 @@ from pathlib import Path
 
 import pandas as pd
 
+from unittest.mock import patch
+
 from ofh_synthetic_data.config import AppConfig, GenerationConfig, PathsConfig
 from ofh_synthetic_data.generate.registry_generator import generate_tables, write_generated_tables
 from ofh_synthetic_data.validate.outputs import validate_synthetic_outputs
+from ofh_synthetic_data.synthetic_ranges import *
+
+from ofh_synthetic_data.generate import registry_generator as generator
 
 
 def test_validate_synthetic_outputs_passes_for_generated_tables(tmp_path: Path) -> None:
@@ -86,6 +91,12 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
     processed_dir.mkdir()
     synthetic_dir.mkdir()
 
+    linked_data_dir = tmp_path / "linked-data"
+    dictionary_dir = linked_data_dir / "linked_data_dictionaries"
+    coding_dir = linked_data_dir / "linked_data_codings"
+    dictionary_dir.mkdir(parents=True)
+    coding_dir.mkdir()
+
     field_registry = pd.DataFrame(
         [
             _field(
@@ -109,8 +120,8 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
                 "BIRTH_YEAR",
                 "integer",
                 "numeric_range",
-                generation_min=3000,
-                generation_max=3075,
+                generation_min=BIRTH_YEAR_MIN,
+                generation_max=BIRTH_YEAR_MAX,
                 numeric_range_rule="birth_year",
                 dictionary_order=2,
             ),
@@ -184,21 +195,49 @@ def _write_valid_fixture(tmp_path: Path) -> AppConfig:
         ],
     )
 
+    linked_date_fields = {
+        "nhse_engwal_deaths": "REG_DATE_OF_DEATH",
+        "nhse_eng_inpat": "ADMIDATE",
+        "nhse_eng_ed": "ARRIVALDATE",
+        "nhse_eng_outpat": "APPTDATE",
+    }
+
+    for dataset, date_field in linked_date_fields.items():
+        dictionary = pd.DataFrame(
+            {
+                "name": ["PID", date_field, "ROW_ID"],
+                "type": ["string", "date", "integer"],
+                "coding_name": [None, None, None],
+            },
+        )
+        dictionary.to_csv(
+            dictionary_dir / f"{dataset}_dictionary.csv",
+            index=False,
+        )
+
     field_registry.to_csv(processed_dir / "field_registry.csv", index=False)
     coding_registry.to_csv(processed_dir / "coding_registry.csv", index=False)
     logic_registry.to_csv(processed_dir / "logic_registry.csv", index=False)
 
     generation_config = GenerationConfig(rows=2, seed=3)
     config = AppConfig(
-        paths=PathsConfig(processed_data_dir=processed_dir, synthetic_data_dir=synthetic_dir),
+        paths=PathsConfig(processed_data_dir=processed_dir, synthetic_data_dir=synthetic_dir, linked_data_dir=linked_data_dir),
         generation=generation_config,
     )
-    tables = generate_tables(
-        field_registry=field_registry,
-        coding_registry=coding_registry,
-        logic_registry=logic_registry,
-        generation_config=generation_config,
-    )
+
+    with patch.object(generator, "Faker") as faker_class:
+        fake = faker_class.return_value
+        fake.pybool.return_value = False
+        fake.random_elements.return_value = [123456]
+
+        tables = generate_tables(
+            field_registry=field_registry,
+            coding_registry=coding_registry,
+            logic_registry=logic_registry,
+            generation_config=generation_config,
+            linked_data_dir=linked_data_dir,
+        )
+        
     write_generated_tables(tables, synthetic_dir, generation_config)
 
     return config

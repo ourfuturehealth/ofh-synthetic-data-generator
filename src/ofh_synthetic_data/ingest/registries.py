@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+import subprocess
+import os
 
 from ofh_synthetic_data.config import AppConfig
 from ofh_synthetic_data.synthetic_ranges import (
@@ -120,6 +122,17 @@ def build_registries(config: AppConfig) -> RegistryBuildResult:
     coverage_path.write_text(coverage_summary, encoding="utf-8")
     write_source_manifest(config, source_manifest_path)
 
+    # running script that generates all linked data dictionaries and coding files
+    res = subprocess.run(["python", "src/ofh_synthetic_data/ingest/clean_linked_data_dictionaries.py"])
+    if res.returncode == 0:
+        print("Success: Cleaned linked data dictionaries")
+        ld_entities = os.listdir("dictionaries/processed/linked-data/linked_data_dictionaries/")
+        # getting total number of entity dictionaries generated
+        entities_count = len(entity_registry)+len(ld_entities)
+    else:
+        print("Failed: Linked data dictionaries")
+        entities_count = len(entity_registry)
+
     return RegistryBuildResult(
         field_registry=field_path,
         coding_registry=coding_path,
@@ -131,7 +144,7 @@ def build_registries(config: AppConfig) -> RegistryBuildResult:
             "fields": len(field_registry),
             "codings": len(coding_registry),
             "logic_rows": len(logic_registry),
-            "entities": len(entity_registry),
+            "entities": entities_count,
         },
     )
 
@@ -147,6 +160,7 @@ def write_source_manifest(config: AppConfig, path: Path) -> None:
     manifest = {
         "raw_data_dir": str(config.paths.raw_data_dir),
         "processed_data_dir": str(config.paths.processed_data_dir),
+        "processed_linked_data_dictionaries": str(config.paths.linked_data_dir),
         "target_entities": list(config.registry.target_entities),
         "files": [
             _source_file_entry(role, config.paths.raw_data_dir / filename)

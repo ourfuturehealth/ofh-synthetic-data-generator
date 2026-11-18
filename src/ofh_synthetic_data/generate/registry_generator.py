@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from random import Random
 from typing import Any
+from faker import Faker
 
 import pandas as pd
+import os
 
 from ofh_synthetic_data.config import AppConfig, GenerationConfig
 from ofh_synthetic_data.export.writers import write_metadata, write_records_csv
@@ -23,6 +25,8 @@ from ofh_synthetic_data.synthetic_ranges import (
     SYNTHETIC_DATE_DAY_MIN,
     SYNTHETIC_YEAR_MIN,
 )
+from ofh_synthetic_data.constants import *
+from ofh_synthetic_data.generate.linked_data_transformations import *
 
 SUPPRESSION_CODES = {"-999"}
 
@@ -31,8 +35,13 @@ SUPPRESSION_CODES = {"-999"}
 class GeneratedTables:
     participants: list[dict[str, object]]
     questionnaires: list[dict[str, object]]
+    deaths: list[dict[str, object]]
+    op: list[dict[str, object]]
+    ae: list[dict[str, object]]
+    apc: list[dict[str, object]]
     participant_columns: list[str]
     questionnaire_columns: list[str]
+    linked_data_columns: dict[str, list]
     manifest: dict[str, Any]
     skipped_by_logic_count: int
 
@@ -41,6 +50,10 @@ class GeneratedTables:
 class GeneratedTablePaths:
     participant: Path
     questionnaire: Path
+    deaths: Path
+    op: Path
+    ae: Path
+    apc: Path
     manifest: Path
 
 
@@ -63,6 +76,7 @@ def generate_tables_from_processed_registries(config: AppConfig) -> GeneratedTab
         generation_config=config.generation,
         config_snapshot=config.to_dict(),
         source_manifest=source_manifest,
+        linked_data_dir=config.paths.linked_data_dir,
     )
 
 
@@ -73,14 +87,36 @@ def generate_tables(
     logic_registry: pd.DataFrame | None = None,
     config_snapshot: dict[str, Any] | None = None,
     source_manifest: dict[str, Any] | None = None,
+    linked_data_dir: Path = Path("dictionaries/processed/linked-data"),
 ) -> GeneratedTables:
     """Generate linked participant and questionnaire records from registry metadata."""
     rng = Random(generation_config.seed)
     coding_lookup = _build_coding_lookup(coding_registry)
     logic_rules, logic_order = _build_logic_rules(logic_registry)
 
+    # loading linked data dictionaries
+    # loading dictionaries and coding files for all datasets
+    dictionary_dir = Path(linked_data_dir) / "linked_data_dictionaries"
+
+    linked_data_dicts = {
+        path.name.removesuffix("_dictionary.csv"): get_dictionaries(
+            path=str(linked_data_dir) + "/",
+            df_name=path.name.removesuffix("_dictionary.csv"),
+        )
+        for path in sorted(dictionary_dir.glob("*_dictionary.csv"))
+    }
+    
+    # generating coded pairs dictionary with coded columns and coding name across all dictionaries
+    linked_data_coded_pairs = {df_name : create_coded_pairs(data_dictionary=value) for df_name, value in linked_data_dicts.items()}
+    # dictionary with date fields for each linked dataset
+    linked_data_date_fields = {df_name : value["dictionary"].loc[value["dictionary"]["type"] == "date", "name"].to_list() for df_name, value in linked_data_dicts.items()}
+
     participant_fields = _fields_for_entity(field_registry, "participant")
     questionnaire_fields = _fields_for_entity(field_registry, "questionnaire")
+    linked_data_columns = {
+        df_name : df_dict["dictionary"]["name"].astype(str).tolist() 
+        for df_name, df_dict in linked_data_dicts.items()
+    }
     participant_columns = participant_fields["name"].astype(str).tolist()
     questionnaire_columns = questionnaire_fields["name"].astype(str).tolist()
     synthetic_string_fields = sorted(
@@ -94,10 +130,26 @@ def generate_tables(
 
     participants: list[dict[str, object]] = []
     questionnaires: list[dict[str, object]] = []
+    deaths: list[dict[str, object]] = []
+    op: list[dict[str, object]] = []
+    ae: list[dict[str, object]] = []
+    apc: list[dict[str, object]] = []
     skipped_by_logic_count = 0
 
+    # setting faker instance and providing seed
+    fake = Faker()
+    Faker.seed(generation_config.seed)
+
+    # max number of years a participant could appear in a linked dataset
+    max_years = {df_name : get_max_years(df_name=df_name, date_dict=DATE_BOOKENDS) for df_name in DATE_BOOKENDS.keys()}
+
+    # generating list of random provider code values
+    PROVIDER_CODE_LIST = list(fake.random_elements(elements=range(100000, 1000000), length=10000, unique=True))
+    
     for row_index in range(generation_config.rows):
+        print(f"\ngenerating participant {row_index} of {generation_config.rows}")
         pid = _participant_id(row_index)
+
         timeline = _core_timeline(rng)
         participant = _generate_record(
             fields=participant_fields,
@@ -120,15 +172,79 @@ def generate_tables(
             participant=participant,
             timeline=timeline,
         )
+
         skipped_by_logic_count += skipped_for_row
         participants.append(participant)
         questionnaires.append(questionnaire)
 
+        # 5% chance a given PID will have died and therefore have a death record
+        if fake.pybool(5):
+            death_record = _generate_death_record(
+                fake, 
+                pid=pid, 
+                df_dict=linked_data_dicts["nhse_engwal_deaths"], 
+                row_number=len(deaths),
+                coded_pairs=linked_data_coded_pairs["nhse_engwal_deaths"],
+                date_fields=linked_data_date_fields["nhse_engwal_deaths"]
+            )
+            deaths.append(death_record)
+
+        # 75% chance a given PID will have an Outpatient record
+        if fake.pybool(75):
+            # assuming a participant can appear up to 7x per year
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_outpat"]*7)):
+                op_record = _generate_outpatient_record(
+                    fake, 
+                    pid=pid, 
+                    df_dict=linked_data_dicts["nhse_eng_outpat"],
+                    row_number=len(op),
+                    coded_pairs=linked_data_coded_pairs["nhse_eng_outpat"],
+                    date_fields=linked_data_date_fields["nhse_eng_outpat"],
+                    provider_codes=PROVIDER_CODE_LIST,
+                )
+                op.append(op_record)
+
+        # 60% chance a given PID will have an A&E record
+        if fake.pybool(60):
+            # assuming a participant can appear up to 2x per year
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_ed"]*2)):
+                ae_record = _generate_ae_record(
+                    fake, 
+                    pid=pid, 
+                    df_dict=linked_data_dicts["nhse_eng_ed"], 
+                    row_number=len(ae),
+                    coded_pairs=linked_data_coded_pairs["nhse_eng_ed"],
+                    date_fields=linked_data_date_fields["nhse_eng_ed"],
+                    provider_codes=PROVIDER_CODE_LIST
+                )
+                ae.append(ae_record)
+
+        # 70% chance a given PID will have an APC record
+        if fake.pybool(70):
+            # assuming a participant can appear up to 3x per year
+            for _ in range(0, fake.random_int(min=1, max=max_years["nhse_eng_inpat"]*3)):
+                apc_record = _generate_apc_record(
+                    fake, 
+                    pid=pid, 
+                    df_dict=linked_data_dicts["nhse_eng_inpat"], 
+                    row_number=len(apc),
+                    coded_pairs=linked_data_coded_pairs["nhse_eng_inpat"],
+                    date_fields=linked_data_date_fields["nhse_eng_inpat"],
+                    provider_codes=PROVIDER_CODE_LIST
+                )
+                apc.append(apc_record)
+
     return GeneratedTables(
         participants=participants,
         questionnaires=questionnaires,
+        deaths=deaths,
+        # sorting datasets with multiple events per ID by date
+        op=sorted(op, key=lambda d: d["APPTDATE"]),
+        ae=sorted(ae, key=lambda d: d["ARRIVALDATE"]),
+        apc=sorted(apc, key=lambda d: d["ADMIDATE"]),
         participant_columns=participant_columns,
         questionnaire_columns=questionnaire_columns,
+        linked_data_columns=linked_data_columns,
         manifest={
             "status": "beta",
             "manual_validation_status": "ongoing",
@@ -138,6 +254,10 @@ def generate_tables(
             "outputs": {
                 "participant": generation_config.participant_file,
                 "questionnaire": generation_config.questionnaire_file,
+                "deaths" : generation_config.deaths_file,
+                "op" : generation_config.op_file,
+                "ae" : generation_config.ae_file,
+                "apc": generation_config.apc_file,
             },
             "config": config_snapshot or {"generation": asdict(generation_config)},
             "source_manifest": source_manifest or {},
@@ -160,6 +280,10 @@ def generate_tables(
                 "source": "data_dictionary",
                 "participant_columns": len(participant_columns),
                 "questionnaire_columns": len(questionnaire_columns),
+                "deaths_columns" : len(linked_data_columns["nhse_engwal_deaths"]),
+                "op_columns" : len(linked_data_columns["nhse_eng_outpat"]),
+                "ae_columns" : len(linked_data_columns["nhse_eng_ed"]),
+                "apc_columns" : len(linked_data_columns["nhse_eng_inpat"]),
             },
             "phase": "7-beta-release-candidate",
         },
@@ -175,16 +299,28 @@ def write_generated_tables(
     """Write generated tables and manifest to disk."""
     participant_path = output_dir / config.participant_file
     questionnaire_path = output_dir / config.questionnaire_file
+    deaths_path = output_dir / config.deaths_file
+    op_path = output_dir / config.op_file
+    ae_path = output_dir / config.ae_file
+    apc_path = output_dir / config.apc_file
     manifest_path = output_dir / config.manifest_file
 
     write_records_csv(tables.participants, participant_path, tables.participant_columns)
     write_records_csv(tables.questionnaires, questionnaire_path, tables.questionnaire_columns)
+    write_records_csv(tables.deaths, deaths_path, tables.linked_data_columns["nhse_engwal_deaths"])
+    write_records_csv(tables.op, op_path, tables.linked_data_columns["nhse_eng_outpat"])
+    write_records_csv(tables.ae, ae_path, tables.linked_data_columns["nhse_eng_ed"])
+    write_records_csv(tables.apc, apc_path, tables.linked_data_columns["nhse_eng_inpat"])
     write_metadata(
         {
             **tables.manifest,
             "output_files": {
                 "participant": str(participant_path),
                 "questionnaire": str(questionnaire_path),
+                "deaths" : str(deaths_path),
+                "op" : str(op_path),
+                "ae" : str(ae_path),
+                "apc" : str(apc_path),
             },
         },
         manifest_path,
@@ -193,6 +329,10 @@ def write_generated_tables(
     return GeneratedTablePaths(
         participant=participant_path,
         questionnaire=questionnaire_path,
+        deaths=deaths_path,
+        op=op_path,
+        ae=ae_path,
+        apc=apc_path,
         manifest=manifest_path,
     )
 
@@ -287,6 +427,393 @@ def _generate_questionnaire_record(
 
     return record, skipped_by_logic_count
 
+def _generate_death_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str]) -> dict[str, object]:
+
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs_dict=coded_pairs)
+
+    # defining fields which will always be populated with coded values
+    always_populated = [x for x in coded_pairs.keys() if not re.search("|".join(ordered_columns_dict.keys()), x) or re.search("_1$", x)]
+
+    deaths_record = {}
+    deaths_record["PID"] = pid
+
+    # adding ICD codes to first cause of death column and underlying cause of death column
+    for colname in always_populated:
+            deaths_record[colname] = fake.random_element(
+                    elements=df_dict[coded_pairs[colname]]["code"].unique()
+                )
+
+    # conditionally populating ICD cause of death columns to mimic missingness in real data
+    for _, ordered_col_list in ordered_columns_dict.items():
+        for i in range(0, len(ordered_col_list)-1):
+            if fake.pybool(80) and deaths_record[ordered_col_list[i]] != "":
+                deaths_record[ordered_col_list[i+1]] = fake.random_element(
+                    elements=df_dict[coded_pairs[ordered_col_list[i]]]["code"].unique()
+                )
+            else:
+                deaths_record[ordered_col_list[i+1]] = ""
+
+    deaths_record["REG_DATE_OF_DEATH"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_engwal_deaths"]["start"], end_date=DATE_BOOKENDS["nhse_engwal_deaths"]["end"])
+    deaths_record["REG_DATE"] = fake.date_between(
+        start_date=deaths_record["REG_DATE_OF_DEATH"], 
+        end_date=deaths_record["REG_DATE_OF_DEATH"] + datetime.timedelta(days=10)
+    )
+
+    # standardising date format
+    deaths_record.update(
+        {d : str(deaths_record[d]) for d in date_fields}
+    )
+
+    deaths_record["ROW_ID"] = row_number
+
+    return deaths_record
+
+def _generate_outpatient_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
+
+    FYEAR_START_DATE_0809 = datetime.date(2008, 4, 1)
+
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["RTTPERSTAT", "SUSSPELLID"]
+
+    # defining fields which will always be populated with coded values
+        # excluding ontology columns and conditionally populated column + date fields
+    always_populated = [
+        x for x in coded_pairs.keys() 
+        if x not in conditional_columns
+        and not re.search("DIAG_4_|OPERTN_", x)
+    ] + ["DIAG_4_01", "OPERTN_01"]
+    
+    # defining coded diagnosis and procedure columns
+    DIAG_COLUMNS = [x for x in coded_pairs.keys() if "DIAG_4_" in x]
+    PROC_COLUMNS = [x for x in coded_pairs.keys() if "OPERTN_" in x]
+
+    record = {}
+
+    # defining appointment date
+    record["APPTDATE"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_outpat"]["start"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+    
+    record["PID"] = pid
+
+    for colname in always_populated:
+        record[colname] = pick_random_code(fake, df_name=coded_pairs[colname], data_dictionary=df_dict)
+
+    # conditionally populating diagnosis fields
+    for diag_number in range(2, len(DIAG_COLUMNS)+1):
+        diag_name = f"DIAG_4_{diag_number:02}"
+        record[diag_name] = ""
+        # only 2 diagnosis fields available before April 2008
+        if record["APPTDATE"] < FYEAR_START_DATE_0809 and diag_number > 2:
+            continue
+        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", ""]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(5):
+                record[diag_name] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
+            else:
+                record[diag_name] = pick_random_code(fake, df_name=coded_pairs[diag_name], data_dictionary=df_dict)
+
+    # conditionally populating procedure fields
+    for proc_number in range(2, len(PROC_COLUMNS)+1):
+        proc_name = f"OPERTN_{proc_number:02}"
+        record[proc_name] = ""
+        # only 12 procedure fields available before April 2008
+        if record["APPTDATE"] < FYEAR_START_DATE_0809 and proc_number > 12:
+            continue
+        if record[f"OPERTN_{proc_number-1:02}"] in ["-", ""]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(5):
+                record[proc_name] = "-"
+            else:
+                record[proc_name] = pick_random_code(fake, df_name=coded_pairs[proc_name], data_dictionary=df_dict)
+    
+    # these fields only available from 2012/2013 financial year
+    if record["APPTDATE"] >= datetime.date(2012,4,1):
+        record["RTTPERSTART"] = fake.date_between(start_date=datetime.date(2012,4,1), end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+        record["RTTPEREND"] = fake.date_between(start_date=record["RTTPERSTART"], end_date=DATE_BOOKENDS["nhse_eng_outpat"]["end"])
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs["RTTPERSTAT"], data_dictionary=df_dict)
+    # enter as null for records prior to that FYEAR
+    else:
+        for c in ["RTTPERSTART", "RTTPEREND", "RTTPERSTAT"]:
+            record[c] = ""
+
+    if record["APPTDATE"] >= datetime.date(2021,4,1):
+        record["ATTENDKEY"] = generate_numeric_id(fake, n=19)
+    else:
+        record["ATTENDKEY"] = generate_numeric_id(fake, n=12)
+
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
+    
+    # generating SUSSPELLID code
+    if record["APPTDATE"] < datetime.date(2016,4,1):
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=10)
+    else:
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=19)
+    # 1% chance it is missing
+    if fake.pybool(1):
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs["SUSSPELLID"], data_dictionary=df_dict)
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+    # about 30% entries are uppercase
+    if fake.pybool(30):
+        record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields}
+    )
+    
+    # adding `ROW_ID` to dataset
+    record["ROW_ID"] = row_number
+
+    return record
+
+def _generate_apc_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
+    
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["RTTPERSTAT","ACSCFLAG", "FIRSTREG", "SUSSPELLID", "OPERSTAT", "SUSRECID", "BEDYEAR", "EPIORDER", "EPIDUR", "ELECDUR"]
+
+    # defining fields which will always be populated with coded values
+    # excluding ontology columns and conditionally populated column + date fields
+    always_populated = [
+        x for x in coded_pairs.keys() 
+        if x not in conditional_columns+date_fields
+        and not re.search("DIAG_4_|OPERTN_", x)
+    ] + ["DIAG_4_01", "OPERTN_01"]
+
+    # defining coded diagnosis and procedure columns
+    DIAG_COLUMNS = [x for x in coded_pairs.keys() if "DIAG_4_" in x]
+    PROC_COLUMNS = [x for x in coded_pairs.keys() if "OPERTN_" in x]
+
+    # generating dates
+    # date constants
+    FYEAR_START_DATE_0708 = datetime.date(2007, 4, 1)
+    FYEAR_START_DATE_0203 = datetime.date(2002, 4, 1)
+    FYEAR_START_DATE_2324 = datetime.date(2023, 4, 1)
+    
+    # creating set of date fields which will be generated using generate_apc_dates function
+    DATES_TO_ITERATE = {d for d in date_fields if "OPDATE" not in d and d != "EPISTART"}
+
+    # generating APC date fields for a given record
+    record = generate_apc_dates(fake=fake, pid=pid, date_set=DATES_TO_ITERATE, anchor_date_col="EPISTART")
+    # generating only 1 episode per spell for first iteration
+    record["EPIORDER"] = 1
+    # defining ELECDUR and EPIDUR
+    record["ELECDUR"] = (record["ADMIDATE"] - record["ELECDATE"]).days
+    record["EPIDUR"] = (record["EPIEND"] - record["EPISTART"]).days
+  
+    for colname in always_populated:
+        # 25% chance no procedure happened during admission
+        if colname == "OPERTN_01" and fake.pybool(25):
+            record[colname] = "-"
+            record["OPDATE_01"] = np.nan
+        else:
+            record[colname] = pick_random_code(fake, df_name=coded_pairs[colname], data_dictionary=df_dict)
+            record["OPDATE_01"] = fake.date_between(start_date=record["EPISTART"], end_date=record["EPIEND"])
+            record["PREOPDUR"] = (record["OPDATE_01"] - record["EPISTART"]).days
+            record["POSOPDUR"] = (record["EPIEND"] - record["OPDATE_01"]).days
+
+    # random integer between 1 and 366
+    record["BEDYEAR"] = fake.random_element(elements=range(1, 376))
+
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
+
+    # populating ID columns using information in APC_ID_COLUMNS_DICT
+    for id_column in APC_ID_COLUMNS_DICT.keys():
+        # only populate fields from when dictionary indicates data becomes available
+        if record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["start_available"] and record["EPISTART"] < APC_ID_COLUMNS_DICT[id_column]["n_characters_update"]:
+            record[id_column] = generate_numeric_id(fake, n=APC_ID_COLUMNS_DICT[id_column]["n_characters"])
+        # after financial year defined in dictionary, all ID fields become 19 characters
+        elif record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["n_characters_update"] and id_column != "SUSRECID":
+            record[id_column] = generate_numeric_id(fake, n=19)
+        # defining SUSRECID separately because after a specified date, it becomes the same as EPIKEY
+        elif record["EPISTART"] >= APC_ID_COLUMNS_DICT[id_column]["n_characters_update"] and id_column == "SUSRECID":
+            record[id_column] = record["EPIKEY"]
+        else:
+            record[id_column] = ""
+
+    # populating all fields available from 2007/2008 financial year
+    if record["EPISTART"] >= FYEAR_START_DATE_0708:
+        record["RTTPERSTAT"] = pick_random_code(fake, coded_pairs["RTTPERSTAT"], data_dictionary=df_dict)
+        record["ACSCFLAG"] = pick_random_code(fake, coded_pairs["ACSCFLAG"], data_dictionary=df_dict)
+    else:
+        record.update({d: "" for d in ["RTTPERSTAT", "ACSCFLAG"]})
+
+    # populating fields available from 2002/2003 financial year
+    if record["EPISTART"] >= FYEAR_START_DATE_0203:
+        for c in ["OPERSTAT", "FIRSTREG"]:
+            record[c] = pick_random_code(fake, coded_pairs[c], data_dictionary=df_dict)
+    elif record["EPISTART"] < FYEAR_START_DATE_2324:
+        record["OPERSTAT"] = np.nan
+    else:
+        record.update({d: "" for d in ["OPERSTAT", "FIRSTREG"]})
+
+    # conditionally populating diagnosis fields
+    for diag_number in range(2, len(DIAG_COLUMNS)+1):
+        diag_name = f"DIAG_4_{diag_number:02}"
+        record[diag_name] = ""
+        # only 7 diagnosis fields available prior to 2002/2003 financial year
+        if record["EPISTART"] < FYEAR_START_DATE_0203 and diag_number > 7:
+            continue
+        # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
+        if record["EPISTART"] < FYEAR_START_DATE_0708 and diag_number > 14:
+            continue
+        if record[f"DIAG_4_{diag_number-1:02}"] in ["R69X", "R69X6", "R69X8", "R69X3", ""]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(5):
+                record[diag_name] = fake.random_element(elements=["R69X", "R69X6", "R69X8", "R69X3"])
+            else:
+                record[diag_name] = pick_random_code(fake, df_name=coded_pairs[diag_name], data_dictionary=df_dict)
+
+    # conditionally populating procedure fields
+    for proc_number in range(2, len(PROC_COLUMNS)+1):
+        proc_name = f"OPERTN_{proc_number:02}"
+        proc_date_name = f"OPDATE_{proc_number:02}"
+        record[proc_name] = ""
+        record[proc_date_name] = ""
+        # only 14 diagnosis fields available from 2002/2003 to 2007/2008 financial years
+        if record["EPISTART"] < FYEAR_START_DATE_0708 and proc_number > 12:
+            continue
+        if record[f"OPERTN_{proc_number-1:02}"] in ["-", ""]:
+            continue
+        # 80% chance diagnosis field is populated, 20% chance an invalid diagnosis code is present
+        if fake.pybool(80):
+            if fake.pybool(20):
+                record[proc_name] = "-"
+                record[proc_date_name] = ""
+            else:
+                record[proc_name] = pick_random_code(fake, df_name=coded_pairs[proc_name], data_dictionary=df_dict)
+                record[proc_date_name] = fake.date_between(start_date=record[f"OPDATE_{proc_number-1:02}"], end_date=record["EPIEND"])
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+    # about 30% entries are uppercase
+    if fake.pybool(30):
+        record["IMD04_DECILE"] = record["IMD04_DECILE"].upper()
+
+    # seeding missing values where missing codes are available
+    # excluding OPDATE_nn fields
+    for c in sorted(list(set([x for x in date_fields if "OPDATE_" not in x]+["BEDYEAR", "EPIORDER", "SUSSPELLID"]) & set(coded_pairs.keys()))):
+        if fake.pybool(1):
+            if c in date_fields:
+                record[c] = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
+            else:
+                record[c] = pick_random_code(fake, df_name=coded_pairs[c], data_dictionary=df_dict)
+    
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields}
+    )
+    
+    # adding `ROW_ID` to dataset
+    record["ROW_ID"] = row_number
+
+    return record
+
+def _generate_ae_record(fake: Faker, pid: str, df_dict: dict[str, object], row_number:int, coded_pairs: dict[str, object], date_fields: list[str], provider_codes: list[int]) -> dict[str, object]:
+    
+    # adding DIAG_nn and INVEST_nn to coded pairs dict
+    for c in [x for x in df_dict["dictionary"]["name"].to_list() if re.search("DIAG_|INVEST_", x)]:
+        if "DIAG" in c:
+            coded_pairs[c] = "DIAGA_ae_coding"
+        else:
+            coded_pairs[c] = "INVEST2_ae_coding"
+    
+    # defining columns that require specific conditions for coded values to be populated
+    conditional_columns = ["SUSSPELLID"] + [x for x in coded_pairs.keys() if "TIME" in x]
+    
+    # ordering the coded columns
+    ordered_columns_dict = order_numbered_columns(coded_pairs)
+    
+    # defining fields which will always be populated with coded values
+    always_populated = [
+        x for x in coded_pairs.keys() 
+        if not re.search("|".join(ordered_columns_dict.keys()), x) 
+        or re.search("_01$", x) 
+        and x not in conditional_columns
+    ]
+    
+    record = {}
+    record["PID"] = pid
+    
+    for colname in always_populated:
+        record[colname] = pick_random_code(fake, df_name=coded_pairs[colname], data_dictionary=df_dict)
+    
+    for base_colname in ordered_columns_dict.keys():
+        ordered_list = ordered_columns_dict[base_colname]
+        for i in range(0, len(ordered_list)-1):
+            # 10% chance that diagnosis or procedure code is populated
+            if fake.pybool(10) and record[ordered_list[i]] != "":
+                record[ordered_list[i+1]] = pick_random_code(fake, df_name=coded_pairs[ordered_list[i+1]], data_dictionary=df_dict)
+            else:
+                record[ordered_list[i+1]] = ""
+
+    # manually adding TREAT_nn fields because they do not have set codes but usually consist of 2-6 character codes
+    treat_columns = [x for x in df_dict["dictionary"]["name"].to_list() if "TREAT_" in x]
+    record["TREAT_01"] = str(fake.random_int(min=1, max=99)) + fake.random_letter()
+    for t in range(0, len(treat_columns)-1):
+        if fake.pybool(20) and record[treat_columns[t]] != "":
+            treat_length = fake.random_int(min=2, max=6)
+            record[treat_columns[t+1]] = str(fake.random_number(digits=treat_length)) + fake.random_letter()
+        else:
+            record[treat_columns[t+1]] = ""
+    
+    record["ARRIVALDATE"] = fake.date_between(start_date=DATE_BOOKENDS["nhse_eng_ed"]["start"], end_date=DATE_BOOKENDS["nhse_eng_ed"]["end"])
+    
+    # time columns 
+    # time is 4 characters
+    for t in [x for x in df_dict["dictionary"]["name"].to_list() if "TIME" in x]:
+        record[t] = str(fake.time('%H:%M').replace(":", "")).zfill(4)
+    
+    # generating pseudonymised provider code
+    record["PROCODE3_OFH"] = fake.random_element(elements=provider_codes)
+    
+    # generating SUSSPELLID code
+    if record["ARRIVALDATE"] < datetime.date(2016,4,1):
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=10)
+    else:
+        record["SUSSPELLID"] = generate_numeric_id(fake, n=19)
+    # 1% chance it is missing
+    if fake.pybool(1):
+        record["SUSSPELLID"] = pick_random_code(fake, df_name=coded_pairs["SUSSPELLID"], data_dictionary=df_dict)
+    
+    if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
+        record["AEKEY"] = generate_numeric_id(fake, n=19)
+    else:
+        record["AEKEY"] = generate_numeric_id(fake, n=12)
+
+    # populating EPIKEY based on years available and character length
+    if record["ARRIVALDATE"] >= datetime.date(2013,4,1):
+        if fake.pybool(10):
+            if record["ARRIVALDATE"] >= datetime.date(2021,4,1):
+                record["EPIKEY"] = generate_numeric_id(fake, n=19)
+            else:
+                record["EPIKEY"] = generate_numeric_id(fake, n=12)
+        else:
+            record["EPIKEY"] = ""
+    else: 
+        record["EPIKEY"] = ""
+    
+    # generating random IMD decile
+    record["IMD04_DECILE"] = fake.random_element(elements=IMD_VALID_ENTRIES)
+
+    # standardising date format
+    record.update(
+        {d : str(record[d]) for d in date_fields}
+    )
+        
+    # adding `ROW_ID` to dataset
+    record["ROW_ID"] = row_number
+    
+    return record
 
 def _generate_value(
     field: dict[str, object],
